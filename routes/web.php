@@ -3,7 +3,7 @@
 use App\Livewire\WelcomeComponent;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', WelcomeComponent::class);
+Route::get('/', WelcomeComponent::class)->name('index');
 
 
 Route::view('dashboard', 'dashboard')
