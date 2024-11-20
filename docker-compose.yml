@@ -30,7 +30,7 @@ services:
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
-            - '${FORWARD_DB_PORT:-6307}:3306'
+            - '${FORWARD_DB_PORT:-3310}:3306' # Ensure this port mapping is correct
         environment:
             MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
             MYSQL_ROOT_HOST: '%'
@@ -98,6 +98,16 @@ services:
             - 'host.docker.internal:host-gateway'
         volumes:
             - '/dev/shm:/dev/shm'
+        networks:
+            - sail
+    phpmyadmin:
+        image: 'phpmyadmin/phpmyadmin'
+        environment:
+            PMA_HOST: mysql
+            PMA_PORT: 3306
+            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+        ports:
+            - '8080:80'
         networks:
             - sail
 networks:
