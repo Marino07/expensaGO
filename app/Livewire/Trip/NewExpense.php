@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Livewire\Application;
+namespace App\Livewire\Trip;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 
-class Application extends Component
+class NewExpense extends Component
 {
+
     public function logout()
     {
         Auth::logout(); // Odjava korisnika
@@ -14,6 +15,6 @@ class Application extends Component
     }
     public function render()
     {
-        return view('livewire.application.application')->layout('layouts.application');
+        return view('livewire.trip.new-expense')->layout('layouts.trip');
     }
 }

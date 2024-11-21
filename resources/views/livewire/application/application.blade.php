@@ -184,7 +184,7 @@
                         </div>
                         <div class="mt-8">
                             <h3 class="text-lg font-medium">
-                                <a href="#" class="focus:outline-none">
+                                <a href="{{route('new-expense')}}" class="focus:outline-none">
                                     <span class="absolute inset-0" aria-hidden="true"></span>
                                     Add New Expense
                                 </a>
@@ -210,7 +210,7 @@
                         </div>
                         <div class="mt-8">
                             <h3 class="text-lg font-medium">
-                                <a href="#" class="focus:outline-none">
+                                <a href="{{route('start-trip')}}" class="focus:outline-none">
                                     <span class="absolute inset-0" aria-hidden="true"></span>
                                     Start New Trip
                                 </a>
@@ -254,13 +254,8 @@
                 </div>
             </div>
         </main>
+    <x-footer />
 
-        <footer class=" bg-gradient-to-l from-blue-200 to-indigo-400 text-white">
-            <div class="max-w-7xl mx-auto py-5 px-4 sm:px-6 lg:px-8">
-                <p class="text-center text-sm">
-                    © 2023 ExpensaGO. All rights reserved.
-                </p>
-            </div>
-        </footer>
+
     </div>
 
