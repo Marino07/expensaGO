@@ -8,7 +8,7 @@
                 </div>
 
                 <div class="px-6 py-8 md:p-10">
-                    <form wire:submit.prevent="startTrip" class="space-y-6">
+                    <form wire:submit.prevent="submit" class="space-y-6">
                         <div>
                             <label for="tripName" class="block text-sm font-medium text-gray-700">Trip Name</label>
                             <div class="mt-1 relative rounded-md shadow-sm">
@@ -20,9 +20,11 @@
                                             clip-rule="evenodd" />
                                     </svg>
                                 </div>
-                                <input type="text" id="tripName" wire:model="tripName"
+                                <input type="text" id="tripName" wire:model="location"
                                     class="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                    placeholder="Enter your trip name" required>
+                                    placeholder="Enter your precise location for vacation" required>
+                                    @error('location') <span class="error text-red-400">{{ $message }}</span> @enderror
+
                             </div>
                         </div>
 
@@ -39,9 +41,11 @@
                                                 clip-rule="evenodd" />
                                         </svg>
                                     </div>
-                                    <input type="text" id="startDate" x-ref="startDate" wire:model="startDate"
+                                    <input type="text" id="startDate" x-ref="startDate" wire:model="start_date"
                                         class="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                         placeholder="Select start date" readonly>
+                                        @error('start_date') <span class="error text-red-400">{{ $message }}</span> @enderror
+
                                 </div>
                             </div>
 
@@ -56,9 +60,11 @@
                                                 clip-rule="evenodd" />
                                         </svg>
                                     </div>
-                                    <input type="text" id="endDate" x-ref="endDate" wire:model="endDate"
+                                    <input type="text" id="endDate" x-ref="endDate" wire:model="end_date"
                                         class="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                         placeholder="Select end date" readonly>
+                                        @error('end_date') <span class="error text-red-400">{{ $message }}</span> @enderror
+
                                 </div>
                             </div>
                         </div>
@@ -72,6 +78,8 @@
                                 <input type="number" id="budget" wire:model="budget"
                                     class="pl-7 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                     placeholder="0.00" required>
+                                    @error('budget') <span class="error text-red-400">{{ $message }}</span> @enderror
+
                             </div>
                         </div>
 
@@ -82,6 +90,7 @@
                                 <textarea id="description" wire:model="description" rows="3"
                                     class="shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"
                                     placeholder="Describe your upcoming adventure"></textarea>
+                                    @error('description') <span class="error text-red-400">{{ $message }}</span> @enderror
                             </div>
                         </div>
 

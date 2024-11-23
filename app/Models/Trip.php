@@ -9,4 +9,5 @@ class Trip extends Model
 {
     /** @use HasFactory<\Database\Factories\TripFactory> */
     use HasFactory;
+    protected $guarded = [];
 }
