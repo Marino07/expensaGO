@@ -16,12 +16,15 @@ class NewExpense extends Component
     public $amount;
     public $category_id;
     public $isRecurring;
+    public function  mount(){
+        $this->isRecurring = 0;
+    }
 
 
     protected $rules = [
         'tripId' => 'required|exists:trips,id',
         'expenseTitle' => 'required|string|max:255',
-        'expenseDate' => 'nullable|date|after_or_equal:start_date',
+        'expenseDate' => 'required|date|after_or_equal:start_date',
         'amount' => 'required|numeric|min:0',
     ];
 

@@ -14,6 +14,8 @@ class Application extends Component
     }
     public function render()
     {
-        return view('livewire.application.application')->layout('layouts.application');
+        $user = Auth::user();
+        $lastExpenses = $user->Lastexpenses();
+        return view('livewire.application.application',compact('lastExpenses'))->layout('layouts.application');
     }
 }

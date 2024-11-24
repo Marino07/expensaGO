@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Trip\AllExpenses;
+use App\Livewire\Trip\EditTrip;
 use App\Livewire\Trip\ManageTrips;
 use App\Livewire\Trip\StartTrip;
 use App\Livewire\Trip\NewExpense;
@@ -16,6 +17,7 @@ Route::middleware('auth')->group(function () {
     Route::get('new-expense', NewExpense::class)->name('new-expense');
     Route::get('manage_trips', ManageTrips::class)->name('manage-trips');
     Route::get('all_expenses', AllExpenses::class)->name('all-expenses');
+    Route::get('edit_trip/{trip}', EditTrip::class)->name('edit-trip');
 
 });
 

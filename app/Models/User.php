@@ -45,4 +45,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function trips()
+    {
+        return $this->hasMany(Trip::class);
+    }
+    public function Lastexpenses()
+    {
+        $lastTrip = $this->trips()->latest()->first();
+       return $lasteExpenses = $lastTrip->expenses()->latest()->take(5)->get();
+    }
 }

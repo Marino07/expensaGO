@@ -8,6 +8,7 @@ class ManageTrips extends Component
 {
     public function render()
     {
-        return view('livewire.trip.manage-trips')->layout('layouts.trip');
+        $trips = auth()->user()->trips;
+        return view('livewire.trip.manage-trips',compact('trips'))->layout('layouts.trip');
     }
 }
