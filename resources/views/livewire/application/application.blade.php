@@ -63,7 +63,7 @@
                     </div>
                     <div class="bg-indigo-600 px-4 py-4 sm:px-6">
                         <div class="text-sm">
-                            <a href="#" class="font-medium text-white hover:text-indigo-100 transition ease-in-out duration-150">
+                            <a href="{{route('all-expenses')}}" class="font-medium text-white hover:text-indigo-100 transition ease-in-out duration-150">
                                 View all expenses &rarr;
                             </a>
                         </div>
@@ -93,7 +93,7 @@
                     </div>
                     <div class="bg-green-600 px-4 py-4 sm:px-6">
                         <div class="text-sm">
-                            <a href="#" class="font-medium text-white hover:text-green-100 transition ease-in-out duration-150">
+                            <a href="{{route('manage-trips')}}" class="font-medium text-white hover:text-green-100 transition ease-in-out duration-150">
                                 Manage trips &rarr;
                             </a>
                         </div>

@@ -1,5 +1,7 @@
 <?php
 
+use App\Livewire\Trip\AllExpenses;
+use App\Livewire\Trip\ManageTrips;
 use App\Livewire\Trip\StartTrip;
 use App\Livewire\Trip\NewExpense;
 use App\Livewire\WelcomeComponent;
@@ -12,7 +14,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/app', Application::class)->name('app');
     Route::get('start-trip', StartTrip::class)->name('start-trip');
     Route::get('new-expense', NewExpense::class)->name('new-expense');
-
+    Route::get('manage_trips', ManageTrips::class)->name('manage-trips');
+    Route::get('all_expenses', AllExpenses::class)->name('all-expenses');
 
 });
 
