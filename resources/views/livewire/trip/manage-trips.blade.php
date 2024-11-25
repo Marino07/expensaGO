@@ -1,37 +1,4 @@
-<div>
-    @if (session()->has('message'))
-    <div x-data="{ show: true }"
-         x-show="show"
-         x-transition:enter="transition ease-out duration-300"
-         x-transition:enter-start="opacity-0 transform scale-90"
-         x-transition:enter-end="opacity-100 transform scale-100"
-         x-transition:leave="transition ease-in duration-300"
-         x-transition:leave-start="opacity-100 transform scale-100"
-         x-transition:leave-end="opacity-0 transform scale-90"
-         class=" bg-gradient-to-l from-blue-50 to-cyan-300 border-l-4 border-blue-500 p-4 rounded-md shadow-lg"
-         role="alert">
-        <div class="flex">
-            <div class="flex-shrink-0">
-
-            </div>
-            <div class="ml-3">
-                <h3 class="text-lg font-medium text-green-800">
-                     Congrats 🎉
-                </h3>
-                <div class="mt-2 text-sm text-green-700">
-                    <p>{{ session('message') }}</p>
-                </div>
-                <div class="mt-4">
-                    <div class="-mx-2 -my-1.5 flex">
-                        <button @click="show = false" type="button" class="bg-cyan-300 px-2 py-1.5 rounded-md text-sm font-medium text-green-800 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-50 focus:ring-green-600">
-                            Dismiss
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    @endif
+<div x-data="tripManager()">
     <x-barapp />
 
     <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 py-8 px-4 sm:px-6 lg:px-8">
@@ -56,7 +23,7 @@
                                 </svg>
                             </div>
                         </div>
-                        <a href="/trips/create"
+                        <a href="{{route('start-trip')}}"
                             class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
                                 fill="currentColor" aria-hidden="true">
@@ -70,30 +37,33 @@
 
                     <div class="bg-white shadow overflow-hidden sm:rounded-md">
                         <ul class="divide-y divide-gray-200">
-                           @foreach ($trips as $trip )
-                           <li>
+                           @foreach ($trips as $trip)
+                           <li x-data="{ showExpenses: false, expenses: {{ json_encode($trip->expenses) }} }">
                             <div class="px-4 py-4 sm:px-6">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center">
-                                        <div
-                                            class="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="text-blue-400 w-5 h-5" viewBox="0 0 16 16">
+                                        <div class="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                                 class="text-blue-400 w-5 h-5" viewBox="0 0 16 16"
+                                                 :class="{ 'text-green-500': '{{ $trip->status }}' === 'active' }">
                                                 <path d="M6.428 1.151C6.708.591 7.213 0 8 0s1.292.592 1.572 1.151C9.861 1.73 10 2.431 10 3v3.691l5.17 2.585a1.5 1.5 0 0 1 .83 1.342V12a.5.5 0 0 1-.582.493l-5.507-.918-.375 2.253 1.318 1.318A.5.5 0 0 1 10.5 16h-5a.5.5 0 0 1-.354-.854l1.319-1.318-.376-2.253-5.507.918A.5.5 0 0 1 0 12v-1.382a1.5 1.5 0 0 1 .83-1.342L6 6.691V3c0-.568.14-1.271.428-1.849m.894.448C7.111 2.02 7 2.569 7 3v4a.5.5 0 0 1-.276.447l-5.448 2.724a.5.5 0 0 0-.276.447v.792l5.418-.903a.5.5 0 0 1 .575.41l.5 3a.5.5 0 0 1-.14.437L6.708 15h2.586l-.647-.646a.5.5 0 0 1-.14-.436l.5-3a.5.5 0 0 1 .576-.411L15 11.41v-.792a.5.5 0 0 0-.276-.447L9.276 7.447A.5.5 0 0 1 9 7V3c0-.432-.11-.979-.322-1.401C8.458 1.159 8.213 1 8 1s-.458.158-.678.599"/>
-                                              </svg>
+                                            </svg>
                                         </div>
                                         <div class="ml-4">
                                             <h3 class="text-lg font-medium text-indigo-600">{{$trip->location}}</h3>
-                                            <p class="text-sm text-gray-500">{{ \Carbon\Carbon::parse($trip->start_date)->format('d M Y') }} - {{ \Carbon\Carbon::parse($trip->end_date)->format('d M Y') }}</p>                                        </div>
+                                            <p class="text-sm text-gray-500">{{ \Carbon\Carbon::parse($trip->start_date)->format('d M Y') }} - {{ \Carbon\Carbon::parse($trip->end_date)->format('d M Y') }}</p>
+                                        </div>
                                     </div>
+                                    @if ($trip->status === 'active')
                                     <div class="flex space-x-2">
-                                        <button @click="$dispatch('open-finish-modal', {{ $trip->id }})" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                        <button wire:click="finishTrip({{$trip->id}})" @click="showExpenses = true"
+                                                class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                             Finish Trip
                                         </button>
-                                        <a wire:click="deleteTrip({{$trip->id}})" href="#"
-                                            class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                                            Delete
-                                        </a>
                                     </div>
+
+                                    @endif
+
                                 </div>
                                 <div class="mt-2 sm:flex sm:justify-between">
                                     <div class="sm:flex">
@@ -120,10 +90,63 @@
                                         </p>
                                     </div>
                                 </div>
-                            </div>
+
+                                <!-- Dodajemo prikaz troškova -->
+                                <div x-show="showExpenses"
+                                x-transition:enter="transition ease-out duration-300"
+                                x-transition:enter-start="opacity-0 transform translate-x-full"
+                                x-transition:enter-end="opacity-100 transform translate-x-0"
+                                class="mt-6 bg-white p-6 rounded-lg shadow-md">
+                                <h4 class=" flex justify-center text-xl font-semibold mb-4 text-blue-400">We hope you enjoy 😊</h4>
+                               <h4 class="text-xl font-semibold mb-4 text-indigo-700">Trip Expenses</h4>
+                               <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+                                   <template x-for="expense in expenses" :key="expense.id">
+                                       <div class="bg-gray-50 p-4 rounded-lg shadow-sm transition duration-300 ease-in-out transform hover:scale-105">
+                                           <div class="flex justify-between items-center mb-2">
+                                               <p x-text="expense.title" class="font-medium text-gray-800"></p>
+                                               <span x-text="'$' + expense.amount.toFixed(2)" class="text-indigo-600 font-semibold"></span>
+                                           </div>
+                                           <div class="mt-2">
+                                               <p class="text-sm text-gray-600 mb-1" x-text="expense.title"></p>
+                                               <div class="h-2 bg-indigo-200 rounded-full overflow-hidden">
+                                                   <div class="h-2 bg-indigo-600 rounded-full"
+                                                        :style="`width: ${Math.min((expense.amount / trip.budget) * 100, 100)}%`"
+                                                        :aria-valuenow="Math.min((expense.amount / trip.budget) * 100, 100)"
+                                                        aria-valuemin="0"
+                                                        aria-valuemax="100"
+                                                        role="progressbar"
+                                                        :aria-label="`${expense.title} expense progress`"></div>
+                                               </div>
+                                           </div>
+                                       </div>
+                                   </template>
+                               </div>
+                               <div class="bg-gray-100 p-4 rounded-lg">
+                                   <div class="flex justify-between items-center mb-2">
+                                       <p class="text-lg font-semibold text-gray-800">Total Expenses:</p>
+                                       <p class="text-xl font-bold text-indigo-700" x-text="'$' + expenses.reduce((sum, exp) => sum + exp.amount, 0).toFixed(2)"></p>
+                                   </div>
+                                   <div class="h-4 bg-gray-300 rounded-full overflow-hidden">
+                                       <div class="h-4 rounded-full transition-all duration-500 ease-in-out"
+                                            :class="expenses.reduce((sum, exp) => sum + exp.amount, 0) <= {{ $trip->budget }} ? 'bg-green-500' : 'bg-red-500'"
+                                            :style="`width: ${Math.min((expenses.reduce((sum, exp) => sum + exp.amount, 0) / {{ $trip->budget }}) * 100, 100)}%`"
+                                            :aria-valuenow="Math.min((expenses.reduce((sum, exp) => sum + exp.amount, 0) / {{ $trip->budget }}) * 100, 100)"
+                                            aria-valuemin="0"
+                                            aria-valuemax="100"
+                                            role="progressbar"
+                                            aria-label="Total expenses progress"></div>
+                                   </div>
+                                   <div class="mt-2 flex justify-between items-center">
+                                       <p class="font-medium"
+                                          x-text="expenses.reduce((sum, exp) => sum + exp.amount, 0) <= {{ $trip->budget }} ? 'Within budget! Well Done 👏' : 'Over budget! 😕'"
+                                          :class="expenses.reduce((sum, exp) => sum + exp.amount, 0) <= {{ $trip->budget }} ? 'text-green-600' : 'text-red-600'">
+                                       </p>
+                                       <p class="font-medium text-gray-600" x-text="`${Math.min(Math.round((expenses.reduce((sum, exp) => sum + exp.amount, 0) / {{ $trip->budget }}) * 100), 100)}% of budget`"></p>
+                                   </div>
+                               </div>
+                           </div>
                         </li>
-                           @endforeach
-                            <!-- More trips... -->
+                        @endforeach
                         </ul>
                     </div>
 
@@ -217,3 +240,11 @@
         </div>
     </div>
 </div>
+
+<script>
+    function tripManager() {
+        return {
+            // Ovdje možete dodati dodatne funkcije ako su potrebne
+        }
+    }
+</script>
