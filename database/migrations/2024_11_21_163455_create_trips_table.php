@@ -19,6 +19,7 @@ return new class extends Migration
             $table->date('end_date');
             $table->integer('budget');
             $table->string('description');
+            $table->string('status')->default('active');
             $table->timestamps();
         });
     }

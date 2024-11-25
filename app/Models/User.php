@@ -50,9 +50,18 @@ class User extends Authenticatable
     {
         return $this->hasMany(Trip::class);
     }
+
     public function Lastexpenses()
     {
         $lastTrip = $this->trips()->latest()->first();
-       return $lasteExpenses = $lastTrip->expenses()->latest()->take(5)->get();
+
+        if (!$lastTrip) {
+            return collect(); // empty collection
+        }
+
+        $lastExpenses = $lastTrip->expenses()->latest()->take(5)->get();
+
+
+        return $lastExpenses->isNotEmpty() ? $lastExpenses : collect();
     }
 }
