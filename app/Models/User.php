@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Auth;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -50,18 +51,16 @@ class User extends Authenticatable
     {
         return $this->hasMany(Trip::class);
     }
-
     public function Lastexpenses()
     {
         $lastTrip = $this->trips()->latest()->first();
 
+        $lastTrip = $this->trips()->latest()->first();
+
         if (!$lastTrip) {
-            return collect(); // empty collection
+            return collect();
         }
 
-        $lastExpenses = $lastTrip->expenses()->latest()->take(5)->get();
-
-
-        return $lastExpenses->isNotEmpty() ? $lastExpenses : collect();
+        return $lastTrip->expenses;
     }
 }

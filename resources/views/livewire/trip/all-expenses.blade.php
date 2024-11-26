@@ -11,7 +11,7 @@
                 <div class="px-6 py-8 md:p-10">
                     <div class="flex flex-col md:flex-row justify-between items-center mb-6 space-y-4 md:space-y-0">
                         <div class="w-full md:w-1/3 relative">
-                            <input type="text" placeholder="Search expenses..."
+                            <input wire:model.live="search" type="text" placeholder="Search expenses..."
                                 class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg"
@@ -23,53 +23,48 @@
                             </div>
                         </div>
                         <div class="flex space-x-2">
-                            <select
+                            <select wire:model.live="selectedTrip"
                                 class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                                <option>All Trips</option>
-                                <option>Summer in Paris</option>
-                                <option>Tokyo Adventure</option>
-                                <option>New York Business Trip</option>
+                                <option value="">All Trips</option>
+                                @foreach($trips as $trip)
+                                    <option value="{{ $trip->id }}">{{ $trip->location }}</option>
+                                @endforeach
                             </select>
-                            <select
+                            <select wire:model.live="selectedCategory"
                                 class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                                <option>All Categories</option>
-                                <option>Food & Drinks</option>
-                                <option>Transportation</option>
-                                <option>Accommodation</option>
-                                <option>Activities</option>
-                                <option>Shopping</option>
-                                <option>Other</option>
+                                <option value="">All Categories</option>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
 
                     <div class="bg-white shadow overflow-hidden sm:rounded-md">
                         <ul class="divide-y divide-gray-200">
+                            @foreach($expenses as $expense)
                             <li>
                                 <div class="px-4 py-4 sm:px-6 hover:bg-gray-50 transition duration-150 ease-in-out">
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center">
-                                            <div
-                                                class="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                                                <svg class="h-6 w-6 text-indigo-600" xmlns="http://www.w3.org/2000/svg"
-                                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2"
-                                                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                                                </svg>
+                                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="text-indigo-600 h-6 w-6" viewBox="0 0 16 16">
+                                                    <path fill-rule="evenodd" d="M11 15a4 4 0 1 0 0-8 4 4 0 0 0 0 8m5-4a5 5 0 1 1-10 0 5 5 0 0 1 10 0"/>
+                                                    <path d="M9.438 11.944c.047.596.518 1.06 1.363 1.116v.44h.375v-.443c.875-.061 1.386-.529 1.386-1.207 0-.618-.39-.936-1.09-1.1l-.296-.07v-1.2c.376.043.614.248.671.532h.658c-.047-.575-.54-1.024-1.329-1.073V8.5h-.375v.45c-.747.073-1.255.522-1.255 1.158 0 .562.378.92 1.007 1.066l.248.061v1.272c-.384-.058-.639-.27-.696-.563h-.668zm1.36-1.354c-.369-.085-.569-.26-.569-.522 0-.294.216-.514.572-.578v1.1zm.432.746c.449.104.655.272.655.569 0 .339-.257.571-.709.614v-1.195z"/>
+                                                    <path d="M1 0a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h4.083q.088-.517.258-1H3a2 2 0 0 0-2-2V3a2 2 0 0 0 2-2h10a2 2 0 0 0 2 2v3.528c.38.34.717.728 1 1.154V1a1 1 0 0 0-1-1z"/>
+                                                    <path d="M9.998 5.083 10 5a2 2 0 1 0-3.132 1.65 6 6 0 0 1 3.13-1.567"/>
+                                                  </svg>
                                             </div>
                                             <div class="ml-4">
-                                                <h3 class="text-lg font-medium text-indigo-600">Dinner at Le
-                                                    Chateaubriand</h3>
-                                                <p class="text-sm text-gray-500">June 18, 2023 | Summer in Paris</p>
+                                                <h3 class="text-lg font-medium text-indigo-600">{{ $expense->title }}</h3>
+                                                <p class="text-sm text-gray-500">{{ $expense->date->format('F d, Y') }} | {{ $expense->trip->name }}</p>
                                             </div>
                                         </div>
                                         <div class="flex items-center">
-                                            <span
-                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                Food & Drinks
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                {{ $expense->category->name }}
                                             </span>
-                                            <span class="ml-4 text-lg font-medium text-gray-900">$180.00</span>
+                                            <span class="ml-4 text-lg font-medium text-gray-900">${{ number_format($expense->amount, 2) }}</span>
                                         </div>
                                     </div>
                                     <div class="mt-2 sm:flex sm:justify-between">
@@ -100,59 +95,7 @@
                                     </div>
                                 </div>
                             </li>
-                            <!-- More expenses... -->
-                            <li>
-                                <div class="px-4 py-4 sm:px-6 hover:bg-gray-50 transition duration-150 ease-in-out">
-                                    <div class="flex items-center justify-between">
-                                        <div class="flex items-center">
-                                            <div
-                                                class="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                                                <svg class="h-6 w-6 text-blue-600" xmlns="http://www.w3.org/2000/svg"
-                                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2"
-                                                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                </svg>
-                                            </div>
-                                            <div class="ml-4">
-                                                <h3 class="text-lg font-medium text-blue-600">Metro Tickets</h3>
-                                                <p class="text-sm text-gray-500">June 20, 2023 | Summer in Paris</p>
-                                            </div>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <span
-                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                                Transportation
-                                            </span>
-                                            <span class="ml-4 text-lg font-medium text-gray-900">$22.50</span>
-                                        </div>
-                                    </div>
-                                    <div class="mt-2 sm:flex sm:justify-between">
-                                        <div class="sm:flex">
-                                            <p class="flex items-center text-sm text-gray-500">
-                                                <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
-                                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                                                    fill="currentColor">
-                                                    <path fill-rule="evenodd"
-                                                        d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z"
-                                                        clip-rule="evenodd" />
-                                                </svg>
-                                                Paid with Cash
-                                            </p>
-                                        </div>
-                                        <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-                                            <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
-                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                                                fill="currentColor">
-                                                <path fill-rule="evenodd"
-                                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                                                    clip-rule="evenodd" />
-                                            </svg>
-                                            10-pack of metro tickets for city exploration
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
+                            @endforeach
                         </ul>
                     </div>
 
@@ -223,7 +166,7 @@
                                             <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg"
                                                 viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                                 <path fill-rule="evenodd"
-                                                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10l-3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
                                                     clip-rule="evenodd" />
                                             </svg>
                                         </a>

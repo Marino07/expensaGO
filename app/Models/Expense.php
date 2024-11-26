@@ -10,6 +10,10 @@ class Expense extends Model
     /** @use HasFactory<\Database\Factories\ExpenseFactory> */
     use HasFactory;
     protected $fillable = ['trip_id', 'title', 'amount', 'date', 'is_recurring', 'category_id'];
+    protected $casts = [
+        'date' => 'datetime',
+        'is_recurring' => 'boolean'
+    ];
     public function trip()
     {
         return $this->belongsTo(Trip::class);
