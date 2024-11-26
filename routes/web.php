@@ -18,7 +18,7 @@ Route::middleware('auth')->group(function () {
     Route::get('manage_trips', ManageTrips::class)->name('manage-trips');
     Route::get('all_expenses', AllExpenses::class)->name('all-expenses');
     Route::get('finish_trip/{trip}', EditTrip::class)->name('finish-trip');
-
+    Route::get('/restaurants', App\Livewire\Places\RestaurantFinder::class)->name('restaurants');
 });
 
 Route::view('profile', 'profile')
