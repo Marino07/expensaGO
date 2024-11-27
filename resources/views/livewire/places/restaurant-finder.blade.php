@@ -3,8 +3,8 @@
     <div class="max-w-7xl mx-auto">
         <div class="bg-white shadow-xl rounded-lg overflow-hidden">
             <div class="bg-gradient-to-r from-purple-500 to-indigo-600 px-6 py-8 md:p-10 text-white">
-                <h2 class="text-3xl font-extrabold tracking-tight">Zagreb Restaurants</h2>
-                <p class="mt-2 text-lg">Discover great places to eat in Zagreb</p>
+                <h2 class="text-3xl font-extrabold tracking-tight">{{$search}} Restaurants</h2>
+                <p class="mt-2 text-lg">Discover great places to eat in {{$search}}</p>
             </div>
 
             <div class="px-6 py-8 md:p-10">

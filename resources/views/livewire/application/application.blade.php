@@ -105,9 +105,11 @@
                     <div class="px-4 py-5 sm:p-6">
                         <div class="flex items-center">
                             <div class="flex-shrink-0 bg-white rounded-md p-3">
-                                <svg class="h-6 w-6 text-yellow-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-blue-400">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                                  </svg>
+
                             </div>
                             <div class="ml-5 w-0 flex-1">
                                 <dl>
@@ -123,8 +125,8 @@
                     </div>
                     <div class="bg-yellow-600 px-4 py-4 sm:px-6">
                         <div class="text-sm">
-                            <a href="#" class="font-medium text-white hover:text-yellow-100 transition ease-in-out duration-150">
-                                Review reports &rarr;
+                            <a href="{{route('restaurants')}}" class="font-medium text-white hover:text-yellow-100 transition ease-in-out duration-150">
+                                Search Best Places &rarr;
                             </a>
                         </div>
                     </div>

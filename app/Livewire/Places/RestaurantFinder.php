@@ -2,24 +2,28 @@
 
 namespace App\Livewire\Places;
 
+use App\Models\Trip;
 use Livewire\Component;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 
 class RestaurantFinder extends Component
 {
     public $restaurants = [];
-    public $search = 'Zagreb';
+    public $search;
     public $loading = false;
 
     public function mount()
     {
+        $trip = Trip::where('user_id', Auth::id())->latest()->first();
+        $this->search = $trip->location;
         $this->searchRestaurants();
     }
 
     public function searchRestaurants()
     {
         $this->loading = true;
-        $apiKey = env('GOOGLE_PLACES_API_KEY'); // app key for places and geo
+        $apiKey = env('GOOGLE_PLACES_API_KEY');  // we  need to set our own API key in .env file
 
         try {
             // First we  get location coordinates for Zagreb
