@@ -20,22 +20,36 @@ class RestaurantFinder extends Component
         $this->searchRestaurants();
     }
 
+    public function setUserLocation($lat, $lng)
+    {
+        $this->search = $this->getLocationName($lat, $lng);
+        $this->searchRestaurants();
+    }
+    public function getLocationName($lat, $lng)
+    {
+        $apiKey = env('GOOGLE_PLACES_API_KEY');  // we need to set our own API key in .env file
+        $geocodeUrl = "https://maps.googleapis.com/maps/api/geocode/json?latlng={$lat},{$lng}&key={$apiKey}";
+        $geocodeResponse = Http::get($geocodeUrl)->json();
+
+        if (isset($geocodeResponse['results'][0]['formatted_address'])) {
+            return $geocodeResponse['results'][0]['formatted_address'];
+        }
+
+        return "{$lat},{$lng}";
+    }
+
     public function searchRestaurants()
     {
         $this->loading = true;
         $apiKey = env('GOOGLE_PLACES_API_KEY');  // we  need to set our own API key in .env file
 
         try {
-            // First we  get location coordinates for Zagreb
+            // First we  get location coordinates for the search location
             $geocodeUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=".urlencode($this->search)."&key=".$apiKey;
             $geocodeResponse = Http::get($geocodeUrl)->json();
 
-            //dd('Geocode response received', $geocodeResponse);
-
             if (isset($geocodeResponse['results'][0]['geometry']['location'])) {
                 $location = $geocodeResponse['results'][0]['geometry']['location'];
-
-                //dd('Location found', $location);
 
                 // Then we  search for restaurants near that location
                 $placesUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?";
@@ -46,24 +60,16 @@ class RestaurantFinder extends Component
                     'key' => $apiKey
                 ];
 
-                // checking full url
                 $fullPlacesUrl = $placesUrl.http_build_query($params);
-                //dd('Places URL', $fullPlacesUrl);
-
                 $response = Http::get($fullPlacesUrl);
-
-                // checking all response
-                //dd('Places response', $response);
-
                 $response = $response->json();
-                //dd('Places response JSON', $response);
 
                 if (isset($response['results'])) {
                     $this->restaurants = $response['results'];
                 }
             }
         } catch (\Exception $e) {
-            dd('Exception caught', $e->getMessage());
+            // Handle exception
         }
 
         $this->loading = false;
