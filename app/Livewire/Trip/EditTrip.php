@@ -4,6 +4,7 @@ namespace App\Livewire\Trip;
 
 use App\Models\Trip;
 use Livewire\Component;
+use Illuminate\Support\Facades\Auth;
 
 class EditTrip extends Component
 {
@@ -20,6 +21,11 @@ class EditTrip extends Component
         'trip.description' => 'nullable|string',
         'trip.status' => 'required|in:active,completed',
     ];
+    public function logout()
+    {
+        Auth::logout(); // Odjava korisnika
+        return redirect('/'); // Preusmeravanje na početnu stranicu
+    }
 
     public function mount(Trip $trip)
     {

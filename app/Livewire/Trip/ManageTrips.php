@@ -4,9 +4,15 @@ namespace App\Livewire\Trip;
 
 use App\Models\Trip;
 use Livewire\Component;
+use Illuminate\Support\Facades\Auth;
 
 class ManageTrips extends Component
 {
+    public function logout()
+    {
+        Auth::logout(); // Odjava korisnika
+        return redirect('/'); // Preusmeravanje na početnu stranicu
+    }
     public function deleteTrip(Trip $trip)
     {
         $trip->delete();
@@ -25,6 +31,7 @@ class ManageTrips extends Component
             $query->where('status', 'active')
                   ->orWhere('status', 'completed');
         })
+        ->latest()
         ->get();
         return view('livewire.trip.manage-trips',compact('trips'))->layout('layouts.trip');
     }

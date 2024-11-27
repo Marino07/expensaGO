@@ -4,10 +4,16 @@
         <div class="max-w-7xl mx-auto">
             <div class="bg-white shadow-xl rounded-lg overflow-hidden">
                 <div class="bg-gradient-to-r from-purple-500 to-indigo-600 px-6 py-8 md:p-10 text-white">
-                    <h2 class="text-3xl font-extrabold tracking-tight">{{ $search }} near Restaurants</h2>
-                    <p class="mt-2 text-lg">Discover great places to eat near {{ $search }}</p>
-                    <button onclick="getLocation()" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded">Use My
-                        Location</button>
+                    <h2 class="text-3xl font-extrabold tracking-tight">{{ $search }} Restaurants</h2>
+                    <p class="mt-2 text-lg">Discover great places to eat in {{ $search }}</p>
+                    <button onclick="getLocation()" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded">Use My Location</button>
+
+                        <label for="sort" class="block text-sm font-medium text-white">Sort by:</label>
+                        <select id="sort" name="sort" wire:model="sortCriteria" wire:change="sortRestaurants" class="mt-1 block w-[150px] pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            <option value="rating">Rating</option>
+                            <option value="price">Price</option>
+                        </select>
+
                 </div>
 
                 <div class="px-6 py-8 md:p-10">

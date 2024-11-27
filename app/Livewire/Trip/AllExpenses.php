@@ -9,10 +9,17 @@ use Auth;
 
 class AllExpenses extends Component
 {
+
     public $search = '';
     public $selectedTrip = '';
     public $selectedCategory = '';
-    
+
+    public function logout()
+    {
+        Auth::logout(); // Odjava korisnika
+        return redirect('/'); // Preusmeravanje na početnu stranicu
+    }
+
     public function render()
     {
         $expenses = Auth::user()

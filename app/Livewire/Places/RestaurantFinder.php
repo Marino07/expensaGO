@@ -12,12 +12,20 @@ class RestaurantFinder extends Component
     public $restaurants = [];
     public $search;
     public $loading = false;
+    public $sortCriteria = 'rating';
+    public $var;
 
     public function mount()
     {
+        $this->var = 'test';
         $trip = Trip::where('user_id', Auth::id())->latest()->first();
         $this->search = $trip->location;
         $this->searchRestaurants();
+    }
+    public function logout()
+    {
+        Auth::logout(); // Odjava korisnika
+        return redirect('/'); // Preusmeravanje na početnu stranicu
     }
 
     public function setUserLocation($lat, $lng)
@@ -25,6 +33,7 @@ class RestaurantFinder extends Component
         $this->search = $this->getLocationName($lat, $lng);
         $this->searchRestaurants();
     }
+
     public function getLocationName($lat, $lng)
     {
         $apiKey = env('GOOGLE_PLACES_API_KEY');  // we need to set our own API key in .env file
@@ -41,17 +50,17 @@ class RestaurantFinder extends Component
     public function searchRestaurants()
     {
         $this->loading = true;
-        $apiKey = env('GOOGLE_PLACES_API_KEY');  // we  need to set our own API key in .env file
+        $apiKey = env('GOOGLE_PLACES_API_KEY');  // we need to set our own API key in .env file
 
         try {
-            // First we  get location coordinates for the search location
+            // First we get location coordinates for the search location
             $geocodeUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=".urlencode($this->search)."&key=".$apiKey;
             $geocodeResponse = Http::get($geocodeUrl)->json();
 
             if (isset($geocodeResponse['results'][0]['geometry']['location'])) {
                 $location = $geocodeResponse['results'][0]['geometry']['location'];
 
-                // Then we  search for restaurants near that location
+                // Then we search for restaurants near that location
                 $placesUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?";
                 $params = [
                     'location' => $location['lat'].','.$location['lng'],
@@ -66,6 +75,7 @@ class RestaurantFinder extends Component
 
                 if (isset($response['results'])) {
                     $this->restaurants = $response['results'];
+                    $this->sortRestaurants();
                 }
             }
         } catch (\Exception $e) {
@@ -73,6 +83,40 @@ class RestaurantFinder extends Component
         }
 
         $this->loading = false;
+    }
+
+    public function sortRestaurants()
+    {
+        usort($this->restaurants, function ($a, $b) {
+            $ratingA = $a['rating'] ?? 0;
+            $ratingB = $b['rating'] ?? 0;
+            $priceA = $a['price_level'] ?? PHP_INT_MAX;
+            $priceB = $b['price_level'] ?? PHP_INT_MAX;
+
+            if ($this->sortCriteria == 'rating') {
+                if ($ratingA == $ratingB) {
+                    return $priceA <=> $priceB;
+                }
+                return $ratingB <=> $ratingA;
+            } elseif ($this->sortCriteria == 'price') {
+                if ($priceA == $priceB) {
+                    return $ratingB <=> $ratingA;
+                }
+                return $priceA <=> $priceB;
+            }
+
+            return 0;
+        });
+    }
+
+    public function updatedSortCriteria()
+    {
+        $this->sortRestaurants();
+    }
+
+    public function test()
+    {
+        $this->var = 'test';
     }
 
     public function render()
