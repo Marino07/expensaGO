@@ -2,6 +2,7 @@
 
 use App\Livewire\Trip\AllExpenses;
 use App\Livewire\Trip\EditTrip;
+use App\Livewire\Trip\GeneratePlan;
 use App\Livewire\Trip\ManageTrips;
 use App\Livewire\Trip\StartTrip;
 use App\Livewire\Trip\NewExpense;
@@ -19,6 +20,7 @@ Route::middleware('auth')->group(function () {
     Route::get('all_expenses', AllExpenses::class)->name('all-expenses');
     Route::get('finish_trip/{trip}', EditTrip::class)->name('finish-trip');
     Route::get('/restaurants', App\Livewire\Places\RestaurantFinder::class)->name('restaurants');
+    Route::get('/generate_plan/{trip}', GeneratePlan::class)->name('generate-plan');
 });
 
 Route::view('profile', 'profile')

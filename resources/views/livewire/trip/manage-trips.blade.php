@@ -54,15 +54,17 @@
                                             <p class="text-sm text-gray-500">{{ \Carbon\Carbon::parse($trip->start_date)->format('d M Y') }} - {{ \Carbon\Carbon::parse($trip->end_date)->format('d M Y') }}</p>
                                         </div>
                                     </div>
-                                    @if ($trip->status === 'active')
+
                                     <div class="flex space-x-2">
                                         <button wire:click="finishTrip({{$trip->id}})" @click="showExpenses = true"
                                                 class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                             Finish Trip
                                         </button>
+                                        <a href="{{route('generate-plan',$trip->id)}}"
+                                            class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                        Mang
+                                    </a>
                                     </div>
-
-                                    @endif
 
                                 </div>
                                 <div class="mt-2 sm:flex sm:justify-between">
