@@ -50,6 +50,11 @@ class GeneratePlan extends Component
             return;
         }
 
+        // Sortiranje atrakcija prema broju recenzija
+        usort($attractions, function ($a, $b) {
+            return ($b['user_ratings_total'] ?? 0) <=> ($a['user_ratings_total'] ?? 0);
+        });
+
         // Generisanje plana za svaki dan
         $startDate = new \DateTime($this->trip->start_date);
         $endDate = new \DateTime($this->trip->end_date);
@@ -57,17 +62,27 @@ class GeneratePlan extends Component
 
         for ($i = 0; $i <= $interval; $i++) {
             $day = $startDate->modify('+1 day')->format('Y-m-d');
-            $attraction = $attractions[array_rand($attractions)];
-            $restaurant = $this->getNearbyRestaurant($attraction['geometry']['location']);
 
-            $this->plan[] = [
-                'day' => $day,
-                'attraction' => $attraction['name'],
-                'restaurant' => $restaurant['name'] ?? 'No restaurant found',
-                'walking_time' => $this->calculateWalkingTime($attraction['geometry']['location'], $restaurant['geometry']['location'] ?? null),
-                'attraction_cost' => rand(10, 50), // Pretpostavimo cenu ulaznice
-                'restaurant_cost' => rand(20, 100) // Pretpostavimo cenu obroka
-            ];
+            // Uzimamo dvije atrakcije po danu
+            for ($j = 0; $j < 2; $j++) {
+                $mostPopularAttraction = $attractions[($i * 2 + $j) % count($attractions)]; // Uzimamo atrakcije u krug
+                $restaurant = $this->getNearbyRestaurant($mostPopularAttraction['geometry']['location']);
+
+                // Uzimanje URL-a slike, ako postoji
+                $imageUrl = !empty($mostPopularAttraction['photos']) ?
+                    'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=' . $mostPopularAttraction['photos'][0]['photo_reference'] . '&key=' . env('GOOGLE_PLACES_API_KEY')
+                    : null;
+
+                $this->plan[] = [
+                    'day' => $day,
+                    'attraction' => $mostPopularAttraction['name'],
+                    'restaurant' => $restaurant['name'] ?? 'No restaurant found',
+                    'walking_time' => $this->calculateWalkingTime($mostPopularAttraction['geometry']['location'], $restaurant['geometry']['location'] ?? null),
+                    'attraction_cost' => rand(10, 50), // Pretpostavimo cenu ulaznice
+                    'restaurant_cost' => rand(20, 100), // Pretpostavimo cenu obroka
+                    'image_url' => $imageUrl // Dodajemo URL slike
+                ];
+            }
         }
     }
 
