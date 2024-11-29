@@ -25,6 +25,7 @@ class AllExpenses extends Component
         $expenses = Auth::user()
             ->trips()
             ->with(['expenses.category'])
+            ->latest()
             ->get()
             ->flatMap->expenses;
 

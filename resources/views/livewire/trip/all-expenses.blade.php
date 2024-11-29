@@ -79,7 +79,7 @@
                                                     <path
                                                         d="M9 11H3v5a2 2 0 002 2h4v-7zM11 18h4a2 2 0 002-2v-5h-6v7z" />
                                                 </svg>
-                                                Paid with Credit Card
+                                                Paid with Cash
                                             </p>
                                         </div>
                                         <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
