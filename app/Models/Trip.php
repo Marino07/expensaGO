@@ -19,5 +19,9 @@ class Trip extends Model
     {
         return $this->hasMany(Expense::class);
     }
+    public function events()
+    {
+        return $this->hasMany(LocalEvent::class);
+    }
 }
 

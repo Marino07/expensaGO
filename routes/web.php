@@ -1,14 +1,15 @@
 <?php
 
+use App\Livewire\SOSComponent;
 use App\Livewire\Trip\EditTrip;
 use App\Livewire\Trip\StartTrip;
 use App\Livewire\Trip\NewExpense;
 use App\Livewire\Trip\AllExpenses;
 use App\Livewire\Trip\ManageTrips;
 use App\Livewire\WelcomeComponent;
-use App\Livewire\SOSComponent;
 use App\Livewire\Trip\GeneratePlan;
 use Illuminate\Support\Facades\Route;
+use App\Livewire\Trip\ItineraryBuilder;
 use App\Livewire\Application\Application;
 use App\Livewire\Places\RestaurantFinder;
 
@@ -24,6 +25,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/restaurants', RestaurantFinder::class)->name('restaurants');
     Route::get('/generate_plan/{trip}', GeneratePlan::class)->name('generate-plan');
     Route::get('/sos', SOSComponent::class)->name('sos');
+    Route::get('/itinerary_builder/{trip}', ItineraryBuilder::class)->name('itinerary_builder');
 });
 
 Route::view('profile', 'profile')
