@@ -10,6 +10,7 @@ use App\Livewire\WelcomeComponent;
 use App\Livewire\Trip\GeneratePlan;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Trip\ItineraryBuilder;
+use App\Http\Controllers\PlaidController;
 use App\Livewire\Application\Application;
 use App\Livewire\Places\RestaurantFinder;
 
@@ -26,6 +27,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/generate_plan/{trip}', GeneratePlan::class)->name('generate-plan');
     Route::get('/sos', SOSComponent::class)->name('sos');
     Route::get('/itinerary_builder/{trip}', ItineraryBuilder::class)->name('itinerary_builder');
+    Route::post('/plaid/create-link-token', [PlaidController::class, 'createLinkToken']);
+    Route::post('/plaid/get-access-token', [PlaidController::class, 'getAccessToken']);
 });
 
 Route::view('profile', 'profile')

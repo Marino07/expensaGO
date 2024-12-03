@@ -228,6 +228,24 @@
                 </div>
             </div>
         </div>
+
+        <!-- New Section for Linking Bank Account -->
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+            <div class="px-4 py-5 sm:p-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Link Your Bank Account</h3>
+
+                @if(!auth()->user()->plaid_access_token)
+                    <button
+                        onclick="initPlaid()"
+                        class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    >
+                        Connect Bank Account
+                    </button>
+                @endif
+
+                <!-- Rest of your transactions view code -->
+            </div>
+        </div>
     </main>
     <x-footer />
 </div>
@@ -327,5 +345,44 @@
             console.error('Error initializing doughnut chart:', error);
         }
     });
+
+    function initPlaid() {
+        // First get a link token
+        fetch('/plaid/create-link-token', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const handler = Plaid.create({
+                token: data.link_token,
+                onSuccess: (public_token, metadata) => {
+                    // Send public_token to server
+                    fetch('/plaid/get-access-token', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: JSON.stringify({ public_token })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if(data.success) {
+                            window.location.reload();
+                        }
+                    });
+                },
+                onExit: (err, metadata) => {
+                    if (err != null) console.error(err);
+                }
+            });
+            handler.open();
+        });
+    }
 </script>
+<script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
 @endpush

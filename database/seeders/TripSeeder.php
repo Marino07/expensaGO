@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Trip;
+use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class TripSeeder extends Seeder
 {
@@ -12,6 +14,6 @@ class TripSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+      
     }
 }
