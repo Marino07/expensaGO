@@ -55,21 +55,56 @@ class PlaidController extends Controller
 
     public function getAccessToken(Request $request)
     {
-        $response = Http::post('https://sandbox.plaid.com/item/public_token/exchange', [
-            'client_id' => $this->clientId,
-            'secret' => $this->secret,
-            'public_token' => $request->public_token
-        ]);
-
-        if ($response->successful()) {
-            // Store this access_token securely for the user
-            auth()->user()->update([
-                'plaid_access_token' => $response->json()['access_token']
+        try {
+            $response = Http::post("https://{$this->environment}.plaid.com/item/public_token/exchange", [
+                'client_id' => $this->clientId,
+                'secret' => $this->secret,
+                'public_token' => $request->public_token
             ]);
 
-            return response()->json(['success' => true]);
-        }
+            if ($response->successful()) {
+                $data = $response->json();
 
-        return response()->json(['success' => false], 400);
+                // Explicitly log the response to debug
+                \Log::info('Plaid access token response:', $data);
+
+                // Update user with access token
+                auth()->user()->update([
+                    'plaid_access_token' => $data['access_token']
+                ]);
+
+                return response()->json(['success' => true]);
+            }
+
+            \Log::error('Plaid error:', $response->json());
+            return response()->json(['success' => false, 'error' => 'Failed to exchange token'], 400);
+
+        } catch (\Exception $e) {
+            \Log::error('Plaid exception:', ['error' => $e->getMessage()]);
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getTransactions()
+    {
+        try {
+            $response = Http::post("https://{$this->environment}.plaid.com/transactions/get", [
+                'client_id' => $this->clientId,
+                'secret' => $this->secret,
+                'access_token' => auth()->user()->plaid_access_token,
+                'start_date' => '2024-01-01',
+                'end_date' => date('Y-m-d')
+            ]);
+
+            if ($response->successful()) {
+                \Log::info('Plaid transactions:', $response->json());
+                return response()->json($response->json());
+            }
+
+            return response()->json(['error' => 'Failed to fetch transactions'], 400);
+        } catch (\Exception $e) {
+            \Log::error('Plaid transaction error:', ['error' => $e->getMessage()]);
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 }

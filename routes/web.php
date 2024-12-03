@@ -29,6 +29,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/itinerary_builder/{trip}', ItineraryBuilder::class)->name('itinerary_builder');
     Route::post('/plaid/create-link-token', [PlaidController::class, 'createLinkToken']);
     Route::post('/plaid/get-access-token', [PlaidController::class, 'getAccessToken']);
+    Route::get('/plaid/transactions', [PlaidController::class, 'getTransactions'])->middleware('auth');
 });
 
 Route::view('profile', 'profile')
