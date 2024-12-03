@@ -130,11 +130,18 @@
             </div>
         </div>
 
-        <!-- Novi odjeljak za grafikon troškova -->
+        <!-- Replace the two separate chart divs with this new layout -->
         <div class="mt-8">
-            <h2 class="text-2xl font-semibold text-gray-900 mb-4">Pregled troškova</h2>
-            <div class="bg-white shadow-lg rounded-lg overflow-hidden border border-blue-100 p-4">
-                <canvas id="expenseChart" class="w-full" style="height: 400px;"></canvas> <!-- dodana visina -->
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">Expense Analytics</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Bar Chart -->
+                <div class="bg-white shadow-lg rounded-lg overflow-hidden border border-blue-100 p-4">
+                    <canvas id="expenseChart" class="w-full" style="height: 300px;"></canvas>
+                </div>
+                <!-- Doughnut Chart -->
+                <div class="bg-white shadow-lg rounded-lg overflow-hidden border border-blue-100 p-4">
+                    <canvas id="expenseChart2" class="w-full" style="height: 300px;"></canvas>
+                </div>
             </div>
         </div>
 
@@ -228,11 +235,10 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Bar Chart with adjusted options for smaller size
         try {
             var ctx = document.getElementById('expenseChart').getContext('2d');
-
-            // Create gradient
-            var gradientFill = ctx.createLinearGradient(0, 0, 0, 400);
+            var gradientFill = ctx.createLinearGradient(0, 0, 0, 300);
             gradientFill.addColorStop(0, 'rgba(75, 192, 192, 0.6)');
             gradientFill.addColorStop(1, 'rgba(75, 192, 192, 0.1)');
 
@@ -242,7 +248,7 @@
                     labels: ['Budget', 'All Expenses'],
                     datasets: [{
                         label: 'Amount in $',
-                        data: [{{ $Budget }}, {{ $AllExpenses }}], // Ovdje su povezani podaci
+                        data: [{{ $Budget }}, {{ $AllExpenses }}],
                         backgroundColor: [gradientFill, 'rgba(255, 99, 132, 0.6)'],
                         borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],
                         borderWidth: 2,
@@ -256,67 +262,70 @@
                     scales: {
                         y: {
                             beginAtZero: true,
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.05)',
-                                borderDash: [5, 5]
-                            },
                             ticks: {
-                                font: {
-                                    size: 14
-                                },
-                                color: 'rgba(0, 0, 0, 0.6)'
+                                font: { size: 11 }
                             }
                         },
                         x: {
-                            grid: {
-                                display: false
-                            },
                             ticks: {
-                                font: {
-                                    size: 14
-                                },
-                                color: 'rgba(0, 0, 0, 0.6)'
+                                font: { size: 11 }
                             }
                         }
                     },
                     plugins: {
-                        legend: {
-                            display: false
-                        },
+                        legend: { display: false },
                         title: {
                             display: true,
-                            text: 'Expenses Overview',
-                            font: {
-                                size: 20,
-                                weight: 'bold'
-                            },
-                            color: 'rgba(0, 0, 0, 0.8)',
-                            padding: {
-                                top: 10,
-                                bottom: 30
-                            }
-                        },
-                        tooltip: {
-                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                            titleFont: {
-                                size: 16
-                            },
-                            bodyFont: {
-                                size: 14
-                            },
-                            padding: 12,
-                            cornerRadius: 5
+                            text: 'Budget vs Expenses',
+                            font: { size: 16 },
+                            padding: { top: 5, bottom: 15 }
                         }
-                    },
-                    animation: {
-                        duration: 2000,
-                        easing: 'easeOutQuart'
                     }
                 }
             });
         } catch (error) {
-            console.error('Error initializing chart:', error);
+            console.error('Error initializing bar chart:', error);
+        }
+
+        // Doughnut Chart with adjusted options
+        try {
+            var ctx2 = document.getElementById('expenseChart2').getContext('2d');
+            new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Food', 'Transport', 'Accommodation', 'Entertainment', 'Other'],
+                    datasets: [{
+                        data: [300, 150, 500, 250, 100],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.8)',
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(255, 206, 86, 0.8)',
+                            'rgba(75, 192, 192, 0.8)',
+                            'rgba(153, 102, 255, 0.8)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: { font: { size: 11 } }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Expenses by Category',
+                            font: { size: 16 },
+                            padding: { top: 5, bottom: 15 }
+                        }
+                    }
+                }
+            });
+        } catch (error) {
+            console.error('Error initializing doughnut chart:', error);
         }
     });
-    </script>
+</script>
 @endpush
