@@ -230,17 +230,33 @@
         </div>
 
         <!-- New Section for Linking Bank Account -->
-        <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-            <div class="px-4 py-5 sm:p-6">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">Link Your Bank Account</h3>
+        <div id="plaidon" class="bg-white shadow-lg rounded-lg overflow-hidden">
+            <div class="px-6 py-8">
+                <div class="flex items-center mb-6">
+                    <svg class="w-8 h-8 text-blue-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                    </svg>
+                    <h3 class="text-2xl font-semibold text-gray-900">Linked Bank Account</h3>
+                </div>
 
                 @if(!auth()->user()->plaid_access_token)
+                    <p class="text-gray-600 mb-6">Connect your bank account to start managing your finances.</p>
                     <button
                         onclick="initPlaid()"
-                        class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                        class="w-full sm:w-auto px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300 ease-in-out flex items-center justify-center"
                     >
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
                         Connect Bank Account
                     </button>
+                @else
+                    <p class="text-green-600 flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Your bank account is connected
+                    </p>
                 @endif
 
                 <!-- Rest of your transactions view code -->
@@ -384,5 +400,67 @@
         });
     }
 </script>
-<script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+<script>
+    function initPlaid() {
+        fetch('/plaid/create-link-token', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error('Error:', data.error);
+                alert('Failed to initialize Plaid. Please try again later.');
+                return;
+            }
+
+            const handler = Plaid.create({
+                token: data.link_token,
+                onSuccess: async (public_token, metadata) => {
+                    try {
+                        const response = await fetch('/plaid/get-access-token', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                            },
+                            body: JSON.stringify({ public_token })
+                        });
+
+                        const data = await response.json();
+                        if (data.success) {
+                            window.location.reload();
+                        } else {
+                            throw new Error('Failed to exchange token');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('Failed to connect bank account. Please try again.');
+                    }
+                },
+                onExit: (err, metadata) => {
+                    if (err != null) {
+                        console.error('Plaid Error:', err);
+                    }
+                },
+                onLoad: () => {
+                    // Optional: Add loading state handling
+                },
+                onEvent: (eventName, metadata) => {
+                    // Optional: Track events
+                    console.log('Plaid Event:', eventName, metadata);
+                }
+            });
+
+            handler.open();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to initialize Plaid. Please try again later.');
+        });
+    }
+</script>
 @endpush
