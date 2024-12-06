@@ -129,7 +129,7 @@
                 </div>
             </div>
         </div>
-
+        @if ($hasExpenses)
         <!-- Replace the two separate chart divs with this new layout -->
         <div class="mt-8">
             <h2 class="text-2xl font-semibold text-gray-900 mb-4">Expense Analytics</h2>
@@ -144,6 +144,8 @@
                 </div>
             </div>
         </div>
+        @endif
+
 
         <!-- Quick Actions -->
         <div class="mt-8">
@@ -230,13 +232,13 @@
         </div>
 
         <!-- New Section for Linking Bank Account -->
-        <div id="plaidon" class="bg-white shadow-lg rounded-lg overflow-hidden">
+        <div id="plaidon" class="bg-white shadow-lg rounded-lg overflow-hidden mt-4">
             <div class="px-6 py-8">
                 <div class="flex items-center mb-6">
                     <svg class="w-8 h-8 text-blue-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
                     </svg>
-                    <h3 class="text-2xl font-semibold text-gray-900">Linked Bank Account</h3>
+                    <h3 class="text-2xl font-semibold text-gray-900">Bank Account</h3>
                 </div>
 
                 @if(!auth()->user()->plaid_access_token)
@@ -327,14 +329,14 @@
             new Chart(ctx2, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Food', 'Transport', 'Accommodation', 'Entertainment', 'Other'],
+                    labels: @json($categoryNames),
                     datasets: [{
-                        data: [300, 150, 500, 250, 100],
+                        data: @json($categoryExpenses),
                         backgroundColor: [
+                            'rgba(75, 192, 192, 0.8)',
                             'rgba(255, 99, 132, 0.8)',
                             'rgba(54, 162, 235, 0.8)',
                             'rgba(255, 206, 86, 0.8)',
-                            'rgba(75, 192, 192, 0.8)',
                             'rgba(153, 102, 255, 0.8)'
                         ],
                         borderWidth: 1
@@ -362,45 +364,6 @@
         }
     });
 
-    function initPlaid() {
-        // First get a link token
-        fetch('/plaid/create-link-token', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            const handler = Plaid.create({
-                token: data.link_token,
-                onSuccess: (public_token, metadata) => {
-                    // Send public_token to server
-                    fetch('/plaid/get-access-token', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                        },
-                        body: JSON.stringify({ public_token })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if(data.success) {
-                            window.location.reload();
-                        }
-                    });
-                },
-                onExit: (err, metadata) => {
-                    if (err != null) console.error(err);
-                }
-            });
-            handler.open();
-        });
-    }
-</script>
-<script>
     function initPlaid() {
         fetch('/plaid/create-link-token', {
             method: 'POST',

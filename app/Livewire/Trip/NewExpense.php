@@ -41,6 +41,12 @@ class NewExpense extends Component
             'category_id' => $this->category_id,
         ]);
 
+        // Attach the category to the trip if it's not already attached
+        $trip = Trip::find($this->tripId);
+        if (!$trip->categories()->where('category_id', $this->category_id)->exists()) {
+            $trip->categories()->attach($this->category_id);
+        }
+
         session()->flash('message', 'Expense added successfully.');
         return redirect()->route('new-expense');
     }

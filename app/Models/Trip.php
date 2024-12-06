@@ -23,5 +23,9 @@ class Trip extends Model
     {
         return $this->hasMany(LocalEvent::class);
     }
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'trip_category');
+    }
 }
 
