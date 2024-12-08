@@ -31,14 +31,16 @@ class Application extends Component
             if ($expenses > 0) {
                 $this->hasExpenses = true;
                 $this->categoryExpenses[] = $expenses;
-                $this->categoryNames[] = $category->name;
+                if (!in_array($category->name, $this->categoryNames)) {
+                    $this->categoryNames[] = $category->name;
+                }
             }
         }
 
         // Ako nema troškova, postavi default vrednosti
         if (!$this->hasExpenses) {
             $this->categoryNames = ['No Expenses Yet'];
-            $this->categoryExpenses = [100];
+            $this->categoryExpenses = [10];
         }
     }
 

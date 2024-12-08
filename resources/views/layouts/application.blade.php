@@ -19,7 +19,6 @@
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
 
-
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
@@ -27,9 +26,10 @@
     <body>
 
         {{$slot}}
+        @stack('scripts')
         <!-- Scripts -->
         @livewireScripts
-        @stack('scripts')
+
 
     </body>
 </html>
