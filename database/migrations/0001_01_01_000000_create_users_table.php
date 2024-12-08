@@ -20,6 +20,8 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
             $table->string('plaid_access_token')->nullable();
+            $table->json('preferences')->nullable();
+            $table->boolean('has_completed_questionnaire')->default(false);
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

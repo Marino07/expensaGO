@@ -16,7 +16,7 @@ class Application extends Component
     public $expenseCategory;
     public $categoryExpenses = [];
     public $categoryNames = [];
-    public $hasExpenses = false; // Dodajemo ovu property
+    public $hasExpenses = false;
 
     public function mount()
     {
@@ -37,7 +37,6 @@ class Application extends Component
             }
         }
 
-        // Ako nema troškova, postavi default vrednosti
         if (!$this->hasExpenses) {
             $this->categoryNames = ['No Expenses Yet'];
             $this->categoryExpenses = [10];
@@ -46,8 +45,8 @@ class Application extends Component
 
     public function logout()
     {
-        Auth::logout(); // Odjava korisnika
-        return redirect('/'); // Preusmeravanje na početnu stranicu
+        Auth::logout();
+        return redirect('/');
     }
 
     public function render()

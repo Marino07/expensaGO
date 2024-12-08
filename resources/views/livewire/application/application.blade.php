@@ -38,6 +38,8 @@
     <x-barapp />
 
     <main class="flex-grow container mx-auto my-3 px-4 sm:px-6 lg:px-8 py-8 bg-blue-50 rounded-lg shadow-inner">
+        <livewire:components.first-visit-questionnaire />
+
         <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             <!-- Total Expenses Card -->
             <div class="bg-gradient-to-br from-blue-400 to-indigo-600 rounded-lg shadow-lg overflow-hidden">

@@ -45,6 +45,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'has_completed_questionnaire' => 'boolean',
+
         ];
     }
 
@@ -63,5 +65,10 @@ class User extends Authenticatable
         }
 
         return $lastTrip->expenses;
+    }
+
+    public function preferences()
+    {
+        return $this->hasOne(UserPreference::class);
     }
 }
