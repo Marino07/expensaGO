@@ -21,25 +21,36 @@ class Application extends Component
     public function mount()
     {
         $trip = Trip::where('user_id', Auth::user()->id)->latest()->first();
+        if (!$trip) {
+            return redirect('/trips');
+        }
+
         $this->Budget = $trip->budget;
         $this->AllExpenses = $trip->expenses->sum('amount');
-        $this->categories = $trip->categories;
 
-        // Calculate expenses for each category
-        foreach ($this->categories as $category) {
-            $expenses = $trip->expenses()->where('category_id', $category->id)->sum('amount');
-            if ($expenses > 0) {
+        // Get categories that have expenses for this specific trip
+        $expensesByCategory = $trip->expenses()
+            ->select('category_id')
+            ->selectRaw('SUM(amount) as total_amount')
+            ->groupBy('category_id')
+            ->with('category')
+            ->get();
+
+        // Reset arrays
+        $this->categoryExpenses = [];
+        $this->categoryNames = [];
+
+        foreach ($expensesByCategory as $expense) {
+            if ($expense->total_amount > 0) {
                 $this->hasExpenses = true;
-                $this->categoryExpenses[] = $expenses;
-                if (!in_array($category->name, $this->categoryNames)) {
-                    $this->categoryNames[] = $category->name;
-                }
+                $this->categoryExpenses[] = $expense->total_amount;
+                $this->categoryNames[] = $expense->category->name;
             }
         }
 
         if (!$this->hasExpenses) {
             $this->categoryNames = ['No Expenses Yet'];
-            $this->categoryExpenses = [10];
+            $this->categoryExpenses = [0];
         }
     }
 

@@ -38,7 +38,7 @@
                     <div class="bg-white shadow overflow-hidden sm:rounded-md">
                         <ul class="divide-y divide-gray-200">
                            @foreach ($trips as $trip)
-                           <li x-data="{ showExpenses: false, expenses: {{ json_encode($trip->expenses) }} }">
+                           <li x-data="{ showExpenses: false, expenses: {{ json_encode($trip->expenses()->take(3)->latest()->get()) }} }">
                             <div class="px-4 py-4 sm:px-6">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center">

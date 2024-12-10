@@ -56,14 +56,11 @@ class User extends Authenticatable
     }
     public function Lastexpenses()
     {
-        $lastTrip = $this->trips()->latest()->first();
-
-        $lastTrip = $this->trips()->latest()->first();
+        $lastTrip = Trip::where('user_id',auth()->id())->latest()->first();
 
         if (!$lastTrip) {
             return collect();
         }
-
         return $lastTrip->expenses;
     }
 
