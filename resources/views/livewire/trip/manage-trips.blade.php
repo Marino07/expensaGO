@@ -38,7 +38,7 @@
                     <div class="bg-white shadow overflow-hidden sm:rounded-md">
                         <ul class="divide-y divide-gray-200">
                            @foreach ($trips as $trip)
-                           <li x-data="{ showExpenses: false, expenses: {{ json_encode($trip->expenses()->take(3)->latest()->get()) }} }">
+                           <li x-data="{ showExpenses: false, expenses: {{ json_encode($trip->expenses)}} }">
                             <div class="px-4 py-4 sm:px-6">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center">
@@ -97,58 +97,60 @@
 
                                 <!-- Dodajemo prikaz troškova -->
                                 <div x-show="showExpenses"
-                                x-transition:enter="transition ease-out duration-300"
-                                x-transition:enter-start="opacity-0 transform translate-x-full"
-                                x-transition:enter-end="opacity-100 transform translate-x-0"
-                                class="mt-6 bg-white p-6 rounded-lg shadow-md">
-                                <h4 class=" flex justify-center text-xl font-semibold mb-4 text-blue-400">We hope you enjoy 😊</h4>
-                               <h4 class="text-xl font-semibold mb-4 text-indigo-700">Trip Expenses</h4>
-                               <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-                                   <template x-for="expense in expenses" :key="expense.id">
-                                       <div class="bg-gray-50 p-4 rounded-lg shadow-sm transition duration-300 ease-in-out transform hover:scale-105">
-                                           <div class="flex justify-between items-center mb-2">
-                                               <p x-text="expense.title" class="font-medium text-gray-800"></p>
-                                               <span x-text="'$' + expense.amount.toFixed(2)" class="text-indigo-600 font-semibold"></span>
-                                           </div>
-                                           <div class="mt-2">
-                                               <p class="text-sm text-gray-600 mb-1" x-text="expense.title"></p>
-                                               <div class="h-2 bg-indigo-200 rounded-full overflow-hidden">
-                                                   <div class="h-2 bg-indigo-600 rounded-full"
-                                                        :style="`width: ${Math.min((expense.amount / trip.budget) * 100, 100)}%`"
-                                                        :aria-valuenow="Math.min((expense.amount / trip.budget) * 100, 100)"
-                                                        aria-valuemin="0"
-                                                        aria-valuemax="100"
-                                                        role="progressbar"
-                                                        :aria-label="`${expense.title} expense progress`"></div>
-                                               </div>
-                                           </div>
-                                       </div>
-                                   </template>
-                               </div>
-                               <div class="bg-gray-100 p-4 rounded-lg">
-                                   <div class="flex justify-between items-center mb-2">
-                                       <p class="text-lg font-semibold text-gray-800">Total Expenses:</p>
-                                       <p class="text-xl font-bold text-indigo-700" x-text="'$' + expenses.reduce((sum, exp) => sum + exp.amount, 0).toFixed(2)"></p>
-                                   </div>
-                                   <div class="h-4 bg-gray-300 rounded-full overflow-hidden">
-                                       <div class="h-4 rounded-full transition-all duration-500 ease-in-out"
-                                            :class="expenses.reduce((sum, exp) => sum + exp.amount, 0) <= {{ $trip->budget }} ? 'bg-green-500' : 'bg-red-500'"
-                                            :style="`width: ${Math.min((expenses.reduce((sum, exp) => sum + exp.amount, 0) / {{ $trip->budget }}) * 100, 100)}%`"
-                                            :aria-valuenow="Math.min((expenses.reduce((sum, exp) => sum + exp.amount, 0) / {{ $trip->budget }}) * 100, 100)"
-                                            aria-valuemin="0"
-                                            aria-valuemax="100"
-                                            role="progressbar"
-                                            aria-label="Total expenses progress"></div>
-                                   </div>
-                                   <div class="mt-2 flex justify-between items-center">
-                                       <p class="font-medium"
-                                          x-text="expenses.reduce((sum, exp) => sum + exp.amount, 0) <= {{ $trip->budget }} ? 'Within budget! Well Done 👏' : 'Over budget! 😕'"
-                                          :class="expenses.reduce((sum, exp) => sum + exp.amount, 0) <= {{ $trip->budget }} ? 'text-green-600' : 'text-red-600'">
-                                       </p>
-                                       <p class="font-medium text-gray-600" x-text="`${Math.min(Math.round((expenses.reduce((sum, exp) => sum + exp.amount, 0) / {{ $trip->budget }}) * 100), 100)}% of budget`"></p>
-                                   </div>
-                               </div>
-                           </div>
+                                    x-transition:enter="transition ease-out duration-300"
+                                    x-transition:enter-start="opacity-0 transform translate-x-full"
+                                    x-transition:enter-end="opacity-100 transform translate-x-0"
+                                    class="mt-6 bg-white p-6 rounded-lg shadow-md">
+                                    <h4 class="flex justify-center text-xl font-semibold mb-4 text-blue-400">We hope you enjoy 😊</h4>
+                                    <h4 class="text-xl font-semibold mb-4 text-indigo-700">Recent Expenses</h4>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+                                        <template x-for="expense in expenses.slice(-3).reverse()" :key="expense.id">
+                                            <div class="bg-gray-50 p-4 rounded-lg shadow-sm transition duration-300 ease-in-out transform hover:scale-105">
+                                                <div class="flex justify-between items-center mb-2">
+                                                    <p x-text="expense.title.length > 20 ? expense.title.substring(0, 20) + '...' : expense.title"
+                                                    class="font-medium text-gray-800"></p>
+                                                    <span x-text="'$' + expense.amount.toFixed(2)" class="text-indigo-600 font-semibold"></span>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <p class="text-sm text-gray-600 mb-1 truncate" x-text="expense.title"></p>
+                                                    <div class="h-2 bg-indigo-200 rounded-full overflow-hidden">
+                                                        <div class="h-2 bg-indigo-600 rounded-full"
+                                                            :style="`width: ${Math.min((expense.amount / {{$trip->budget}}) * 100, 100)}%`"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    <div class="bg-gray-100 p-4 rounded-lg">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <p class="text-lg font-semibold text-gray-800">Total Expenses:</p>
+                                            <p class="text-xl font-bold text-indigo-700"
+                                            x-text="'$' + expenses.reduce((sum, exp) => sum + exp.amount, 0).toFixed(2)"></p>
+                                        </div>
+                                        <!-- Budget Progress Bar -->
+                                        <div class="mt-4">
+                                            <!-- Within Budget Bar -->
+                                            <div class="h-4 bg-gray-200 rounded-full overflow-hidden mb-2">
+                                                <div class="h-4 bg-green-500 rounded-full transition-all duration-500"
+                                                    :style="`width: ${Math.min((expenses.reduce((sum, exp) => sum + exp.amount, 0) / {{$trip->budget}}) * 100, 100)}%`"></div>
+                                            </div>
+                                            <!-- Over Budget Bar (only shows if over budget) -->
+                                            <div x-show="expenses.reduce((sum, exp) => sum + exp.amount, 0) > {{$trip->budget}}"
+                                                class="h-4 bg-gray-200 rounded-full overflow-hidden">
+                                                <div class="h-4 bg-red-500 rounded-full transition-all duration-500"
+                                                    :style="`width: ${Math.max(((expenses.reduce((sum, exp) => sum + exp.amount, 0) - {{$trip->budget}}) / {{$trip->budget}}) * 100, 0)}%`"></div>
+                                            </div>
+                                        </div>
+                                        <div class="mt-2 flex justify-between items-center">
+                                            <p class="font-medium"
+                                            x-text="expenses.reduce((sum, exp) => sum + exp.amount, 0) <= {{$trip->budget}} ? 'Within budget! Well Done 👏' : 'Over budget! 😕'"
+                                            :class="expenses.reduce((sum, exp) => sum + exp.amount, 0) <= {{$trip->budget}} ? 'text-green-600' : 'text-red-600'"></p>
+                                            <p class="font-medium text-gray-600"
+                                            x-text="`${Math.round((expenses.reduce((sum, exp) => sum + exp.amount, 0) / {{$trip->budget}}) * 100)}% of budget`"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </li>
                         @endforeach
                         </ul>
