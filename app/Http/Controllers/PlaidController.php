@@ -70,7 +70,9 @@ class PlaidController extends Controller
 
                 // Update user with access token
                 auth()->user()->update([
-                    'plaid_access_token' => $data['access_token']
+                    'plaid_access_token' => $data['access_token'],
+                    'plaid_item_id' => $data['item_id'],
+                    'plaid_cursor' => $data['cursor'] ?? null // Assuming cursor might be optional
                 ]);
 
                 return response()->json(['success' => true]);

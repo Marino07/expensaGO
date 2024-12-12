@@ -22,7 +22,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'plaid_access_token'
+        'plaid_access_token',
+        'plaid_item_id',
+        'plaid_cursor'
     ];
 
     /**

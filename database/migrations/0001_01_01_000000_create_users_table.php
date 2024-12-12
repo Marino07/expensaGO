@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('plaid_access_token')->nullable();
             $table->json('preferences')->nullable();
             $table->boolean('has_completed_questionnaire')->default(false);
+            $table->string('plaid_item_id')->nullable();
+            $table->string('plaid_cursor')->nullable();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
@@ -48,5 +50,9 @@ return new class extends Migration
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn(['plaid_access_token', 'plaid_item_id', 'plaid_cursor']);
+        });
     }
 };
