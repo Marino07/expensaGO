@@ -29,11 +29,16 @@ class SyncPlaidTransactions implements ShouldQueue
     {
         Log::info('Starting SyncPlaidTransactions job for user:', ['user_id' => $this->user->id]);
 
+        // Initialize cursor if null
+        $cursor = $this->user->plaid_cursor ?? '';
+
+        Log::info('Current plaid_cursor:', ['plaid_cursor' => $cursor]);
+
         $response = Http::post("https://" . env('PLAID_ENV') . ".plaid.com/transactions/sync", [
             'client_id' => env('PLAID_CLIENT_ID'),
             'secret' => env('PLAID_SECRET'),
             'access_token' => $this->user->plaid_access_token,
-            'cursor' => $this->user->plaid_cursor
+            'cursor' => $cursor
         ]);
 
         if ($response->successful()) {
@@ -42,14 +47,27 @@ class SyncPlaidTransactions implements ShouldQueue
             // Log the response for debugging
             Log::info('Plaid sync response:', $data);
 
+            // Check if next_cursor exists in the response
+            if (isset($data['next_cursor'])) {
+                Log::info('Next cursor found in response:', ['next_cursor' => $data['next_cursor']]);
+            } else {
+                Log::warning('Next cursor not found in response.');
+            }
+
             // Process new transactions
             foreach ($data['added'] as $transaction) {
+                Log::info('Processing transaction ID:', ['transaction_id' => $transaction['transaction_id']]);
                 $this->processTransaction($transaction);
             }
 
             // Update cursor
-            $this->user->update(['plaid_cursor' => $data['next_cursor']]);
-            Log::info('Updated plaid_cursor for user:', ['user_id' => $this->user->id, 'next_cursor' => $data['next_cursor']]);
+            $this->user->plaid_cursor = $data['next_cursor'];
+            $this->user->name = 'marino';
+            if ($this->user->save()) {
+                Log::info('Updated plaid_cursor for user:', ['user_id' => $this->user->id, 'next_cursor' => $data['next_cursor']]);
+            } else {
+                Log::error('Failed to update plaid_cursor for user:', ['user_id' => $this->user->id]);
+            }
         } else {
             Log::error('Plaid sync error:', $response->json());
         }
@@ -61,7 +79,7 @@ class SyncPlaidTransactions implements ShouldQueue
 
         // Skip transfers
         if (in_array('Transfer', $transaction['category'] ?? [])) {
-            Log::info('Skipping transfer transaction:', $transaction['transaction_id']);
+            Log::info('Skipping transfer transaction:', ['transaction_id' => $transaction['transaction_id']]);
             return;
         }
 
@@ -70,16 +88,16 @@ class SyncPlaidTransactions implements ShouldQueue
             'name' => $transaction['category'][0] ?? 'Other'
         ]);
 
-        // Create expense
+        // Create expense with simplified title
         $expense = Expense::create([
             'user_id' => $this->user->id,
-            'trip_id' => 1 ,
-            'title' => $transaction['name'],
+            'trip_id' => 1,
+            'title' => $transaction['merchant_name'] ?? $transaction['name'],
             'amount' => $transaction['amount'],
-            'category_id' => 1,
+            'category_id' => $category->id,
             'date' => $transaction['date'],
         ]);
 
-        Log::info('Expense created:', $expense);
+        Log::info('Expense created:', $expense->toArray());
     }
 }
