@@ -37,6 +37,25 @@
     @endif
     <x-barapp />
 
+    <!-- Enhanced Transaction Slider -->
+    <div x-data="transactionSlider()"
+         class="bg-[#b7f7f2] text-black p-1 shadow-lg  overflow-hidden"
+         style="margin-top: 0.0rem;">
+        <div class="relative h-14 overflow-hidden">
+            <div class="absolute inset-0 flex items-center">
+                <div class="animate-slide-left whitespace-nowrap flex items-center space-x-6" x-ref="slider">
+                    <template x-for="transaction in transactions" :key="transaction.id">
+                        <div class="inline-flex items-center space-x-2 bg-white bg-opacity-20 rounded-full px-4 py-2 transition-all duration-300 hover:bg-opacity-30 shadow-lg hover:shadow-xl">
+                            <span x-html="getIcon(transaction.type)"></span>
+                            <span class="text-sm font-medium" x-text="transaction.type"></span>
+                            <span class="text-sm font-bold" x-text="'$' + transaction.amount.toFixed(2)"></span>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <main class="flex-grow container mx-auto my-3 px-4 sm:px-6 lg:px-8 py-8 bg-blue-50 rounded-lg shadow-inner">
         <livewire:components.first-visit-questionnaire />
 
@@ -158,7 +177,6 @@
                 </div>
             </div>
         @endif
-
 
         <!-- Quick Actions -->
         <div class="mt-8">
@@ -298,6 +316,7 @@
                         </p>
                     @endif
                 @endauth
+                <!--
                 <form action="{{ url('/webhook/plaid') }}" method="POST">
                     @csrf
                     <label for="webhook_type">Webhook Type:</label>
@@ -313,7 +332,7 @@
                     <input type="number" id="new_transactions" name="new_transactions" value="1"><br><br>
 
                     <button type="submit">Send Webhook</button>
-                </form>
+                </form> -->
 
 
 
@@ -327,7 +346,50 @@
 </div>
 
 @push('scripts')
-    <script>
+<style>
+@keyframes slide-left {
+    from { transform: translateX(100%); }
+    to { transform: translateX(-100%); }
+}
+.animate-slide-left {
+    animation: slide-left 10s linear infinite;
+}
+.animate-slide-left:hover {
+    animation-play-state: paused;
+}
+</style>
+
+<script>
+function transactionSlider() {
+    return {
+        transactions: [
+            { id: 1, type: 'Deposit', amount: 500.00 },
+            { id: 2, type: 'Withdrawal', amount: 200.50 },
+            { id: 3, type: 'Transfer', amount: 150.75 },
+            { id: 4, type: 'Payment', amount: 75.20 },
+            { id: 5, type: 'Refund', amount: 120.00 },
+        ],
+        getIcon(type) {
+            const icons = {
+                'Deposit': '<i data-lucide="arrow-up-right" class="w-4 h-4 text-green-300"></i>',
+                'Withdrawal': '<i data-lucide="arrow-down-left" class="w-4 h-4 text-red-300"></i>',
+                'Transfer': '<i data-lucide="repeat" class="w-4 h-4 text-blue-300"></i>',
+                'Payment': '<i data-lucide="credit-card" class="w-4 h-4 text-yellow-300"></i>',
+                'Refund': '<i data-lucide="rotate-ccw" class="w-4 h-4 text-purple-300"></i>'
+            };
+            return icons[type] || '';
+        },
+        init() {
+            this.$nextTick(() => {
+                lucide.createIcons();
+                const slider = this.$refs.slider;
+                // Clone the content to create a seamless loop
+                slider.innerHTML += slider.innerHTML;
+            });
+        }
+    }
+}
+
         document.addEventListener('DOMContentLoaded', function() {
             // Bar Chart with adjusted options for smaller size
             try {

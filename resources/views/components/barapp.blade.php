@@ -1,4 +1,4 @@
-<header class="px-4 lg:px-6 h-14 flex items-center border-b bg-blue-100">
+<header x-data="{ isOpen: false }" class="px-4 lg:px-6 h-14 flex items-center border-b bg-blue-100">
     <a href="{{ route('index') }}" class="flex items-center justify-center">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-primary">
@@ -6,31 +6,42 @@
                 d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z">
             </path>
         </svg>
-        <span class="ml-2 text-2xl font-bold text-primary">ExpensaGO</span>
+        <span class="ml-2 text-2xl font-bold text-primary hidden md:inline-block">ExpensaGO</span>
     </a>
-    <nav class="ml-auto flex items-center gap-4 sm:gap-6">
-        @auth
-            @if (!auth()->check() || !auth()->user()->plaid_access_token)
-                <a href="{{ route('app') }}"
-                    class="text-sm font-medium text-yellow-700 hover:text-yellow-900 hover:underline underline-offset-4 flex items-center">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
-                        </path>
-                    </svg>
-                    Link bank account
-                </a>
-            @else
-                <span class="text-sm font-medium text-green-700 flex items-center">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    Connected
-                </span>
-            @endif
-            <a class="text-sm font-medium hover:underline underline-offset-4" href="/sos"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="30" height="25" viewBox="0 0 256 256" xml:space="preserve">
+
+    <!-- Hamburger button -->
+    <button @click="isOpen = !isOpen" class="ml-auto md:hidden">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path x-show="!isOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            <path x-show="isOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+    </button>
+
+    <!-- Navigation menu -->
+    <nav :class="{'hidden': !isOpen}" class="absolute top-14 left-0 right-0 bg-blue-100 md:bg-transparent md:relative md:top-0 md:flex md:ml-auto md:items-center md:gap-4 sm:gap-6 z-50">
+        <div class="flex flex-col md:flex-row items-center gap-4 p-4 md:p-0">
+            @auth
+                @if (!auth()->check() || !auth()->user()->plaid_access_token)
+                    <a href="{{ route('app') }}"
+                        class="text-sm font-medium text-yellow-700 hover:text-yellow-900 hover:underline underline-offset-4 flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                            </path>
+                        </svg>
+                        Link bank account
+                    </a>
+                @else
+                    <span class="text-sm font-medium text-green-700 flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Connected
+                    </span>
+                @endif
+                <a class="text-sm font-medium hover:underline underline-offset-4" href="/sos"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="30" height="25" viewBox="0 0 256 256" xml:space="preserve">
 
                 <defs>
                 </defs>
@@ -42,18 +53,17 @@
                     <path d="M 71.671 37.12 h -6.322 c -1.104 0 -2 -0.896 -2 -2 s 0.896 -2 2 -2 h 6.322 c 0.753 0 1.365 -0.612 1.365 -1.365 v -2.957 c 0 -0.753 -0.612 -1.365 -1.365 -1.365 h -3.52 c -2.958 0 -5.365 -2.407 -5.365 -5.365 v -2.957 c 0 -2.958 2.407 -5.365 5.365 -5.365 h 4.537 c 1.104 0 2 0.896 2 2 s -0.896 2 -2 2 h -4.537 c -0.753 0 -1.365 0.612 -1.365 1.365 v 2.957 c 0 0.753 0.612 1.365 1.365 1.365 h 3.52 c 2.958 0 5.365 2.407 5.365 5.365 v 2.957 C 77.036 34.713 74.629 37.12 71.671 37.12 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
                 </g>
                 </svg></a>
-        @endauth
+            @endauth
 
-
-        <a class="text-sm font-medium hover:underline underline-offset-4" href="#testimonials">Testimonials</a>
-        <a class="text-sm font-medium hover:underline underline-offset-4" href="#cta">Get Started</a>
-        @guest
-            <a class="text-sm font-medium hover:underline underline-offset-4" href="{{ route('register') }}">Register</a>
-            <a class="text-sm font-medium hover:underline underline-offset-4" href="{{ route('login') }}">Login</a>
-        @endguest
-        @auth
-            <a @click="$wire.call('logout')" class="text-sm font-medium hover:underline underline-offset-4"
-                href="#">Logout</a>
-        @endauth
+            <a class="text-sm font-medium hover:underline underline-offset-4" href="#testimonials">Testimonials</a>
+            @guest
+                <a class="text-sm font-medium hover:underline underline-offset-4" href="{{ route('register') }}">Register</a>
+                <a class="text-sm font-medium hover:underline underline-offset-4" href="{{ route('login') }}">Login</a>
+            @endguest
+            @auth
+                <a @click="$wire.call('logout')" class="text-sm font-medium hover:underline underline-offset-4"
+                    href="#">Logout</a>
+            @endauth
+        </div>
     </nav>
 </header>

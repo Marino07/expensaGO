@@ -15,9 +15,27 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+        <script src="https://cdn.jsdelivr.net/npm/lucide@latest"></script>
         <!-- Chart.js -->
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+
+        <style>
+            [x-cloak] { display: none !important; }
+
+            @keyframes slide-left {
+                0% {
+                    transform: translateX(100%);
+                }
+                100% {
+                    transform: translateX(-100%);
+                }
+            }
+
+            .animate-slide-left {
+                animation: slide-left 30s linear infinite;
+            }
+        </style>
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
