@@ -6,6 +6,8 @@ use App\Models\Category;
 use App\Models\Trip;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Livewire\Attributes\On;
 
 class Application extends Component
 {
@@ -16,20 +18,25 @@ class Application extends Component
     public $expenseCategory;
     public $categoryExpenses = [];
     public $categoryNames = [];
+    public $trip;
     public $hasExpenses = false;
+    public $openFirst = false;
+
+    protected $listeners = ['echo:openq-channel,OpenQEvent' => 'OpenFirstVisitQuestionnaire'];
 
     public function mount()
     {
-        $trip = Trip::where('user_id', Auth::user()->id)->latest()->first();
-        if (!$trip) {
-            return redirect('/trips');
-        }
+        $this->openFirst = session('openFirst', false);
+        session()->forget('openFirst'); // Clear the session after using it
+        
+        Log::info('Mounting Application component and registering listeners.');
+        $this->trip = Trip::where('user_id', Auth::user()->id)->latest()->first();
 
-        $this->Budget = $trip->budget;
-        $this->AllExpenses = $trip->expenses->sum('amount');
+        $this->Budget = $this->trip->budget;
+        $this->AllExpenses = $this->trip->expenses->sum('amount');
 
         // Get categories that have expenses for this specific trip
-        $expensesByCategory = $trip->expenses()
+        $expensesByCategory = $this->trip->expenses()
             ->select('category_id')
             ->selectRaw('SUM(amount) as total_amount')
             ->groupBy('category_id')
@@ -52,6 +59,17 @@ class Application extends Component
             $this->categoryNames = ['No Expenses Yet'];
             $this->categoryExpenses = [0];
         }
+
+        Log::info('Initial value of openFirst: ' . $this->openFirst);
+        Log::info('Listeners registered: ' . json_encode($this->getListeners()));
+    }
+
+    #[On('OpenQ')]
+    public function OpenFirstVisitQuestionnaire()
+    {
+        Log::info('OpenFirstVisitQuestionnaire method triggered.');
+        $this->openFirst = true;
+        Log::info('Value of openFirst after triggering: ' . $this->openFirst);
     }
 
     public function logout()

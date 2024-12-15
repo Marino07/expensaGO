@@ -11,7 +11,7 @@ return new class extends Migration
     {
         Schema::create('user_preferences', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('trip_id')->constrained()->onDelete('cascade');
             $table->json('preferences');
             $table->boolean('has_completed_questionnaire')->default(false);
             $table->timestamps();

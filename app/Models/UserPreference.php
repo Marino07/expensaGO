@@ -6,15 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserPreference extends Model
 {
-    protected $fillable = ['user_id', 'preferences', 'has_completed_questionnaire'];
+    protected $fillable = [
+        'trip_id',
+        'user_id',
+        'preferences',
+        'has_completed_questionnaire'
+    ];
 
     protected $casts = [
         'preferences' => 'array',
         'has_completed_questionnaire' => 'boolean'
     ];
 
-    public function user()
+    public function trip()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Trip::class);
     }
 }

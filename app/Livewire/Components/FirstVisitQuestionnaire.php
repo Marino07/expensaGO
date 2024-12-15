@@ -6,6 +6,7 @@ use App\Models\UserPreference;
 
 class FirstVisitQuestionnaire extends Component
 {
+    public $trip;
     public $showQuestionnaire = false;
     public $preferences = [
         'attractions' => false,
@@ -18,8 +19,9 @@ class FirstVisitQuestionnaire extends Component
 
     public function mount()
     {
+        $this->trip = auth()->user()->lastTrip();
         // Check if user has already completed the questionnaire
-        $userPreferences = UserPreference::where('user_id', auth()->id())
+        $userPreferences = UserPreference::where('trip_id', $this->trip->id)
             ->where('has_completed_questionnaire', true)
             ->first();
 
@@ -28,9 +30,14 @@ class FirstVisitQuestionnaire extends Component
 
     public function savePreferences()
     {
+        if (!$this->trip) {
+            return;
+        }
+
         UserPreference::updateOrCreate(
-            ['user_id' => auth()->id()],
+            ['trip_id' => $this->trip->id],
             [
+                'trip_id' => $this->trip->id, // Explicitly set trip_id here as well
                 'preferences' => $this->preferences,
                 'has_completed_questionnaire' => true
             ]

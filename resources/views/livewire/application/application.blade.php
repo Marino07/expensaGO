@@ -1,4 +1,6 @@
-<div class="flex flex-col min-h-screen bg-gradient-to-br from-indigo-50 via-white to-pink-50">
+<div
+x-data="{ openFirst: {{$openFirst}} }"
+class="flex flex-col min-h-screen bg-gradient-to-br from-indigo-50 via-white to-pink-50">
     @if (session()->has('message'))
         <div x-data="{ show: true }" x-show="show" x-transition:enter="transition ease-out duration-300"
             x-transition:enter-start="opacity-0 transform scale-90"
@@ -35,29 +37,31 @@
             </div>
         </div>
     @endif
-    <x-barapp />
 
     <!-- Enhanced Transaction Slider -->
-    <div x-data="transactionSlider()"
-         class="bg-[#b7f7f2] text-black p-1 shadow-lg  overflow-hidden"
-         style="margin-top: 0.0rem;">
-        <div class="relative h-14 overflow-hidden">
-            <div class="absolute inset-0 flex items-center">
-                <div class="animate-slide-left whitespace-nowrap flex items-center space-x-6" x-ref="slider">
-                    <template x-for="transaction in transactions" :key="transaction.id">
-                        <div class="inline-flex items-center space-x-2 bg-white bg-opacity-20 rounded-full px-4 py-2 transition-all duration-300 hover:bg-opacity-30 shadow-lg hover:shadow-xl">
-                            <span x-html="getIcon(transaction.type)"></span>
-                            <span class="text-sm font-medium" x-text="transaction.type"></span>
-                            <span class="text-sm font-bold" x-text="'$' + transaction.amount.toFixed(2)"></span>
-                        </div>
-                    </template>
+    <div class="w-full">
+        <div x-data="transactionSlider()" class="bg-gradient-to-r from-blue-400 to-cyan-500 rounded-lg shadow-lg overflow-hidden">
+            <div class="relative h-16 overflow-hidden">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="animate-slide-left whitespace-nowrap flex items-center space-x-6 px-4" x-ref="slider">
+                        <template x-for="transaction in transactions" :key="transaction.id">
+                            <div class="inline-flex items-center space-x-2 bg-white bg-opacity-20 rounded-full px-4 py-2 transition-all duration-300 hover:bg-opacity-30 shadow-md hover:shadow-lg">
+                                <span x-html="getIcon(transaction.type)"></span>
+                                <span class="text-sm font-medium text-white" x-text="transaction.type"></span>
+                                <span class="text-sm font-bold text-white" x-text="'$' + transaction.amount.toFixed(2)"></span>
+                            </div>
+                        </template>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    <x-barapp />
 
     <main class="flex-grow container mx-auto my-3 px-4 sm:px-6 lg:px-8 py-8 bg-blue-50 rounded-lg shadow-inner">
-        <livewire:components.first-visit-questionnaire />
+        <div x-show="openFirst">
+            <livewire:components.first-visit-questionnaire />
+        </div>
 
         <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             <!-- Total Expenses Card -->
@@ -77,7 +81,7 @@
                                     Total Expenses
                                 </dt>
                                 <dd class="text-3xl font-semibold text-white">
-                                    $3,659.00
+                                    {{$AllExpenses}} $
                                 </dd>
                             </dl>
                         </div>
@@ -107,10 +111,10 @@
                         <div class="ml-5 w-0 flex-1">
                             <dl>
                                 <dt class="text-sm font-medium text-gray-100 truncate">
-                                    Active Trips
+                                    Active Trip
                                 </dt>
-                                <dd class="text-3xl font-semibold text-white">
-                                    2
+                                <dd class=" inline-block text-3xl font-semibold text-white">
+                                    {{$trip->location}}
                                 </dd>
                             </dl>
                         </div>
@@ -352,7 +356,7 @@
     to { transform: translateX(-100%); }
 }
 .animate-slide-left {
-    animation: slide-left 10s linear infinite;
+    animation: slide-left 9s linear infinite;
 }
 .animate-slide-left:hover {
     animation-play-state: paused;
@@ -363,12 +367,15 @@
 function transactionSlider() {
     return {
         transactions: [
-            { id: 1, type: 'Deposit', amount: 500.00 },
+            { id: 1, type: 'New Transactions' },
             { id: 2, type: 'Withdrawal', amount: 200.50 },
             { id: 3, type: 'Transfer', amount: 150.75 },
             { id: 4, type: 'Payment', amount: 75.20 },
             { id: 5, type: 'Refund', amount: 120.00 },
         ],
+        get totalExpenses() {
+                    return this.transactions.reduce((total, transaction) => total + transaction.amount, 0);
+                },
         getIcon(type) {
             const icons = {
                 'Deposit': '<i data-lucide="arrow-up-right" class="w-4 h-4 text-green-300"></i>',

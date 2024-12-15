@@ -35,6 +35,7 @@
     </div>
 @endif
     <x-barapp />
+    <div>{{$test ?? 'nulla'}}</div>
     <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 py-12 px-4 sm:px-6 lg:px-8">
 
         <div class="max-w-3xl mx-auto">

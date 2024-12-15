@@ -5,6 +5,8 @@ namespace App\Livewire\Trip;
 use App\Models\Trip;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use App\Events\OpenQEvent;
 
 class StartTrip extends Component
 {
@@ -36,6 +38,10 @@ class StartTrip extends Component
         ]);
 
         session()->flash('message', 'Your trip "' . $this->location . '" has been successfully created. Get ready for an amazing adventure!');
+        session()->put('openFirst', true); // Store in session
+
+        session()->flash('tripCreated', true); // alternative to dispatch
+
         return redirect()->route('app');
     }
 

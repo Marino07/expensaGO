@@ -56,6 +56,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Trip::class);
     }
+    public function lastTrip(){
+        return $this->trips()->latest()->first();
+    }
     public function Lastexpenses()
     {
         $lastTrip = Trip::where('user_id',auth()->id())->latest()->first();
@@ -64,10 +67,5 @@ class User extends Authenticatable
             return collect();
         }
         return $lastTrip->expenses;
-    }
-
-    public function preferences()
-    {
-        return $this->hasOne(UserPreference::class);
     }
 }
