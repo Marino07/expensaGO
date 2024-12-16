@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+use App\Models\Trip;
+use App\Models\Expense;
+use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 
 class PlaidController extends Controller
 {
@@ -89,6 +93,7 @@ class PlaidController extends Controller
 
     public function getTransactions()
     {
+        $trip = Trip::where('user_id', auth()->id())->latest()->first();
         try {
             $response = Http::post("https://{$this->environment}.plaid.com/transactions/get", [
                 'client_id' => $this->clientId,
@@ -99,8 +104,21 @@ class PlaidController extends Controller
             ]);
 
             if ($response->successful()) {
-                \Log::info('Plaid transactions:', $response->json());
-                return response()->json($response->json());
+                $data = $response->json();
+
+                foreach ($data['transactions'] as $transaction) {
+                    Expense::create([
+                        'title' => $transaction['name'],
+                        'amount' => $transaction['amount'],
+                        'date' => Carbon::parse($transaction['date']),
+                        'category_id' => Category::firstOrCreate(['name' => $transaction['category'][0] ?? 1])->id,
+                        'trip_id' => $trip->id,
+                        'is_recurring' => 0
+                    ]);
+                }
+
+                \Log::info('Plaid transactions processed:', $response->json());
+                return response()->json(['success' => true, 'data' => $data]);
             }
 
             return response()->json(['error' => 'Failed to fetch transactions'], 400);

@@ -4,6 +4,7 @@ namespace App\Livewire\Application;
 
 use App\Models\Category;
 use App\Models\Trip;
+use App\Models\Expense;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -21,14 +22,15 @@ class Application extends Component
     public $trip;
     public $hasExpenses = false;
     public $openFirst = false;
+    public $lastFiveExpenses = [];
 
     protected $listeners = ['echo:openq-channel,OpenQEvent' => 'OpenFirstVisitQuestionnaire'];
 
     public function mount()
     {
         $this->openFirst = session('openFirst', false);
-        session()->forget('openFirst'); // Clear the session after using it
-        
+        session()->forget('openFirst'); // we clearing after using it
+
         Log::info('Mounting Application component and registering listeners.');
         $this->trip = Trip::where('user_id', Auth::user()->id)->latest()->first();
 
@@ -59,6 +61,21 @@ class Application extends Component
             $this->categoryNames = ['No Expenses Yet'];
             $this->categoryExpenses = [0];
         }
+
+        $this->lastFiveExpenses = Expense::with('category')
+        ->where('trip_id', $this->trip->id)
+        ->latest()
+        ->take(5)
+        ->get()
+        ->map(function ($expense) {
+            return [
+                'id' => $expense->id,
+                'category' => $expense->category?->name ?? 'Other',
+                'type' => $expense->title,
+                'amount' => $expense->amount,
+                'date' => $expense->date->format('M d, Y')
+            ];
+        });
 
         Log::info('Initial value of openFirst: ' . $this->openFirst);
         Log::info('Listeners registered: ' . json_encode($this->getListeners()));

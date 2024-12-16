@@ -35,20 +35,46 @@ class AllExpenses extends Component
 
     public function createExpense($expense)
     {
-        if (strtolower($expense['category'][0] ?? '') !== 'transfer') {
-            Expense::create([
+        if (strtolower($expense['category'][0] ?? '') === 'transfer') {
+            \Log::info('Skipping transfer transaction');
+            return;
+        }
+
+        try {
+            // Check if expense already exists
+            $existingExpense = Expense::where([
                 'title' => $expense['name'],
                 'amount' => $expense['amount'],
                 'date' => \Carbon\Carbon::parse($expense['date']),
-                'category_id' => Category::firstOrCreate(['name' => $expense['category'][0] ?? 'Uncategorized'])->id,
-                'trip_id' => $this->trip->id,
-                'is_recurring' => 0
+                'trip_id' => $this->trip->id
+            ])->first();
+
+            if (!$existingExpense) {
+                \Log::info('Creating new expense:', $expense);
+
+                Expense::create([
+                    'title' => $expense['name'],
+                    'amount' => $expense['amount'],
+                    'date' => \Carbon\Carbon::parse($expense['date']),
+                    'category_id' => Category::firstOrCreate(['name' => $expense['category'][0] ?? 'Uncategorized'])->id,
+                    'trip_id' => $this->trip->id,
+                    'is_recurring' => 0
+                ]);
+            } else {
+                \Log::info('Expense already exists, skipping');
+            }
+        } catch (\Exception $e) {
+            \Log::error('Error creating expense:', [
+                'error' => $e->getMessage(),
+                'expense' => $expense
             ]);
         }
     }
 
     public function getCardExpenses()
     {
+        \Log::info('Attempting to fetch card expenses');
+
         $response = Http::post("https://{$this->environment}.plaid.com/transactions/get", [
             'client_id' => env('PLAID_CLIENT_ID'),
             'secret' => env('PLAID_SECRET'),
@@ -57,13 +83,26 @@ class AllExpenses extends Component
             'end_date' => date('Y-m-d')
         ]);
 
+        \Log::info('Plaid API Response:', [
+            'status' => $response->status(),
+            'body' => $response->json()
+        ]);
+
         if ($response->successful()) {
             $transactions = $response->json()['transactions'];
+            \Log::info('Found transactions:', ['count' => count($transactions)]);
+
             foreach ($transactions as $transaction) {
+                \Log::info('Processing transaction:', $transaction);
                 $this->createExpense($transaction);
             }
             return $transactions;
         }
+
+        \Log::error('Failed to fetch transactions:', [
+            'status' => $response->status(),
+            'body' => $response->json()
+        ]);
 
         return [];
     }
@@ -71,7 +110,7 @@ class AllExpenses extends Component
     public function render()
     {
         // Fetch card expenses and store them in the database
-        $this->getCardExpenses();
+        //$this->getCardExpenses();
 
         // Fetch all expenses from the database
         $expenses = Expense::with(['category', 'trip'])
