@@ -30,7 +30,7 @@ services:
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
-            - '${FORWARD_DB_PORT:-3310}:3306' # Ensure this port mapping is correct
+            - '${FORWARD_DB_PORT:-3310}:3306' # 3310 for connecting inside docker,3306 for connecting to mysql service inside docker
         environment:
             MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
             MYSQL_ROOT_HOST: '%'

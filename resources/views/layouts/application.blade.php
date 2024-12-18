@@ -22,19 +22,27 @@
 
         <style>
             [x-cloak] { display: none !important; }
+            .slider-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
 
-            @keyframes slide-left {
-                0% {
-                    transform: translateX(100%);
-                }
-                100% {
-                    transform: translateX(-100%);
-                }
+        @keyframes slide-left {
+            0% {
+                transform: translate(100%, -50%);
             }
+            100% {
+                transform: translate(-100%, -50%);
+            }
+        }
 
             .animate-slide-left {
-                animation: slide-left 30s linear infinite;
+                animation: slide-left 25s linear infinite;
             }
+            .animate-slide-left:hover {
+            animation-play-state: paused;
+        }
         </style>
 
         <!-- Scripts -->

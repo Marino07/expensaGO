@@ -22,4 +22,8 @@ class UserPreference extends Model
     {
         return $this->belongsTo(Trip::class);
     }
+    public function itinerary()
+    {
+        return $this->hasOne(Itinerary::class);
+    }
 }

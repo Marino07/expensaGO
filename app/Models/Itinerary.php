@@ -11,6 +11,7 @@ class Itinerary extends Model
     use HasFactory;
     protected $fillable = [
         'trip_id',
+        'user_preference_id',
         'date',
         'time_slot',
         'activity',
@@ -21,6 +22,10 @@ class Itinerary extends Model
     public function trip()
     {
         return $this->belongsTo(Trip::class);
+    }
+    public function userpreference()
+    {
+        return $this->belongsTo(UserPreference::class);
     }
 
 }

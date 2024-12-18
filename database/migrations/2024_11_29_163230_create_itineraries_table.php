@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('itineraries', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_preference_id')->constrained()->onDelete('cascade');
             $table->foreignId('trip_id')->constrained()->onDelete('cascade');
             $table->date('date');
             $table->string('time_slot');

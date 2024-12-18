@@ -362,30 +362,6 @@
 </div>
 
 @push('scripts')
-    <style>
-        .slider-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-        }
-
-        @keyframes slide-left {
-            0% {
-                transform: translate(100%, -50%);
-            }
-            100% {
-                transform: translate(-100%, -50%);
-            }
-        }
-
-        .animate-slide-left {
-            animation: slide-left 5s fast forwards;
-        }
-
-        .animate-slide-left:hover {
-            animation-play-state: paused;
-        }
-    </style>
 
     <script>
         function transactionSlider() {
