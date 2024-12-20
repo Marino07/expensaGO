@@ -27,9 +27,13 @@ class Trip extends Model
     {
         return $this->belongsToMany(Category::class, 'trip_category');
     }
-    public function Userpreferences()
+    public function userPreference()
     {
         return $this->hasOne(UserPreference::class);
+    }
+    public function planner()
+    {
+        return $this->hasOne(Planner::class);
     }
 }
 
