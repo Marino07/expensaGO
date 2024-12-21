@@ -36,7 +36,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/plaid/transactions', [PlaidController::class, 'getTransactions'])->middleware('auth');
     Route::post('/webhook/plaid', [PlaidWebhookController::class, 'handleWebhook']);
 });
-
 Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');

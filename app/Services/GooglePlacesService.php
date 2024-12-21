@@ -15,17 +15,27 @@ class GooglePlacesService
         $this->apiKey = config('services.google.places_api_key');
     }
 
-    public function searchPlaces($location, $type, $radius = 5000)
+    public function searchPlaces($location, $type, $radius = 5000, $strictBounds = true)
     {
         $cacheKey = "places_search_{$location}_{$type}_{$radius}";
 
-        return Cache::remember($cacheKey, 3600, function () use ($location, $type, $radius) {
-            $response = Http::get("{$this->baseUrl}/nearbysearch/json", [
+        return Cache::remember($cacheKey, 3600, function () use ($location, $type, $radius, $strictBounds) {
+            $params = [
                 'key' => $this->apiKey,
                 'location' => $location,
                 'radius' => $radius,
                 'type' => $type,
-            ]);
+                'fields' => 'place_id,name,geometry,photos,types'
+            ];
+
+            if ($strictBounds) {
+                $params['strictbounds'] = 'true';
+                // Add location bias
+                [$lat, $lng] = explode(',', $location);
+                $params['locationbias'] = "circle:{$radius}@{$lat},{$lng}";
+            }
+
+            $response = Http::get("{$this->baseUrl}/nearbysearch/json", $params);
 
             return $response->json()['results'] ?? [];
         });
@@ -81,5 +91,17 @@ class GooglePlacesService
 
             return null;
         });
+    }
+
+    public function getPhotoUrl($photoReference, $maxWidth = 400)
+    {
+        if (!$photoReference) {
+            return null;
+        }
+
+        return "https://maps.googleapis.com/maps/api/place/photo?"
+            . "maxwidth={$maxWidth}&"
+            . "photo_reference={$photoReference}&"
+            . "key={$this->apiKey}";
     }
 }
