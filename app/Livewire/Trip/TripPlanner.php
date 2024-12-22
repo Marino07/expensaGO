@@ -26,12 +26,12 @@ class TripPlanner extends Component
             'events' => 'event',
             'nature' => 'park|natural_feature',
             'shopping' => 'shopping_mall|store',
-            'attractions' => 'tourist_attraction|point_of_interest',
+            'attractions' => 'tourist_attraction|point_of_interest|event',  // dodao event
             'restaurants' => 'restaurant',
             'localCuisine' => 'restaurant',
         ];
 
-        return $mappings[$preference] ?? 'tourist_attraction';
+        return $mappings[$preference] ?? 'tourist_attraction|point_of_interest';  // dodao point_of_interest
     }
 
     private function getFriendlyPreferenceName($placeTypes)
@@ -185,7 +185,78 @@ class TripPlanner extends Component
 
     private function getPriorityPlaceType()
     {
-        return 'tourist_attraction|point_of_interest';
+        return 'tourist_attraction|point_of_interest|event';  // dodao event
+    }
+
+    private function limitOtherPlaces($places, $totalPreferences)
+    {
+        // If we have many preferences, limit 'Other' places more strictly
+        $maxOthers = ($totalPreferences >= 3) ? 1 : 2;
+        $otherCount = 0;
+        $resultPlaces = [];
+
+        foreach ($places as $place) {
+            if (!isset($place['types']) || !is_array($place['types'])) {
+                continue;
+            }
+
+            $isOther = true;
+            foreach ($place['types'] as $type) {
+                if (in_array($type, [
+                    'restaurant',
+                    'tourist_attraction',
+                    'park',
+                    'shopping_mall',
+                    'event',
+                    'point_of_interest',
+                    'natural_feature'
+                ])) {
+                    $isOther = false;
+                    break;
+                }
+            }
+
+            if ($isOther) {
+                if ($otherCount < $maxOthers) {
+                    $resultPlaces[] = $place;
+                    $otherCount++;
+                }
+            } else {
+                $resultPlaces[] = $place;
+            }
+        }
+
+        return $resultPlaces;
+    }
+
+    private function getSecondaryPlaces($locationString, $availableTypes, $day, $totalPreferences)
+    {
+        $otherPlaces = [];
+        $usedTypes = [];
+        $maxPlaces = 4;
+
+        // If we have enough preferences, don't allow repeating types
+        $allowRepeatingTypes = $totalPreferences < 3;
+
+        for ($i = 0; $i < $maxPlaces && count($availableTypes) > 0; $i++) {
+            $prefIndex = ($day + $i) % count($availableTypes);
+            $currentType = $this->getPreferenceType($availableTypes[$prefIndex]);
+
+            // Skip if type was already used and we have enough preferences
+            if (!$allowRepeatingTypes && in_array($currentType, $usedTypes)) {
+                continue;
+            }
+
+            $places = $this->getUniquePlaces($locationString, $currentType, 1);
+            if (!empty($places)) {
+                $place = $places[0];
+                $place = $this->processPlacePhoto($place, $currentType);
+                $otherPlaces[] = $place;
+                $usedTypes[] = $currentType;
+            }
+        }
+
+        return $otherPlaces;
     }
 
     public function generatePlan()
@@ -241,32 +312,26 @@ class TripPlanner extends Component
             }
 
             // Get secondary places from user preferences
-            $otherPlaces = [];
-
-            // Filter out attractions from available preferences
             $availableTypes = array_filter($preferenceKeys, function($pref) {
                 return !in_array($pref, ['attractions']);
             });
 
-            // Ensure we have at least one available type
             if (empty($availableTypes)) {
-                $availableTypes = ['restaurants']; // Fallback option
+                $availableTypes = ['restaurants'];
             }
 
-            $availableTypes = array_values($availableTypes); // Reindex array
+            $availableTypes = array_values($availableTypes);
 
-            // Get 2 different places for each day
-            for ($i = 0; $i < 3 && count($availableTypes) > 0; $i++) {
-                $prefIndex = ($day + $i) % count($availableTypes);
-                $currentType = $this->getPreferenceType($availableTypes[$prefIndex]);
+            // Use new method for getting secondary places
+            $otherPlaces = $this->getSecondaryPlaces(
+                $locationString,
+                $availableTypes,
+                $day,
+                count($preferenceKeys)
+            );
 
-                $places = $this->getUniquePlaces($locationString, $currentType, 1);
-                if (!empty($places)) {
-                    $place = $places[0];
-                    $place = $this->processPlacePhoto($place, $currentType);
-                    $otherPlaces[] = $place;
-                }
-            }
+            // Limit 'Other' places based on total preferences
+            $otherPlaces = array_values($this->limitOtherPlaces($otherPlaces, count($preferenceKeys)));
 
             $this->planner->plannerDays()->create([
                 'planer_id' => $this->planner->id,
