@@ -49,7 +49,7 @@ class GooglePlacesService
             $response = Http::get("{$this->baseUrl}/details/json", [
                 'key' => $this->apiKey,
                 'place_id' => $placeId,
-                'fields' => 'name,rating,formatted_address,price_level,photos,opening_hours,website'
+                'fields' => 'name,rating,formatted_address,price_level,photos,opening_hours,website,editorial_summary,reviews,price,business_status,types,user_ratings_total'
             ]);
 
             return $response->json()['result'] ?? null;

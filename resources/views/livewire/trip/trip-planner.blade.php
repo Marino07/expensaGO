@@ -93,10 +93,19 @@
                                 <div class="mb-6">
                                     <h4 class="text-xl font-semibold text-blue-600 mb-3">Main Attraction</h4>
                                     <div class="flex items-center bg-blue-50 p-4 rounded-lg">
-                                        <img src="{{ $day->main_attraction['photo_url'] ?? 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&h=200&q=80' }}" alt="Main Attraction" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full mr-4 object-cover shadow-md">
-                                        <div>
+                                        <img src="{{ $day->main_attraction['photo_url'] ?? 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&h=200&q=80' }}"
+                                             alt="Main Attraction"
+                                             class="w-16 h-16 sm:w-20 sm:h-20 rounded-full mr-4 object-cover shadow-md">
+                                        <div class="flex-grow">
                                             <p class="text-lg font-medium text-blue-800">{{ $day->main_attraction['name'] ?? 'No attraction found' }}</p>
-                                            <span class="inline-block bg-teal-100 text-teal-800 text-sm px-3 py-1 rounded-full mt-2">{{ $day->main_attraction['preference_name'] }}</span>
+                                            <div class="flex items-center gap-2 mt-2">
+                                                <span class="inline-block bg-teal-100 text-teal-800 text-sm px-3 py-1 rounded-full">
+                                                    {{ $day->main_attraction['preference_name'] }}
+                                                </span>
+                                                <span class="inline-block {{ $day->main_attraction['price_info'] === 'Free' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-800' }} text-sm px-3 py-1 rounded-full">
+                                                    {{ $day->main_attraction['price_info'] }}
+                                                </span>
+                                            </div>
                                         </div>
                                         @if(isset($day->main_attraction['geometry']['location']))
                                             <a href="https://www.google.com/maps/search/?api=1&query={{ $day->main_attraction['geometry']['location']['lat'] }},{{ $day->main_attraction['geometry']['location']['lng'] }}"
@@ -120,8 +129,17 @@
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                                                     </svg>
-                                                    <span class="text-gray-800 font-medium">{{ $place['name'] ?? 'Unnamed place' }}</span>
-                                                    <span class="ml-2 inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">{{ $place['preference_name'] }}</span>
+                                                    <div class="flex-grow">
+                                                        <span class="text-gray-800 font-medium">{{ $place['name'] ?? 'Unnamed place' }}</span>
+                                                        <div class="flex items-center gap-2 mt-1">
+                                                            <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                                                                {{ $place['preference_name'] }}
+                                                            </span>
+                                                            <span class="inline-block {{ $place['price_info'] === 'Free' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-800' }} text-xs px-2 py-1 rounded-full">
+                                                                {{ $place['price_info'] }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
                                                     @if(isset($place['geometry']['location']))
                                                         <a href="https://www.google.com/maps/search/?api=1&query={{ $place['geometry']['location']['lat'] }},{{ $place['geometry']['location']['lng'] }}"
                                                            target="_blank"
@@ -133,15 +151,18 @@
                                                             </svg>
                                                         </a>
                                                     @endif
+                                                    <div class="place-item">
+                                                        <div class="place-info">
+                                                            <h4>{{ $place['name'] }}</h4>
+                                                            <span class="place-type">{{ $place['preference_name'] }}</span>
+                                                            <span class="place-price {{ strtolower($place['price_info']) }}">
+                                                                {{ $place['price_info'] }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
                                                 </li>
                                             @endforeach
                                         </ul>
-                                    </div>
-                                    <div class="bg-blue-50 p-4 rounded-lg">
-                                        <p class="text-lg text-blue-800 font-semibold">
-                                            Estimated costs:
-                                            <span class="text-teal-600">${{ $day->estimated_costs['min'] }} - ${{ $day->estimated_costs['max'] }}</span>
-                                        </p>
                                     </div>
                                 </div>
                                 <button

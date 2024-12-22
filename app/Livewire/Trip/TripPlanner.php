@@ -183,6 +183,57 @@ class TripPlanner extends Component
         return $place;
     }
 
+    private function processPlace($place, $placeType)
+    {
+        $place = $this->processPlacePhoto($place, $placeType);
+
+        // Dobavi detaljne informacije o mestu
+        if (isset($place['place_id'])) {
+            $googlePlaces = new GooglePlacesService();
+            $details = $googlePlaces->getPlaceDetails($place['place_id']);
+            if ($details) {
+                $place = array_merge($place, $details);
+            }
+        }
+
+        $place['price_info'] = $this->getPriceInfo($place);
+        return $place;
+    }
+
+    private function getPriceInfo($place)
+    {
+        // Za besplatne lokacije
+        if (in_array('park', $place['types'] ?? []) ||
+            in_array('natural_feature', $place['types'] ?? [])) {
+            return 'Free';
+        }
+
+        // Za restorane
+        if (in_array('restaurant', $place['types'] ?? [])) {
+            if (isset($place['price_level'])) {
+                return match($place['price_level']) {
+                    1 => 'Inexpensive',
+                    2 => 'Moderate',
+                    3 => 'Expensive',
+                    4 => 'Very Expensive',
+                    default => 'Price N/A'
+                };
+            }
+        }
+
+        // Za muzeje i atrakcije
+        if (isset($place['price_level']) || isset($place['price'])) {
+            return isset($place['price']) ? $place['price'] : 'Paid entry';
+        }
+
+        // Za zatvorene lokacije
+        if (isset($place['business_status']) && $place['business_status'] === 'CLOSED_PERMANENTLY') {
+            return 'Closed';
+        }
+
+        return 'Price N/A';
+    }
+
     private function getPriorityPlaceType()
     {
         return 'tourist_attraction|point_of_interest|event';  // dodao event
@@ -250,13 +301,19 @@ class TripPlanner extends Component
             $places = $this->getUniquePlaces($locationString, $currentType, 1);
             if (!empty($places)) {
                 $place = $places[0];
-                $place = $this->processPlacePhoto($place, $currentType);
+                $place = $this->processPlace($place, $currentType);
                 $otherPlaces[] = $place;
                 $usedTypes[] = $currentType;
             }
         }
 
         return $otherPlaces;
+    }
+
+    private function calculateDayEstimatedCosts($mainAttraction, $otherPlaces)
+    {
+        // Uklanjamo procenu troškova jer nemamo pouzdane podatke
+        return ['min' => null, 'max' => null];
     }
 
     public function generatePlan()
@@ -308,7 +365,7 @@ class TripPlanner extends Component
             $mainAttraction = $mainAttractions[0] ?? null;
 
             if ($mainAttraction) {
-                $mainAttraction = $this->processPlacePhoto($mainAttraction, $mainPlaceType);
+                $mainAttraction = $this->processPlace($mainAttraction, $mainPlaceType);
             }
 
             // Get secondary places from user preferences
@@ -340,7 +397,7 @@ class TripPlanner extends Component
                     'preference_name' => $this->getFriendlyPreferenceName($mainPlaceType)
                 ]),
                 'places_to_visit' => $this->addPreferenceNames($otherPlaces),
-                'estimated_costs' => ['min' => 50, 'max' => 150],
+                'estimated_costs' => $this->calculateDayEstimatedCosts($mainAttraction, $otherPlaces)
             ]);
         }
 
