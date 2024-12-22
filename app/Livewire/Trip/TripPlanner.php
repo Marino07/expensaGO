@@ -77,7 +77,7 @@ class TripPlanner extends Component
         $attempts = 0;
         $places = [];
         $maxAttempts = 3;
-        $radiusIncrement = 2000; // Smaller radius increments
+        $radiusIncrement = 2000;
 
         while (count($places) < $limit && $attempts < $maxAttempts) {
             $currentRadius = $radius + ($attempts * $radiusIncrement);
@@ -86,8 +86,19 @@ class TripPlanner extends Component
                 $locationString,
                 $placeType,
                 $currentRadius,
-                true // Add strictBounds parameter
+                true
             );
+
+            // Sort places by rating and user_ratings_total
+            usort($newPlaces, function($a, $b) {
+                // Calculate popularity score (50% rating, 50% number of reviews)
+                $scoreA = (isset($a['rating']) ? $a['rating'] : 0) * 0.5 +
+                         (isset($a['user_ratings_total']) ? min($a['user_ratings_total'] / 1000, 5) : 0) * 0.5;
+                $scoreB = (isset($b['rating']) ? $b['rating'] : 0) * 0.5 +
+                         (isset($b['user_ratings_total']) ? min($b['user_ratings_total'] / 1000, 5) : 0) * 0.5;
+
+                return $scoreB <=> $scoreA;
+            });
 
             foreach ($newPlaces as $place) {
                 if (!isset($place['place_id']) || in_array($place['place_id'], $this->usedPlaceIds)) {
@@ -172,6 +183,11 @@ class TripPlanner extends Component
         return $place;
     }
 
+    private function getPriorityPlaceType()
+    {
+        return 'tourist_attraction|point_of_interest';
+    }
+
     public function generatePlan()
     {
         $this->dispatch('generation-started');
@@ -213,12 +229,10 @@ class TripPlanner extends Component
         $totalPreferences = count($preferenceKeys);
 
         for ($day = 1; $day <= $this->trip->duration; $day++) {
-            // Rotate main preference each day
-            $mainPreferenceIndex = ($day - 1) % $totalPreferences;
-            $mainPreference = $preferenceKeys[$mainPreferenceIndex];
-            $mainPlaceType = $this->getPreferenceType($mainPreference);
+            // Always ensure first place is an attraction or event
+            $mainPlaceType = $this->getPriorityPlaceType();
 
-            // Get main attraction
+            // Get main attraction (guaranteed to be a tourist spot)
             $mainAttractions = $this->getUniquePlaces($locationString, $mainPlaceType, 1);
             $mainAttraction = $mainAttractions[0] ?? null;
 
@@ -226,31 +240,38 @@ class TripPlanner extends Component
                 $mainAttraction = $this->processPlacePhoto($mainAttraction, $mainPlaceType);
             }
 
-            // Get secondary places from other preferences
+            // Get secondary places from user preferences
             $otherPlaces = [];
-            $secondaryPreferences = $preferenceKeys;
-            unset($secondaryPreferences[$mainPreferenceIndex]); // Remove main preference
-            $secondaryPreferences = array_values($secondaryPreferences); // Reindex array
 
-            // Take next 2 preferences in rotation for secondary places
-            for ($i = 0; $i < 3 && count($secondaryPreferences) > 0; $i++) {
-                $secondaryIndex = ($day + $i) % count($secondaryPreferences);
-                $secondaryType = $this->getPreferenceType($secondaryPreferences[$secondaryIndex]);
+            // Filter out attractions from available preferences
+            $availableTypes = array_filter($preferenceKeys, function($pref) {
+                return !in_array($pref, ['attractions']);
+            });
 
-                $places = $this->getUniquePlaces($locationString, $secondaryType, 1);
-                if (!empty($places)) {
-                    $otherPlaces[] = $places[0];
-                }
+            // Ensure we have at least one available type
+            if (empty($availableTypes)) {
+                $availableTypes = ['restaurants']; // Fallback option
             }
 
-            $otherPlaces = array_map(function($place) use ($secondaryPreferences, $secondaryIndex) {
-                return $this->processPlacePhoto($place, $this->getPreferenceType($secondaryPreferences[$secondaryIndex]));
-            }, $otherPlaces);
+            $availableTypes = array_values($availableTypes); // Reindex array
+
+            // Get 2 different places for each day
+            for ($i = 0; $i < 3 && count($availableTypes) > 0; $i++) {
+                $prefIndex = ($day + $i) % count($availableTypes);
+                $currentType = $this->getPreferenceType($availableTypes[$prefIndex]);
+
+                $places = $this->getUniquePlaces($locationString, $currentType, 1);
+                if (!empty($places)) {
+                    $place = $places[0];
+                    $place = $this->processPlacePhoto($place, $currentType);
+                    $otherPlaces[] = $place;
+                }
+            }
 
             $this->planner->plannerDays()->create([
                 'planer_id' => $this->planner->id,
                 'day_number' => $day,
-                'main_attraction' => array_merge($mainAttraction, [
+                'main_attraction' => array_merge($mainAttraction ?? [], [
                     'preference_name' => $this->getFriendlyPreferenceName($mainPlaceType)
                 ]),
                 'places_to_visit' => $this->addPreferenceNames($otherPlaces),
