@@ -22,7 +22,7 @@
         <div class="flex flex-col md:flex-row items-center gap-4 p-4 md:p-0">
             @auth
                 @if (!auth()->check() || !auth()->user()->plaid_access_token)
-                    <a href="{{ route('app') }}"
+                    <a href="{{ route('app')}}"
                         class="text-sm font-medium text-yellow-700 hover:text-yellow-900 hover:underline underline-offset-4 flex items-center">
                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg">

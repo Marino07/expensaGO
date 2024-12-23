@@ -85,7 +85,7 @@
         <div x-show="openFirst">
             <livewire:components.first-visit-questionnaire />
         </div>
-
+        @if($trip)
         <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             <!-- Total Expenses Card -->
             <div class="bg-gradient-to-br from-blue-400 to-indigo-600 rounded-lg shadow-lg overflow-hidden">
@@ -188,6 +188,7 @@
                 </div>
             </div>
         </div>
+        @endif
         @if ($hasExpenses)
             <!-- Replace the two separate chart divs with this new layout -->
             <div class="mt-8">
@@ -304,6 +305,7 @@
                         </svg>
                     </span>
                 </div>
+                @if($trip)
                 <div
                     class="relative group bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-blue-500 rounded-lg shadow-lg hover:bg-blue-50 transition-all duration-200">
                     <div>
@@ -317,7 +319,7 @@
                     </div>
                     <div class="mt-8">
                         <h3 class="text-lg font-medium">
-                            <a href="{{ route('generate-plan', ['trip' => $trip->id]) }}" class="focus:outline-none">
+                            <a href="{{ route('trip-planner', ['trip' => $trip->id]) }}" class="focus:outline-none">
                                 <span class="absolute inset-0" aria-hidden="true"></span>
                                 Generate Trip Plan
                             </a>
@@ -335,73 +337,135 @@
                         </svg>
                     </span>
                 </div>
+                <div
+                class="relative group bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-blue-500 rounded-lg shadow-lg hover:bg-blue-50 transition-all duration-200">
+                <div>
+                    <span class="rounded-lg inline-flex p-3 bg-blue-100 text-blue-700 ring-4 ring-white">
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                        </svg>
+                    </span>
+                </div>
+                <div class="mt-8">
+                    <h3 class="text-lg font-medium">
+                        <a href="{{ route('trip-planner', ['trip' => $trip->id]) }}" class="focus:outline-none">
+                            <span class="absolute inset-0" aria-hidden="true"></span>
+                            Events
+                        </a>
+                    </h3>
+                    <p class="mt-2 text-sm text-gray-500">
+                        Events near you
+                    </p>
+                </div>
+                <span class="pointer-events-none absolute top-6 right-6 text-gray-300 group-hover:text-purple-400"
+                    aria-hidden="true">
+                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                        viewBox="0 0 24 24">
+                        <path
+                            d="M20 4h1a1 1 0 00-1-1v1zm-1 12a1 1 0 102 0h-2zM8 3a1 1 0 000 2V3zM3.293 19.293a1 1 0 101.414 1.414l-1.414-1.414zM19 4v12h2V4h-2zm1-1H8v2h12V3zm-.707.293l-16 16 1.414 1.414 16-16-1.414-1.414z" />
+                    </svg>
+                </span>
+            </div>
+            <div
+            class="relative group bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-blue-500 rounded-lg shadow-lg hover:bg-blue-50 transition-all duration-200">
+            <div>
+                <span class="rounded-lg inline-flex p-3 bg-blue-100 text-blue-700 ring-4 ring-white">
+                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                    </svg>
+                </span>
+            </div>
+            <div class="mt-8">
+                <h3 class="text-lg font-medium">
+                    <a href="{{ route('trip-planner', ['trip' => $trip->id]) }}" class="focus:outline-none">
+                        <span class="absolute inset-0" aria-hidden="true"></span>
+                        Ask AI
+                    </a>
+                </h3>
+                <p class="mt-2 text-sm text-gray-500">
+                    Ask whatever you want.
+                </p>
+            </div>
+            <span class="pointer-events-none absolute top-6 right-6 text-gray-300 group-hover:text-purple-400"
+                aria-hidden="true">
+                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                    viewBox="0 0 24 24">
+                    <path
+                        d="M20 4h1a1 1 0 00-1-1v1zm-1 12a1 1 0 102 0h-2zM8 3a1 1 0 000 2V3zM3.293 19.293a1 1 0 101.414 1.414l-1.414-1.414zM19 4v12h2V4h-2zm1-1H8v2h12V3zm-.707.293l-16 16 1.414 1.414 16-16-1.414-1.414z" />
+                </svg>
+            </span>
+        </div>
+                @endif
             </div>
         </div>
-</div>
 
-<!-- New Section for Linking Bank Account -->
-<div id="plaidon" class="bg-white shadow-lg rounded-lg overflow-hidden mt-4">
-    <div class="px-6 py-8">
-        <div class="flex items-center mb-6">
-            <svg class="w-8 h-8 text-blue-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z">
-                </path>
-            </svg>
-            <h3 class="text-2xl font-semibold text-gray-900">Bank Account</h3>
-        </div>
-
-        @auth
-            @if (auth()->check() && !auth()->user()->plaid_access_token)
-                <p class="text-gray-600 mb-6">Connect your bank account to start managing your finances.</p>
-                <button onclick="initPlaid()"
-                    class="w-full sm:w-auto px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300 ease-in-out flex items-center justify-center">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+        <!-- New Section for Linking Bank Account -->
+        <div id="plaidon" class="bg-white shadow-lg rounded-lg overflow-hidden mt-4">
+            <div class="px-6 py-8">
+                <div class="flex items-center mb-6">
+                    <svg class="w-8 h-8 text-blue-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                    </svg>
-                    Connect Bank Account
-                </button>
-            @else
-                <p class="text-green-600 flex items-center">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z">
                         </path>
                     </svg>
-                    Your bank account is connected
-                </p>
-            @endif
-        @endauth
-        <!--
-                <form action="{{ url('/webhook/plaid') }}" method="POST">
-                    @csrf
-                    <label for="webhook_type">Webhook Type:</label>
-                    <input type="text" id="webhook_type" name="webhook_type" value="TRANSACTIONS"><br><br>
+                    <h3 class="text-2xl font-semibold text-gray-900">Bank Account</h3>
+                </div>
 
-                    <label for="webhook_code">Webhook Code:</label>
-                    <input type="text" id="webhook_code" name="webhook_code" value="SYNC_UPDATES_AVAILABLE"><br><br>
+                @auth
+                    @if (auth()->check() && !auth()->user()->plaid_access_token)
+                        <p class="text-gray-600 mb-6">Connect your bank account to start managing your finances.</p>
+                        <button onclick="initPlaid()"
+                            class="w-full sm:w-auto px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300 ease-in-out flex items-center justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                            Connect Bank Account
+                        </button>
+                    @else
+                        <p class="text-green-600 flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                                </path>
+                            </svg>
+                            Your bank account is connected
+                        </p>
+                    @endif
+                @endauth
+                <!--
+                        <form action="{{ url('/webhook/plaid') }}" method="POST">
+                            @csrf
+                            <label for="webhook_type">Webhook Type:</label>
+                            <input type="text" id="webhook_type" name="webhook_type" value="TRANSACTIONS"><br><br>
 
-                    <label for="item_id">Item ID:</label>
-                    <input type="text" id="item_id" name="item_id" value="{{ auth()->user()->plaid_item_id }}"><br><br>
+                            <label for="webhook_code">Webhook Code:</label>
+                            <input type="text" id="webhook_code" name="webhook_code" value="SYNC_UPDATES_AVAILABLE"><br><br>
 
-                    <label for="new_transactions">New Transactions:</label>
-                    <input type="number" id="new_transactions" name="new_transactions" value="1"><br><br>
+                            <label for="item_id">Item ID:</label>
+                            <input type="text" id="item_id" name="item_id" value="{{ auth()->user()->plaid_item_id }}"><br><br>
 
-                    <button type="submit">Send Webhook</button>
-                </form> -->
+                            <label for="new_transactions">New Transactions:</label>
+                            <input type="number" id="new_transactions" name="new_transactions" value="1"><br><br>
+
+                            <button type="submit">Send Webhook</button>
+                        </form> -->
 
 
 
 
 
-        <!-- Rest of your transactions view code -->
-    </div>
-</div>
-</main>
-<x-footer />
+                <!-- Rest of your transactions view code -->
+            </div>
+        </div>
+    </main>
+    <x-footer />
 </div>
 
 @push('scripts')

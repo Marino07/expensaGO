@@ -20,12 +20,16 @@ class FirstVisitQuestionnaire extends Component
     public function mount()
     {
         $this->trip = auth()->user()->lastTrip();
-        // Check if user has already completed the questionnaire
-        $userPreferences = UserPreference::where('trip_id', $this->trip->id)
+        if($this->trip){
+            $userPreferences = UserPreference::where('trip_id', $this->trip->id)
             ->where('has_completed_questionnaire', true)
             ->first();
 
         $this->showQuestionnaire = !$userPreferences;
+
+        }
+        // Check if user has already completed the questionnaire
+
     }
 
     public function savePreferences()
