@@ -82,12 +82,16 @@
                     </button>
                 </div>
             @else
-                <h2 class="text-4xl font-bold  mb-8 text-center">
-                    <div class="inline-flex text-blue-400 items-center justify-center gap-3">
-                        Enjoy your trip
-                        <x-application-logo class="h-10 w-auto" />
-                    </div>
-                </h2>
+            <h2 class="text-4xl md:text-5xl lg:text-4xl font-bold mb-8 text-center">
+                <div class="inline-flex items-center justify-center gap-2 group text-cyan-400">
+                  <span class="bg-gradient-to-r from-blue-500 to-cyan-400 text-transparent bg-clip-text transition-all duration-300 ease-in-out transform group-hover:scale-105">
+                    Enjoy your trip
+                  </span>
+                  <div class="transition-transform duration-300 ease-in-out transform group-hover:rotate-12">
+                    <x-application-logo class="h-10 w-auto md:h-12 lg:h-14 text-blue-500" />
+                  </div>
+                </div>
+              </h2>
                 <div x-data="{ activeDay: {}, isLoading: false }" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     @foreach($plannerDays as $day)
                         <div class="relative h-[450px] perspective-1000"
@@ -150,14 +154,25 @@
                                                 </div>
                                             </div>
                                         </div>
+                                         <!-- Flip card hint -->
 
-                                        <!-- Flip card hint -->
                                         <div class="text-center mt-4 text-gray-500 flex items-center justify-center group cursor-pointer">
                                             <svg class="w-5 h-5 mr-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                                             </svg>
-                                            <span class="text-sm">Click to see {{ count($day->places_to_visit) }} more attractions</span>
+                                            <span class="text-[15px]">Click to see {{ count($day->places_to_visit) }} more attractions</span>
                                         </div>
+
+
+                                        {{-- Average costs --}}
+
+                                        <div class="text-center mt-4 text-blue-500 flex items-center justify-center group cursor-pointer">
+
+                                            <span class="text-[15px]"> 💸 Expense average {{round($averageDayCost)}}$ per day </span>
+                                        </div>
+
+
+
                                     </div>
                                 </div>
 

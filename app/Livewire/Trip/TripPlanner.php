@@ -13,11 +13,13 @@ class TripPlanner extends Component
     public $days = [];
     public $planner = null;
     private $usedPlaceIds = [];
+    public $averageDayCost;
 
     public function mount(Trip $trip)
     {
         $this->trip = $trip;
         $this->planner = $trip->planner;
+        $this->averageDayCost = $trip->budget / $trip->duration;
     }
 
     private function getPreferenceType($preference)
