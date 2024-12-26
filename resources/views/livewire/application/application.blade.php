@@ -462,6 +462,7 @@
 
 
                 <!-- Rest of your transactions view code -->
+                <livewire:chat.chat />
             </div>
         </div>
     </main>

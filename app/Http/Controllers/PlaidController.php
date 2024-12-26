@@ -118,7 +118,7 @@ class PlaidController extends Controller
                 }
 
                 \Log::info('Plaid transactions processed:', $response->json());
-                return response()->json(['success' => true, 'data' => $data]);
+                return redirect()->route('app')->with('success', 'Transactions fetched successfully');
             }
 
             return response()->json(['error' => 'Failed to fetch transactions'], 400);
