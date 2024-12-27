@@ -179,5 +179,6 @@
             </div>
         </div>
     </div>
+    <x-AIchat />
     <x-footer />
 </div>

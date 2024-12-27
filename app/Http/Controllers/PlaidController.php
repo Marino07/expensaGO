@@ -107,6 +107,11 @@ class PlaidController extends Controller
                 $data = $response->json();
 
                 foreach ($data['transactions'] as $transaction) {
+                    // Skip if transaction is a transfer
+                    if (strtolower($transaction['category'][0]) === 'transfer') {
+                        continue;
+                    }
+
                     Expense::create([
                         'title' => $transaction['name'],
                         'amount' => $transaction['amount'],

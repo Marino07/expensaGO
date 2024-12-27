@@ -1,23 +1,17 @@
 <div
-    x-data="{
-        isLoading: false,
-        minLoadingTime: 3000, // 3 seconds minimum
-        loadingStartTime: null,
-        init() {
-            Livewire.on('generation-started', () => {
-                this.isLoading = true;
-                this.loadingStartTime = Date.now();
-            });
-            Livewire.on('generation-completed', () => {
-                const elapsedTime = Date.now() - this.loadingStartTime;
-                const remainingTime = Math.max(0, this.minLoadingTime - elapsedTime);
-
-                setTimeout(() => {
-                    this.isLoading = false;
-                }, remainingTime);
-            });
-        }
-    }"
+x-data="{
+    isLoading: false,
+    loadingStartTime: null,
+    init() {
+        Livewire.on('generation-started', () => {
+            this.isLoading = true;
+            this.loadingStartTime = Date.now();
+        });
+        Livewire.on('generation-completed', () => {
+            this.isLoading = false;
+        });
+    }
+}"
 >
     <x-barapp />
     <!-- Loading Overlay -->
@@ -242,6 +236,8 @@
             @endif
         </div>
     </div>
+    {{-- AI Chat --}}
+    <x-AIchat />
 
     <style>
         [x-cloak] { display: none !important; }

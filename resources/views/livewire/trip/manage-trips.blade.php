@@ -245,8 +245,8 @@
             </div>
         </div>
     </div>
+    <x-AIchat />
 </div>
-
 <script>
     function tripManager() {
         return {
