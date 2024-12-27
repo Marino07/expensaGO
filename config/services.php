@@ -39,4 +39,9 @@ return [
         'places_api_key' => env('GOOGLE_PLACES_API_KEY'),
     ],
 
+    'ollama' => [
+        'url' => env('OLLAMA_URL', 'http://127.0.0.1:11434'),
+        'timeout' => env('OLLAMA_TIMEOUT', 30),
+    ],
+
 ];
