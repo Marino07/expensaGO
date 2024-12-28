@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Log;
 class Chat extends Component
 {
     public $message;
-    public $responses = [];
+    public $messages = [];
+    public $isTyping = false;
 
     private function getApiUrl()
     {
@@ -22,57 +23,106 @@ class Chat extends Component
             return;
         }
 
-        try {
-            $apiUrl = $this->getApiUrl();
-            Log::info('Attempting API request', [
-                'url' => $apiUrl,
-                'message' => $this->message,
-                'curl_version' => curl_version()
-            ]);
-
-            $response = Http::timeout(config('services.ollama.timeout', 30))
-                ->retry(3, 100, function ($exception) {
-                    Log::warning('Retrying due to error', [
-                        'error' => $exception->getMessage(),
-                        'class' => get_class($exception)
-                    ]);
-                    return true;
-                })
-                ->withHeaders([
-                    'Content-Type' => 'application/json',
-                    'Accept' => 'application/json'
-                ])
-                ->post($apiUrl . '/api/generate', [
-                    'model' => 'qwen2.5-coder:0.5b',
-                    'prompt' => $this->message,
-                    'stream' => false
-                ]);
-
-            Log::info('Raw response', [
-                'status' => $response->status(),
-                'body' => $response->body()
-            ]);
-
-            if ($response->successful()) {
-                $responseData = $response->json();
-                $this->responses[] = $responseData['response'] ?? 'No response received';
-            } else {
-                throw new \Exception('API request failed: ' . $response->status() . ' - ' . $response->body());
-            }
-        } catch (\Exception $e) {
-            Log::error('Chat error', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-                'url' => $this->getApiUrl()
-            ]);
-            $this->responses[] = "Connection error. Please try again or check the logs.";
-        }
-
+        // Store message and clear input immediately
+        $userMessage = $this->message;
+        $this->messages[] = [
+            'type' => 'user',
+            'content' => $userMessage
+        ];
         $this->message = '';
+
+        // Force Livewire to render immediately
+        $this->dispatch('messageAdded');
+
+        // Create empty AI response
+        $aiMessageIndex = count($this->messages);
+        $this->messages[] = [
+            'type' => 'ai',
+            'content' => ''
+        ];
+        $this->isTyping = true;
+
+        // Log the API request details
+        Log::info('Sending API request', [
+            'url' => $this->getApiUrl() . '/api/generate',
+            'message' => $userMessage
+        ]);
+
+        // Make the API call without blocking
+        $this->js("
+            fetch('{$this->getApiUrl()}/api/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    model: 'qwen2.5-coder:0.5b',
+                    prompt: '$userMessage',
+                    stream: true
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+
+                function readChunk() {
+                    reader.read().then(({value, done}) => {
+                        if (done) {
+                            \$wire.completeResponse();
+                            return;
+                        }
+
+                        const chunk = decoder.decode(value);
+                        const lines = chunk.split('\\n');
+
+                        lines.forEach(line => {
+                            if (line.trim()) {
+                                try {
+                                    const data = JSON.parse(line);
+                                    if (data.response) {
+                                        \$wire.appendToResponse($aiMessageIndex, data.response);
+                                    }
+                                } catch (e) {
+                                    console.error('Error parsing line:', line, e);
+                                }
+                            }
+                        });
+
+                        readChunk();
+                    }).catch(error => {
+                        console.error('Error reading chunk:', error);
+                        \$wire.logError('Error reading chunk: ' + error.message);
+                    });
+                }
+
+                readChunk();
+            }).catch(error => {
+                console.error('Fetch error:', error);
+                \$wire.logError('Fetch error: ' + error.message);
+            });
+        ");
+    }
+
+    public function appendToResponse($index, $text)
+    {
+        $this->messages[$index]['content'] .= $text;
+    }
+
+    public function completeResponse()
+    {
+        $this->isTyping = false;
+    }
+
+    public function logError($message)
+    {
+        Log::error($message);
     }
 
     public function render()
     {
-        return view('livewire.chat.chat', ['responses' => $this->responses]);
+        return view('livewire.chat.chat');
     }
 }
