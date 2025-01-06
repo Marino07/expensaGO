@@ -13,7 +13,7 @@ class PlaceFinder extends Component
     public $search;
     public $loading = false;
     public $sortCriteria = 'rating';
-    public $placeType = 'restaurant';
+    public $placeType = 'bar';
     public $var;
 
     public function mount()

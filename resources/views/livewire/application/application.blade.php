@@ -180,7 +180,7 @@
                 </div>
                 <div class="bg-yellow-600 px-4 py-4 sm:px-6">
                     <div class="text-sm">
-                        <a href="{{ route('restaurants') }}"
+                        <a href="{{ route('places') }}"
                             class="font-medium text-white hover:text-yellow-100 transition ease-in-out duration-150">
                             Search Best Places &rarr;
                         </a>
