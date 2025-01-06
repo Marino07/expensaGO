@@ -15,6 +15,26 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
         <script src="https://maps.googleapis.com/maps/api/js?key={{env('GOOGLE_PLACES_API_KEY')}}&callback=initMap" async defer></script>
+        <style>
+            @keyframes dashdraw {
+                from {
+                    stroke-dashoffset: 100;
+                }
+                to {
+                    stroke-dashoffset: 0;
+                }
+            }
+
+            .tutorial-arrow path:first-child {
+                animation: dashdraw 1.5s linear infinite;
+            }
+
+            .no-blur {
+                position: relative;
+                z-index: 60;
+                backdrop-filter: none !important;
+            }
+        </style>
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])

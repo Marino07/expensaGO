@@ -2,6 +2,7 @@
     showFilters: false,
     activeTab: 'list',
     mapLoaded: false,
+    showTutorial: true, // Dodajemo novu varijablu
     initMap() {
         if (!this.mapLoaded) {
             const map = new google.maps.Map(document.getElementById('map'), {
@@ -21,7 +22,7 @@
             this.mapLoaded = true;
         }
     }
-}" class="min-h-screen bg-gray-100">
+}" class="min-h-screen bg-gray-100 relative">
     <x-barapp />
 
     <!-- Hero Section -->
@@ -30,44 +31,151 @@
             <h1 class="text-4xl font-bold mb-4">Discover {{ ucfirst($placeType) }}s in {{ $search }}</h1>
             <p class="text-xl mb-8">Find the best local spots, read reviews, and plan your next adventure.</p>
 
-            <!-- Search Bar -->
-            <div class="flex flex-col md:flex-row gap-4 items-center bg-white rounded-lg p-2 shadow-lg">
-                <div class="flex-grow">
-                    <input type="text" placeholder="Search for {{ $placeType }}s..." class="w-full p-3 text-gray-700 focus:outline-none" wire:model.debounce.300ms="search">
+            <!-- Search Bar and Filters -->
+            <div class="flex flex-col md:flex-row items-center space-y-4 md:space-y-0">
+                <!-- Search and Location -->
+                <div class="flex-grow flex flex-col md:flex-row gap-4 items-center bg-white rounded-lg p-2 shadow-lg">
+                    <div class="flex-grow">
+                        <input type="text" placeholder="Search for {{ $placeType }}s..." class="w-full p-3 text-gray-700 focus:outline-none" wire:model.debounce.300ms="search">
+                    </div>
+                    <button @click="getLocation()" class="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 rounded-md hover:bg-blue-600 transition duration-300 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                        </svg>
+                        Use My Location
+                    </button>
+                    <button @click="showFilters = true" class="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-6 py-3 rounded-md hover:from-pink-600 hover:to-rose-600 transition duration-300 flex items-center no-blur">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
+                        </svg>
+                        Filters
+                    </button>
                 </div>
-                <button @click="getLocation()" class="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 rounded-md hover:bg-blue-600 transition duration-300 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
-                    </svg>
-                    Use My Location
-                </button>
-                <button class="bg-gray-200 text-gray-700 px-6 py-3 rounded-md hover:bg-gray-300 transition duration-300" @click="showFilters = !showFilters">
-                    Filters
-                </button>
             </div>
         </div>
     </div>
 
-    <!-- Filters -->
-    <div x-show="showFilters" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform -translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2" class="bg-white shadow-md p-4">
-        <div class="container mx-auto flex flex-wrap gap-4 items-center">
-            <div>
-                <label for="placeType" class="block text-sm font-medium text-gray-700 mb-1">Place Type:</label>
-                <select id="placeType" name="placeType" wire:model="placeType" wire:change="searchPlaces" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+    <!-- Filters Side Panel -->
+    <div x-cloak
+         x-show="showFilters"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 transform translate-x-full"
+         x-transition:enter-end="opacity-100 transform translate-x-0"
+         x-transition:leave="transition ease-in duration-300"
+         x-transition:leave-start="opacity-100 transform translate-x-0"
+         x-transition:leave-end="opacity-0 transform translate-x-full"
+         class="fixed right-0 top-0 h-full w-80 bg-white shadow-2xl z-50">
+        <!-- Filter Panel Header -->
+        <div class="p-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white flex justify-between items-center">
+            <h3 class="text-lg font-semibold">Filters</h3>
+            <button @click="showFilters = false" class="p-2 hover:bg-white/10 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Filter Content -->
+        <div class="p-6 space-y-6">
+            <!-- Place Type Filter -->
+            <div class="space-y-2">
+                <label for="placeType" class="block text-sm font-medium text-gray-700">Place Type</label>
+                <select id="placeType"
+                        wire:model="placeType"
+                        wire:change="searchPlaces"
+                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500">
                     <option value="restaurant">Restaurant</option>
                     <option value="store">Store</option>
                     <option value="cafe">Cafe</option>
                     <option value="bar">Bar</option>
                 </select>
             </div>
-            <div>
-                <label for="sort" class="block text-sm font-medium text-gray-700 mb-1">Sort by:</label>
-                <select id="sort" name="sort" wire:model="sortCriteria" wire:change="sortPlaces" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+
+            <!-- Sort Filter -->
+            <div class="space-y-2">
+                <label for="sort" class="block text-sm font-medium text-gray-700">Sort by</label>
+                <select id="sort"
+                        wire:model="sortCriteria"
+                        wire:change="sortPlaces"
+                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500">
                     <option value="rating">Rating</option>
                     <option value="price">Price</option>
                 </select>
             </div>
-            <!-- Add more filters here as needed -->
+
+            <!-- Additional filters can be added here -->
+        </div>
+
+        <!-- Apply Filters Button -->
+        <div class="absolute bottom-0 left-0 right-0 p-4 bg-gray-50 border-t">
+            <button @click="showFilters = false"
+                    class="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 rounded-md hover:from-blue-600 hover:to-cyan-600 transition-all duration-300">
+                Close
+            </button>
+        </div>
+    </div>
+
+    <!-- Backdrop -->
+    <div x-show="showFilters"
+         @click="showFilters = false"
+         x-transition:enter="transition-opacity ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition-opacity ease-in duration-300"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 bg-black/50 z-40">
+    </div>
+
+    <!-- Tutorial Overlay -->
+    <div x-cloak x-show="showTutorial"
+         class="fixed inset-0 z-50">
+        <!-- Backdrop with blur excluding filters button -->
+        <div class="absolute inset-0 bg-black/20 backdrop-blur-sm"></div>
+        <div class="absolute inset-0 z-40 pointer-events-none"></div>
+
+        <!-- Exclude filters button from blur -->
+        <style>
+            .no-blur {
+                position: relative;
+                z-index: 60;
+                backdrop-filter: none !important;
+            }
+        </style>
+
+        <!-- Tutorial poruka i strelica -->
+        <div class="absolute top-[135px] right-[300px] flex items-start">
+            <!-- Tutorial Box -->
+            <div class="bg-white rounded-lg shadow-xl p-6 max-w-xs relative z-50">
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Quick Tip! 💡</h3>
+                <p class="text-gray-600 mb-4">
+                    Use our filters to find exactly what you're looking for - sort by rating, price, and more!
+                </p>
+                <button @click="showTutorial = false; localStorage.setItem('placeFinder_tutorial_seen', 'true')"
+                        class="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-2 rounded-md hover:from-pink-600 hover:to-rose-600 transition-all duration-300 text-sm font-medium">
+                    Got it!
+                </button>
+            </div>
+
+            <!-- Curved Arrow from Tutorial to Filter Button -->
+            <svg class="absolute -right-16 top-8 w-32 h-32 z-50" viewBox="0 0 100 100">
+                <!-- Zakrivljena linija -->
+                <path
+                    d="M0,20 Q40,20 40,50 T80,80"
+                    fill="none"
+                    stroke="#ec4899"
+                    stroke-width="5"
+                    stroke-dasharray="4,4"
+                    class="animate-pulse"
+                />
+                <!-- Strelica na kraju -->
+                <path
+                    d="M75,75 L85,80 L75,85"
+                    fill="none"
+                    stroke="#ec4899"
+                    stroke-width="3"
+                />
+            </svg>
         </div>
     </div>
 
@@ -176,9 +284,21 @@
                     break;
             }
         }
+
+        // Dodajemo proveru da li je tutorial već viđen
+        document.addEventListener('DOMContentLoaded', function() {
+            const tutorialSeen = localStorage.getItem('placeFinder_tutorial_seen');
+            if (tutorialSeen) {
+                document.querySelector('[x-data]').__x.$data.showTutorial = false;
+            }
+        });
     </script>
 
     <!-- Load Google Maps JavaScript API asynchronously -->
     <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_PLACES_API_KEY') }}&callback=initMap"></script>
 </div>
+
+<!-- Add at the top of the file, in the head section or in your CSS -->
+
+
 
