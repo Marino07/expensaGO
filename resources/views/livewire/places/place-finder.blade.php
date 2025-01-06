@@ -5,8 +5,8 @@
     initMap() {
         if (!this.mapLoaded) {
             const map = new google.maps.Map(document.getElementById('map'), {
-                center: { lat: -34.397, lng: 150.644 },
-                zoom: 8,
+                center: { lat: {{ explode(',', $geo_lat_lng)[0] }}, lng: {{ explode(',', $geo_lat_lng)[1] }} },
+                zoom: 13, // Increased zoom level
             });
 
             // Add markers for each place
@@ -176,26 +176,9 @@
                     break;
             }
         }
-
-        // Ensure initMap is globally accessible
-        window.initMap = function() {
-            const map = new google.maps.Map(document.getElementById('map'), {
-                center: { lat: -34.397, lng: 150.644 },
-                zoom: 8,
-            });
-
-            // Add markers for each place
-            @this.places.forEach(place => {
-                new google.maps.Marker({
-                    position: { lat: place.geometry.location.lat, lng: place.geometry.location.lng },
-                    map: map,
-                    title: place.name,
-                });
-            });
-        }
     </script>
 
     <!-- Load Google Maps JavaScript API asynchronously -->
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key={{env('GOOGLE_PLACES_API_KEY')}}&callback=initMap"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_PLACES_API_KEY') }}&callback=initMap"></script>
 </div>
 

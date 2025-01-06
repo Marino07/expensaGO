@@ -31,7 +31,7 @@ services:
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
-            - '${FORWARD_DB_PORT:-3310}:3306' # 3310 for connecting inside docker,3306 for connecting to mysql service inside docker
+            - '${FORWARD_DB_PORT:-3310}:3306' # 3310 for connecting outside docker,3306 for connecting to mysql service inside docker
         environment:
             MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
             MYSQL_ROOT_HOST: '%'
@@ -101,11 +101,13 @@ services:
             - '/dev/shm:/dev/shm'
         networks:
             - sail
-    phpmyadmin:
-        image: 'phpmyadmin/phpmyadmin'
+    phpmyadmin: #Ime servise referenca na conatiner isto kao dolje mysql koji vodi na servis mysql
+        image: 'phpmyadmin/phpmyadmin' # Ako koristimo image phpmyadmin/phpmyadmin,
+        # on uključuje sve potrebne komponente za pokretanje phpMyAdmin-a,
+        # kao što su web server (npr. Apache), PHP i svi potrebni moduli.
         environment:
-            PMA_HOST: mysql
-            PMA_PORT: 3306
+            PMA_HOST: mysql #Host (ime containera)
+            PMA_PORT: 3306 #Port na kojem radi mysql unutar containera
             MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
         ports:
             - '8080:80'

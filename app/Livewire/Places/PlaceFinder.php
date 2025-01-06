@@ -15,6 +15,7 @@ class PlaceFinder extends Component
     public $sortCriteria = 'rating';
     public $placeType = 'bar';
     public $var;
+    public $geo_lat_lng;
 
     public function mount()
     {
@@ -60,11 +61,12 @@ class PlaceFinder extends Component
 
             if (isset($geocodeResponse['results'][0]['geometry']['location'])) {
                 $location = $geocodeResponse['results'][0]['geometry']['location'];
+                $this->geo_lat_lng = $location['lat'] . ',' . $location['lng'];
 
                 // Then we search for places near that location
                 $placesUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?";
                 $params = [
-                    'location' => $location['lat'].','.$location['lng'],
+                    'location' => $this->geo_lat_lng,
                     'radius' => '5000',
                     'type' => $this->placeType,
                     'key' => $apiKey
@@ -84,6 +86,7 @@ class PlaceFinder extends Component
         }
 
         $this->loading = false;
+
     }
 
     public function sortPlaces()
