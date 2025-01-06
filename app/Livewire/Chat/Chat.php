@@ -14,7 +14,10 @@ class Chat extends Component
 
     private function getApiUrl()
     {
-        return config('services.ollama.url', 'http://127.0.0.1:11434');
+        //return config('services.ollama.url', 'http://127.0.0.1:11434');
+
+        return 'http://127.0.0.1:11434'; // there is not port mapping in docker-compose
+
     }
 
     public function sendMessage()
@@ -34,12 +37,13 @@ class Chat extends Component
         // Force Livewire to render immediately
         $this->dispatch('messageAdded');
 
-        // Create empty AI response
         $aiMessageIndex = count($this->messages);
+        // Create empty AI response
         $this->messages[] = [
             'type' => 'ai',
             'content' => ''
         ];
+
         $this->isTyping = true;
 
         // Log the API request details

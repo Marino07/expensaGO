@@ -10,6 +10,7 @@ use App\Livewire\Trip\ManageTrips;
 use App\Livewire\Trip\TripPlanner;
 use App\Livewire\WelcomeComponent;
 use App\Livewire\Trip\GeneratePlan;
+use App\Livewire\Places\PlaceFinder;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Trip\ItineraryBuilder;
 use App\Http\Controllers\PlaidController;
@@ -26,7 +27,7 @@ Route::middleware('auth')->group(function () {
     Route::get('manage_trips', ManageTrips::class)->name('manage-trips');
     Route::get('all_expenses', AllExpenses::class)->name('all-expenses');
     Route::get('finish_trip/{trip}', EditTrip::class)->name('finish-trip');
-    Route::get('/restaurants', RestaurantFinder::class)->name('restaurants');
+    Route::get('/places', PlaceFinder::class)->name('places');
     Route::get('/generate_plan/{trip}', GeneratePlan::class)->name('generate-plan');
     Route::get('/sos', SOSComponent::class)->name('sos');
     Route::get('/itinerary_builder/{trip}', ItineraryBuilder::class)->name('itinerary_builder');

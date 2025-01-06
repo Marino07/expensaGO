@@ -7,12 +7,13 @@ use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 
-class RestaurantFinder extends Component
+class PlaceFinder extends Component
 {
-    public $restaurants = [];
+    public $places = [];
     public $search;
     public $loading = false;
     public $sortCriteria = 'rating';
+    public $placeType = 'restaurant';
     public $var;
 
     public function mount()
@@ -20,7 +21,7 @@ class RestaurantFinder extends Component
         $this->var = 'test';
         $trip = Trip::where('user_id', Auth::id())->latest()->first();
         $this->search = $trip->location;
-        $this->searchRestaurants();
+        $this->searchPlaces();
     }
     public function logout()
     {
@@ -31,7 +32,7 @@ class RestaurantFinder extends Component
     public function setUserLocation($lat, $lng)
     {
         $this->search = $this->getLocationName($lat, $lng);
-        $this->searchRestaurants();
+        $this->searchPlaces();
     }
 
     public function getLocationName($lat, $lng)
@@ -47,7 +48,7 @@ class RestaurantFinder extends Component
         return "{$lat},{$lng}";
     }
 
-    public function searchRestaurants()
+    public function searchPlaces()
     {
         $this->loading = true;
         $apiKey = env('GOOGLE_PLACES_API_KEY');  // we need to set our own API key in .env file
@@ -60,12 +61,12 @@ class RestaurantFinder extends Component
             if (isset($geocodeResponse['results'][0]['geometry']['location'])) {
                 $location = $geocodeResponse['results'][0]['geometry']['location'];
 
-                // Then we search for restaurants near that location
+                // Then we search for places near that location
                 $placesUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?";
                 $params = [
                     'location' => $location['lat'].','.$location['lng'],
                     'radius' => '5000',
-                    'type' => 'restaurant',
+                    'type' => $this->placeType,
                     'key' => $apiKey
                 ];
 
@@ -74,8 +75,8 @@ class RestaurantFinder extends Component
                 $response = $response->json();
 
                 if (isset($response['results'])) {
-                    $this->restaurants = $response['results'];
-                    $this->sortRestaurants();
+                    $this->places = $response['results'];
+                    $this->sortPlaces();
                 }
             }
         } catch (\Exception $e) {
@@ -85,9 +86,9 @@ class RestaurantFinder extends Component
         $this->loading = false;
     }
 
-    public function sortRestaurants()
+    public function sortPlaces()
     {
-        usort($this->restaurants, function ($a, $b) {
+        usort($this->places, function ($a, $b) {
             $ratingA = $a['rating'] ?? 0;
             $ratingB = $b['rating'] ?? 0;
             $priceA = $a['price_level'] ?? PHP_INT_MAX;
@@ -111,7 +112,7 @@ class RestaurantFinder extends Component
 
     public function updatedSortCriteria()
     {
-        $this->sortRestaurants();
+        $this->sortPlaces();
     }
 
     public function test()
@@ -121,6 +122,6 @@ class RestaurantFinder extends Component
 
     public function render()
     {
-        return view('livewire.places.restaurant-finder')->layout('layouts.trip');
+        return view('livewire.places.place-finder')->layout('layouts.trip');
     }
 }
