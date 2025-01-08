@@ -4,29 +4,50 @@
     mapLoaded: false,
     showTutorial: {{$tutorialState}},
     initMap() {
-        if (!this.mapLoaded) {
-            const map = new google.maps.Map(document.getElementById('map'), {
-                center: {{ !empty($geo_lat_lng) ? '{ lat: ' . explode(',', $geo_lat_lng)[0] . ', lng: ' . explode(',', $geo_lat_lng)[1] . ' }' : '{ lat: 40.73061, lng: -73.935242 }' }},
-                zoom: 13,
-            });
+        this.mapLoaded = false;
+        const map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: parseFloat('{{ explode(',', $geo_lat_lng)[0] }}'), lng: parseFloat('{{ explode(',', $geo_lat_lng)[1] }}') },
+            zoom: 14
+        });
 
-            // Add markers for each place
-            @this.places.forEach(place => {
-                new google.maps.Marker({
-                    position: { lat: place.geometry.location.lat, lng: place.geometry.location.lng },
-                    map: map,
-                    title: place.name,
-                });
-            });
+        // Create bounds object
+        const bounds = new google.maps.LatLngBounds();
 
-            this.mapLoaded = true;
+        // Add markers for each place and extend bounds
+        @this.places.forEach(place => {
+            const position = {
+                lat: place.geometry.location.lat,
+                lng: place.geometry.location.lng
+            };
+            new google.maps.Marker({
+                position: position,
+                map: map,
+                title: place.name,
+            });
+            bounds.extend(position);
+        });
+
+        // Fit map to all markers and center
+        if (@this.places.length > 0) {
+            map.fitBounds(bounds);
+            // Prevent too much zoom for single marker
+            const listener = google.maps.event.addListener(map, 'idle', function() {
+                if (map.getZoom() > 16) map.setZoom(16);
+                google.maps.event.removeListener(listener);
+            });
         }
+
+        this.mapLoaded = true;
     },
     changeTutorial() {
         this.showTutorial = !this.showTutorial;
         $wire.call('changeTutorial');
     }
-}" class="min-h-screen bg-gray-100 relative">
+}"
+class="min-h-screen bg-gray-100 relative"
+x-init="$watch('activeTab', value => { if (value === 'map') initMap(); })"
+@places-updated.window="if (activeTab === 'map') initMap()"
+>
     <x-barapp />
 
     <!-- Hero Section -->
@@ -40,7 +61,11 @@
                 <!-- Search and Location -->
                 <div class="flex-grow flex flex-col md:flex-row gap-4 items-center bg-white rounded-lg p-2 shadow-lg">
                     <div class="flex-grow">
-                        <input type="text" placeholder="Search for {{ $placeType }}s..." class="w-full p-3 text-gray-700 focus:outline-none" wire:model.debounce.300ms="search">
+                        <input type="text"
+                               placeholder="Search for {{ $placeType }}s..."
+                               class="w-full p-3 text-gray-700 focus:outline-none"
+                               wire:model.live.debounce.500ms="search"
+                               wire:keydown.enter="searchPlaces">
                     </div>
                     <button @click="getLocation()" class="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 rounded-md hover:bg-blue-600 transition duration-300 flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
@@ -132,8 +157,7 @@
     </div>
 
     <!-- Tutorial Overlay -->
-    <div x-cloak x-show="showTutorial"
-         class="fixed inset-0 z-50">
+    <div x-cloak x-show="showTutorial" class="fixed inset-0 z-50 hidden md:block">
         <!-- Backdrop with blur excluding filters button -->
         <div class="absolute inset-0 bg-black/20 backdrop-blur-sm"></div>
         <div class="absolute inset-0 z-40 pointer-events-none"></div>

@@ -55,12 +55,23 @@ class PlaceFinder extends Component
         return "{$lat},{$lng}";
     }
 
+    public function updated($propertyName)
+    {
+        if ($propertyName === 'search') {
+            $this->searchPlaces();
+        }
+    }
+
     public function searchPlaces()
     {
         $this->loading = true;
-        $apiKey = env('GOOGLE_PLACES_API_KEY');  // we need to set our own API key in .env file
+        $apiKey = env('GOOGLE_PLACES_API_KEY');
 
         try {
+            if (empty($this->search)) {
+                return;
+            }
+
             // First we get location coordinates for the search location
             $geocodeUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=".urlencode($this->search)."&key=".$apiKey;
             $geocodeResponse = Http::get($geocodeUrl)->json();
@@ -74,7 +85,7 @@ class PlaceFinder extends Component
                 $params = [
                     'location' => $this->geo_lat_lng,
                     'radius' => '5000',
-                    'type' => $this->placeType , // Use default place type if none is provided
+                    'type' => $this->placeType,
                     'key' => $apiKey
                 ];
 
@@ -85,6 +96,7 @@ class PlaceFinder extends Component
                 if (isset($response['results'])) {
                     $this->places = $response['results'];
                     $this->sortPlaces();
+                    $this->dispatch('places-updated');
                 }
             }
         } catch (\Exception $e) {
@@ -92,7 +104,6 @@ class PlaceFinder extends Component
         }
 
         $this->loading = false;
-
     }
 
     public function sortPlaces()
