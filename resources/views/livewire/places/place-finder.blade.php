@@ -262,7 +262,11 @@
     <script>
         function getLocation() {
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition, showError);
+                navigator.geolocation.getCurrentPosition(showPosition, showError, {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                });
             } else {
                 alert("Geolocation is not supported by this browser.");
             }
@@ -278,13 +282,13 @@
                     alert("User denied the request for Geolocation.");
                     break;
                 case error.POSITION_UNAVAILABLE:
-                    alert("Location information is unavailable.");
+                    alert("Location information is unavailable. Please try again.");
                     break;
                 case error.TIMEOUT:
-                    alert("The request to get user location timed out.");
+                    alert("The request to get user location timed out. Please try again.");
                     break;
                 case error.UNKNOWN_ERROR:
-                    alert("An unknown error occurred.");
+                    alert("An unknown error occurred. Please try again.");
                     break;
             }
         }

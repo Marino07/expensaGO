@@ -13,7 +13,7 @@ class PlaceFinder extends Component
     public $search;
     public $loading = false;
     public $sortCriteria = 'rating';
-    public $placeType = 'bar';
+    public $placeType = 'restaurant';
     public $var;
     public $geo_lat_lng;
     public $tutorialState;
@@ -74,7 +74,7 @@ class PlaceFinder extends Component
                 $params = [
                     'location' => $this->geo_lat_lng,
                     'radius' => '5000',
-                    'type' => $this->placeType,
+                    'type' => $this->placeType , // Use default place type if none is provided
                     'key' => $apiKey
                 ];
 
