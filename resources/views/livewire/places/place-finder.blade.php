@@ -2,12 +2,12 @@
     showFilters: false,
     activeTab: 'list',
     mapLoaded: false,
-    showTutorial: true, // Dodajemo novu varijablu
+    showTutorial: {{$tutorialState}},
     initMap() {
         if (!this.mapLoaded) {
             const map = new google.maps.Map(document.getElementById('map'), {
-                center: { lat: {{ explode(',', $geo_lat_lng)[0] }}, lng: {{ explode(',', $geo_lat_lng)[1] }} },
-                zoom: 13, // Increased zoom level
+                center: {{ !empty($geo_lat_lng) ? '{ lat: ' . explode(',', $geo_lat_lng)[0] . ', lng: ' . explode(',', $geo_lat_lng)[1] . ' }' : '{ lat: 40.73061, lng: -73.935242 }' }},
+                zoom: 13,
             });
 
             // Add markers for each place
@@ -21,6 +21,10 @@
 
             this.mapLoaded = true;
         }
+    },
+    changeTutorial() {
+        this.showTutorial = !this.showTutorial;
+        $wire.call('changeTutorial');
     }
 }" class="min-h-screen bg-gray-100 relative">
     <x-barapp />
@@ -44,7 +48,7 @@
                         </svg>
                         Use My Location
                     </button>
-                    <button @click="showFilters = true" class="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-6 py-3 rounded-md hover:from-pink-600 hover:to-rose-600 transition duration-300 flex items-center no-blur">
+                    <button @click="showFilters = true"  class="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-6 py-3 rounded-md hover:from-pink-600 hover:to-rose-600 transition duration-300 flex items-center" :class="{ 'no-blur': showTutorial }">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
                         </svg>
@@ -151,7 +155,7 @@
                 <p class="text-gray-600 mb-4">
                     Use our filters to find exactly what you're looking for - sort by rating, price, and more!
                 </p>
-                <button @click="showTutorial = false; localStorage.setItem('placeFinder_tutorial_seen', 'true')"
+                <button @click="changeTutorial"
                         class="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-2 rounded-md hover:from-pink-600 hover:to-rose-600 transition-all duration-300 text-sm font-medium">
                     Got it!
                 </button>
@@ -284,14 +288,6 @@
                     break;
             }
         }
-
-        // Dodajemo proveru da li je tutorial već viđen
-        document.addEventListener('DOMContentLoaded', function() {
-            const tutorialSeen = localStorage.getItem('placeFinder_tutorial_seen');
-            if (tutorialSeen) {
-                document.querySelector('[x-data]').__x.$data.showTutorial = false;
-            }
-        });
     </script>
 
     <!-- Load Google Maps JavaScript API asynchronously -->

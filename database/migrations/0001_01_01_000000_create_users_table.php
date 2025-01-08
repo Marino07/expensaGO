@@ -24,6 +24,7 @@ return new class extends Migration
             $table->boolean('has_completed_questionnaire')->default(false);
             $table->string('plaid_item_id')->nullable();
             $table->string('plaid_cursor')->nullable();
+            $table->boolean('tutorial_completed')->default(true);
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

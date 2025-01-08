@@ -16,12 +16,18 @@ class PlaceFinder extends Component
     public $placeType = 'bar';
     public $var;
     public $geo_lat_lng;
+    public $tutorialState;
 
     public function mount()
     {
-        $this->var = 'test';
         $trip = Trip::where('user_id', Auth::id())->latest()->first();
-        $this->search = $trip->location;
+        if(!$trip){
+            $this->search = 'London';
+        }else{
+            $this->search = $trip->location;
+        }
+
+        $this->tutorialState = auth()->user()->tutorial_completed;
         $this->searchPlaces();
     }
     public function logout()
@@ -121,6 +127,13 @@ class PlaceFinder extends Component
     public function test()
     {
         $this->var = 'test';
+    }
+    public function changeTutorial()
+    {
+        $this->tutorialState = !$this->tutorialState;
+        $user = auth()->user();
+        $user->tutorial_completed = $this->tutorialState;
+        $user->save();
     }
 
     public function render()
