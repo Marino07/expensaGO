@@ -47,6 +47,8 @@
 class="min-h-screen bg-gray-100 relative"
 x-init="$watch('activeTab', value => { if (value === 'map') initMap(); })"
 @places-updated.window="if (activeTab === 'map') initMap()"
+@reset-to-list-view.window="activeTab = 'list'"
+@search-updated.window="activeTab = 'list'"
 >
     <x-barapp />
 
@@ -65,6 +67,7 @@ x-init="$watch('activeTab', value => { if (value === 'map') initMap(); })"
                                placeholder="Search for {{ $placeType }}s..."
                                class="w-full p-3 text-gray-700 focus:outline-none"
                                wire:model.live.debounce.500ms="search"
+                               @input="$dispatch('search-updated')"
                                wire:keydown.enter="searchPlaces">
                     </div>
                     <button @click="getLocation()" class="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 rounded-md hover:bg-blue-600 transition duration-300 flex items-center">
@@ -73,11 +76,10 @@ x-init="$watch('activeTab', value => { if (value === 'map') initMap(); })"
                         </svg>
                         Use My Location
                     </button>
-                    <button @click="showFilters = true"  class="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-6 py-3 rounded-md hover:from-pink-600 hover:to-rose-600 transition duration-300 flex items-center" :class="{ 'no-blur': showTutorial }">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <button @click="showFilters = true"  class="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-3 rounded-md hover:from-pink-600 hover:to-rose-600 transition duration-300 flex items-center justify-center" :class="{ 'no-blur': showTutorial }">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
                         </svg>
-                        Filters
                     </button>
                 </div>
             </div>
@@ -172,7 +174,7 @@ x-init="$watch('activeTab', value => { if (value === 'map') initMap(); })"
         </style>
 
         <!-- Tutorial poruka i strelica -->
-        <div class="absolute top-[135px] right-[300px] flex items-start">
+        <div class="absolute top-[135px] right-[250px] flex items-start">
             <!-- Tutorial Box -->
             <div class="bg-white rounded-lg shadow-xl p-6 max-w-xs relative z-50">
                 <h3 class="text-lg font-semibold text-gray-900 mb-2">Quick Tip! 💡</h3>
