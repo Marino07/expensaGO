@@ -10,6 +10,10 @@
     directionsRenderer: null,
     travelTime: null,
     selectedTravelMode: 'DRIVING',
+    userMarker: null,
+    userWatchId: null,
+    currentLocation: null,
+    userLocationMarker: null,
     initMap() {
         this.mapLoaded = false;
         this.markers = [];
@@ -63,6 +67,11 @@
         }
 
         this.mapLoaded = true;
+
+        // Start tracking user location after map is loaded
+        this.$nextTick(() => {
+            this.watchUserPosition();
+        });
     },
     focusMarker(placeId) {
         this.activeTab = 'map';
@@ -139,15 +148,38 @@
             });
         }
     },
+    // Modify the getDirections function to update route styling
     getDirections(start, destination) {
         if (!this.directionsService || !this.directionsRenderer) {
             this.directionsService = new google.maps.DirectionsService();
             this.directionsRenderer = new google.maps.DirectionsRenderer({
-                suppressMarkers: false
+                suppressMarkers: true, // Hide default markers
+                polylineOptions: {
+                    strokeColor: '#4F46E5',
+                    strokeWeight: 5,
+                    strokeOpacity: 0.8
+                }
             });
         }
 
         this.directionsRenderer.setMap(this.map);
+
+        // Create custom markers for start and end points
+        const startMarker = new google.maps.Marker({
+            map: this.map,
+            icon: {
+                url: 'https://maps.google.com/mapfiles/ms/icons/green-dot.png',
+                scaledSize: new google.maps.Size(40, 40)
+            }
+        });
+
+        const endMarker = new google.maps.Marker({
+            map: this.map,
+            icon: {
+                url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                scaledSize: new google.maps.Size(40, 40)
+            }
+        });
 
         this.directionsService.route({
             origin: start,
@@ -156,21 +188,114 @@
         }, (response, status) => {
             if (status === 'OK') {
                 this.activeTab = 'map';
-                // Clear existing markers when showing directions
                 this.markers.forEach(marker => marker.marker.setMap(null));
                 this.directionsRenderer.setDirections(response);
 
-                // Extract and store travel time
+                // Set positions for custom markers
                 const route = response.routes[0];
                 if (route && route.legs && route.legs[0]) {
+                    startMarker.setPosition(route.legs[0].start_location);
+                    endMarker.setPosition(route.legs[0].end_location);
                     this.travelTime = route.legs[0].duration.text;
                 }
+
+                // Start watching user position after route is set
+                this.watchUserPosition();
 
                 this.showDirectionsModal = false;
             } else {
                 alert('Could not calculate directions: ' + status);
             }
         });
+    },
+    watchUserPosition() {
+        if (navigator.geolocation) {
+            // Clear existing watchers and markers
+            if (this.userWatchId) {
+                navigator.geolocation.clearWatch(this.userWatchId);
+                if (this.userMarker) {
+                    this.userMarker.setMap(null);
+                }
+            }
+
+            // Create a new marker with a different icon
+            this.userMarker = new google.maps.Marker({
+                map: this.map,
+                icon: {
+                    path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                    fillColor: '#EC4899',
+                    fillOpacity: 1,
+                    strokeColor: '#ffffff',
+                    strokeWeight: 2,
+                    scale: 7,
+                    rotation: 0
+                },
+                optimized: false,
+                title: 'Your Location',
+                zIndex: 999
+            });
+
+            // Add accuracy circle
+            this.accuracyCircle = new google.maps.Circle({
+                map: this.map,
+                fillColor: '#EC4899',
+                fillOpacity: 0.15,
+                strokeColor: '#EC4899',
+                strokeOpacity: 0.4,
+                strokeWeight: 1
+            });
+
+            let lastPosition = null;
+            let lastHeading = 0;
+
+            console.log('Starting location watch with high accuracy...');
+            this.userWatchId = navigator.geolocation.watchPosition(
+                (position) => {
+                    const pos = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+
+                    // Calculate heading if we have a previous position
+                    if (lastPosition) {
+                        const heading = google.maps.geometry.spherical.computeHeading(
+                            new google.maps.LatLng(lastPosition),
+                            new google.maps.LatLng(pos)
+                        );
+                        if (heading !== 0) {
+                            lastHeading = heading;
+                        }
+                    }
+
+                    // Update marker with new position and rotation
+                    const icon = this.userMarker.getIcon();
+                    icon.rotation = position.coords.heading || lastHeading;
+                    this.userMarker.setIcon(icon);
+                    this.userMarker.setPosition(pos);
+
+                    // Update accuracy circle
+                    this.accuracyCircle.setCenter(pos);
+                    this.accuracyCircle.setRadius(position.coords.accuracy);
+
+                    // Automatically center the map on the first position
+                    if (!lastPosition) {
+                        this.map.setCenter(pos);
+                        this.map.setZoom(17);
+                    }
+
+                    lastPosition = pos;
+                    console.log('Updated position:', pos, 'Accuracy:', position.coords.accuracy, 'Heading:', icon.rotation);
+                },
+                (error) => {
+                    console.error('Geolocation error:', error);
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 0
+                }
+            );
+        }
     }
 }"
 class="min-h-screen bg-gray-100 relative"
@@ -186,7 +311,7 @@ x-init="
     // Load Google Maps script if not already loaded
     if (!window.google) {
         const script = document.createElement('script');
-        script.src = 'https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_PLACES_API_KEY') }}&libraries=places,geocoding';
+        script.src = 'https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_PLACES_API_KEY') }}&libraries=places,geocoding,geometry';
         script.defer = true;
         document.head.appendChild(script);
     }
@@ -200,6 +325,15 @@ x-init="
             }
         }
     });
+
+    $cleanup = () => {
+        if (userWatchId) {
+            navigator.geolocation.clearWatch(userWatchId);
+        }
+        if (userMarker) {
+            userMarker.setMap(null);
+        }
+    };
 "
 @places-updated.window="if (activeTab === 'map' && window.google) initMap()"
 @reset-to-list-view.window="activeTab = 'list'"
