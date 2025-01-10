@@ -8,6 +8,8 @@
     selectedDestination: null,
     directionsService: null,
     directionsRenderer: null,
+    travelTime: null,
+    selectedTravelMode: 'DRIVING',
     initMap() {
         this.mapLoaded = false;
         this.markers = [];
@@ -150,13 +152,20 @@
         this.directionsService.route({
             origin: start,
             destination: destination,
-            travelMode: google.maps.TravelMode.DRIVING
+            travelMode: google.maps.TravelMode[this.selectedTravelMode]
         }, (response, status) => {
             if (status === 'OK') {
                 this.activeTab = 'map';
                 // Clear existing markers when showing directions
                 this.markers.forEach(marker => marker.marker.setMap(null));
                 this.directionsRenderer.setDirections(response);
+
+                // Extract and store travel time
+                const route = response.routes[0];
+                if (route && route.legs && route.legs[0]) {
+                    this.travelTime = route.legs[0].duration.text;
+                }
+
                 this.showDirectionsModal = false;
             } else {
                 alert('Could not calculate directions: ' + status);
@@ -415,6 +424,10 @@ x-init="
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $place['opening_hours']['open_now'] ? 'bg-blue-100 text-blue-800' : 'bg-red-100 text-red-800' }}">
                                     {{ $place['opening_hours']['open_now'] ? 'Open Now' : 'Closed' }}
                                 </span>
+                            @elseif(empty($place['opening_hours']))
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                    Unknown
+                                </span>
                             @endif
                             <div class="mt-4">
                                 <button @click.stop="showDirections('{{ $place['place_id'] }}')"
@@ -436,12 +449,22 @@ x-init="
             <div id="map" class="w-full h-[600px] rounded-lg shadow-md">
                 <!-- Map will be initialized here -->
             </div>
+            <div x-show="travelTime"
+                 x-transition
+                 class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-white rounded-lg shadow-lg p-4 z-40">
+                <div class="flex items-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span class="font-medium">Estimated travel time: <span x-text="travelTime" class="text-blue-600"></span></span>
+                </div>
+            </div>
         </div>
     </div>
 
     <x-footer />
 
-    <div x-show="showDirectionsModal"
+    <div x-show="showDirectionsModal" x-cloak
          class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"
          x-transition:enter="transition ease-out duration-300"
          x-transition:enter-start="opacity-0 transform scale-95"
@@ -471,7 +494,7 @@ x-init="
 
                     <div class="flex space-x-4">
                         <button @click="calculateRoute('address')"
-                                class="flex-1 bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 rounded-lg font-medium hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-md">
+                                class="flex-1 bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-3 rounded-lg font-medium hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-md">
                             <span class="flex items-center justify-center">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
@@ -480,13 +503,33 @@ x-init="
                             </span>
                         </button>
                         <button @click="calculateRoute('current')"
-                                class="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-3 rounded-lg font-medium hover:from-green-600 hover:to-emerald-600 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 shadow-md">
+                                class="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-4 py-3 rounded-lg font-medium hover:from-green-600 hover:to-emerald-600 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 shadow-md">
                             <span class="flex items-center justify-center">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                                 </svg>
                                 Use My Location
                             </span>
+                        </button>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Travel Mode</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button @click="selectedTravelMode = 'DRIVING'"
+                                :class="{'bg-blue-500 text-white': selectedTravelMode === 'DRIVING', 'bg-gray-100 text-gray-700': selectedTravelMode !== 'DRIVING'}"
+                                class="p-2 rounded-lg flex items-center justify-center">
+                                <span class="flex justify-center items-center gap-1">
+                                    <x-driving />
+                                    <span class="mt-[5px]">Driving</span>
+                                </span>
+
+                        </button>
+                        <button @click="selectedTravelMode = 'WALKING'"
+                                :class="{'bg-blue-500 text-white': selectedTravelMode === 'WALKING', 'bg-gray-100 text-gray-700': selectedTravelMode !== 'WALKING'}"
+                                class="p-2 rounded-lg flex items-center justify-center">
+                            <x-walking />
+                            Walking
                         </button>
                     </div>
                 </div>
