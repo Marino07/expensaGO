@@ -26,7 +26,7 @@
 
         this.map = new google.maps.Map(document.getElementById('map'), {
             center: { lat: lat, lng: lng },
-            zoom: 14
+            zoom: this.activeTab === 'map' ? 17 : 14 // Increase zoom level for individual marker
         });
 
         // Initialize directions service and renderer
@@ -72,21 +72,24 @@
     },
     focusMarker(placeId) {
         this.activeTab = 'map';
-        if (!this.mapLoaded) {
-            this.$nextTick(() => {
-                this.initMap();
-                this.$nextTick(() => this.zoomToMarker(placeId));
-            });
-        } else {
-            this.zoomToMarker(placeId);
-        }
+        this.initMap();
+        this.$nextTick(() => {
+            if (this.mapLoaded) {
+                this.zoomToMarker(placeId);
+            } else {
+                this.$watch('mapLoaded', (value) => {
+                    if (value) {
+                        this.zoomToMarker(placeId);
+                    }
+                });
+            }
+        });
     },
     zoomToMarker(placeId) {
         const markerData = this.markers.find(m => m.id === placeId);
         if (markerData && this.map) {
             this.map.panTo(markerData.marker.getPosition());
-            this.map.setZoom(17);
-
+            this.map.setZoom(20); // Increase zoom level for individual marker
             markerData.marker.setAnimation(google.maps.Animation.BOUNCE);
             setTimeout(() => {
                 markerData.marker.setAnimation(null);
@@ -630,7 +633,7 @@ x-init="
             <div id="map" class="w-full h-[600px] rounded-lg shadow-md">
                 <!-- Map will be initialized here -->
             </div>
-            <div x-show="travelTime"
+            <div x-show="travelTime" x-cloak
                  x-transition
                  class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-white rounded-lg shadow-lg p-4 z-40">
                 <div class="flex items-center space-x-2">
