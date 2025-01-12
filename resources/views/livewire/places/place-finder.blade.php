@@ -14,11 +14,18 @@
     userWatchId: null,
     currentLocation: null,
     userLocationMarker: null,
+    map: null,
+    startMarker: null,
+    endMarker: null,
     initMap() {
         this.mapLoaded = false;
         this.markers = [];
-        const map = new google.maps.Map(document.getElementById('map'), {
-            center: { lat: parseFloat('{{ explode(',', $geo_lat_lng)[0] }}'), lng: parseFloat('{{ explode(',', $geo_lat_lng)[1] }}') },
+
+        // Parse the coordinates from geo_lat_lng
+        const [lat, lng] = '{{ $geo_lat_lng }}'.split(',').map(coord => parseFloat(coord));
+
+        this.map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: lat, lng: lng },
             zoom: 14
         });
 
@@ -29,8 +36,7 @@
                 suppressMarkers: false
             });
         }
-        // Set map for directionsRenderer
-        this.directionsRenderer.setMap(map);
+        this.directionsRenderer.setMap(this.map);
 
         // Create bounds object
         const bounds = new google.maps.LatLngBounds();
@@ -43,7 +49,7 @@
             };
             const marker = new google.maps.Marker({
                 position: position,
-                map: map,
+                map: this.map,
                 title: place.name,
             });
             this.markers.push({
@@ -53,25 +59,16 @@
             bounds.extend(position);
         });
 
-        // Store map reference
-        this.map = map;
-
-        // Fit map to all markers and center
+        // Only fit bounds if we have places
         if (@this.places.length > 0) {
-            map.fitBounds(bounds);
-            // Prevent too much zoom for single marker
-            const listener = google.maps.event.addListener(map, 'idle', function() {
-                if (map.getZoom() > 16) map.setZoom(16);
+            this.map.fitBounds(bounds);
+            const listener = google.maps.event.addListener(this.map, 'idle', function() {
+                if (this.map.getZoom() > 16) this.map.setZoom(16);
                 google.maps.event.removeListener(listener);
             });
         }
 
         this.mapLoaded = true;
-
-        // Start tracking user location after map is loaded
-        this.$nextTick(() => {
-            this.watchUserPosition();
-        });
     },
     focusMarker(placeId) {
         this.activeTab = 'map';
@@ -86,16 +83,10 @@
     },
     zoomToMarker(placeId) {
         const markerData = this.markers.find(m => m.id === placeId);
-        if (markerData) {
-            // First pan to the marker
+        if (markerData && this.map) {
             this.map.panTo(markerData.marker.getPosition());
+            this.map.setZoom(17);
 
-            // Then smoothly zoom in
-            setTimeout(() => {
-                this.map.setZoom(17);
-            }, 300);
-
-            // Bounce animation
             markerData.marker.setAnimation(google.maps.Animation.BOUNCE);
             setTimeout(() => {
                 markerData.marker.setAnimation(null);
@@ -126,14 +117,45 @@
         };
 
         if (startType === 'current') {
-            // Use current location
+            // Reset any existing navigation state
+            if (this.directionsRenderer) {
+                this.directionsRenderer.setMap(null);
+                this.directionsRenderer = null;
+            }
+            if (this.userMarker) {
+                this.userMarker.setMap(null);
+                this.userMarker = null;
+            }
+            if (this.userWatchId) {
+                navigator.geolocation.clearWatch(this.userWatchId);
+                this.userWatchId = null;
+            }
+
+            // Use current location with new permission check
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((position) => {
-                    const start = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                    };
-                    this.getDirections(start, destination);
+                navigator.permissions.query({ name: 'geolocation' }).then(result => {
+                    if (result.state === 'granted' || result.state === 'prompt') {
+                        navigator.geolocation.getCurrentPosition(
+                            (position) => {
+                                const start = {
+                                    lat: position.coords.latitude,
+                                    lng: position.coords.longitude
+                                };
+                                this.getDirections(start, destination, true);
+                            },
+                            (error) => {
+                                console.error('Geolocation error:', error);
+                                alert('Unable to get your location. Please try again or enter an address.');
+                            },
+                            {
+                                enableHighAccuracy: true,
+                                timeout: 5000,
+                                maximumAge: 0
+                            }
+                        );
+                    } else {
+                        alert('Location permission is required for this feature.');
+                    }
                 });
             }
         } else {
@@ -143,29 +165,43 @@
             geocoder.geocode({ address: address }, (results, status) => {
                 if (status === 'OK') {
                     const start = results[0].geometry.location;
-                    this.getDirections(start, destination);
+                    this.getDirections(start, destination, false);
                 }
             });
         }
     },
-    // Modify the getDirections function to update route styling
-    getDirections(start, destination) {
-        if (!this.directionsService || !this.directionsRenderer) {
-            this.directionsService = new google.maps.DirectionsService();
-            this.directionsRenderer = new google.maps.DirectionsRenderer({
-                suppressMarkers: true, // Hide default markers
-                polylineOptions: {
-                    strokeColor: '#4F46E5',
-                    strokeWeight: 5,
-                    strokeOpacity: 0.8
-                }
-            });
+    getDirections(start, destination, trackLocation) {
+        // Reset existing navigation components
+        if (this.directionsRenderer) {
+            this.directionsRenderer.setMap(null);
         }
+        if (this.userMarker) {
+            this.userMarker.setMap(null);
+        }
+        if (this.accuracyCircle) {
+            this.accuracyCircle.setMap(null);
+        }
+        if (this.startMarker) {
+            this.startMarker.setMap(null);
+        }
+        if (this.endMarker) {
+            this.endMarker.setMap(null);
+        }
+
+        // Initialize new directions renderer
+        this.directionsRenderer = new google.maps.DirectionsRenderer({
+            suppressMarkers: true,
+            polylineOptions: {
+                strokeColor: '#4F46E5',
+                strokeWeight: 5,
+                strokeOpacity: 0.8
+            }
+        });
 
         this.directionsRenderer.setMap(this.map);
 
-        // Create custom markers for start and end points
-        const startMarker = new google.maps.Marker({
+        // Create custom markers
+        this.startMarker = new google.maps.Marker({
             map: this.map,
             icon: {
                 url: 'https://maps.google.com/mapfiles/ms/icons/green-dot.png',
@@ -173,13 +209,18 @@
             }
         });
 
-        const endMarker = new google.maps.Marker({
+        this.endMarker = new google.maps.Marker({
             map: this.map,
             icon: {
                 url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
                 scaledSize: new google.maps.Size(40, 40)
             }
         });
+
+        // Calculate route
+        if (!this.directionsService) {
+            this.directionsService = new google.maps.DirectionsService();
+        }
 
         this.directionsService.route({
             origin: start,
@@ -191,16 +232,27 @@
                 this.markers.forEach(marker => marker.marker.setMap(null));
                 this.directionsRenderer.setDirections(response);
 
-                // Set positions for custom markers
                 const route = response.routes[0];
                 if (route && route.legs && route.legs[0]) {
-                    startMarker.setPosition(route.legs[0].start_location);
-                    endMarker.setPosition(route.legs[0].end_location);
+                    this.startMarker.setPosition(route.legs[0].start_location);
+                    this.endMarker.setPosition(route.legs[0].end_location);
                     this.travelTime = route.legs[0].duration.text;
                 }
 
-                // Start watching user position after route is set
-                this.watchUserPosition();
+                // Center map on the route
+                const bounds = new google.maps.LatLngBounds();
+                route.legs[0].steps.forEach(step => {
+                    bounds.extend(step.start_location);
+                    bounds.extend(step.end_location);
+                });
+                this.map.fitBounds(bounds);
+
+                // Only start tracking if it's a current location route
+                if (trackLocation) {
+                    this.$nextTick(() => {
+                        this.watchUserPosition();
+                    });
+                }
 
                 this.showDirectionsModal = false;
             } else {
@@ -209,16 +261,15 @@
         });
     },
     watchUserPosition() {
-        if (navigator.geolocation) {
-            // Clear existing watchers and markers
-            if (this.userWatchId) {
-                navigator.geolocation.clearWatch(this.userWatchId);
-                if (this.userMarker) {
-                    this.userMarker.setMap(null);
-                }
-            }
+        if (!navigator.geolocation) return;
 
-            // Create a new marker with a different icon
+        // Clear existing watch
+        if (this.userWatchId) {
+            navigator.geolocation.clearWatch(this.userWatchId);
+        }
+
+        // Create new user marker if it doesn't exist or was removed
+        if (!this.userMarker || !this.userMarker.getMap()) {
             this.userMarker = new google.maps.Marker({
                 map: this.map,
                 icon: {
@@ -234,8 +285,10 @@
                 title: 'Your Location',
                 zIndex: 999
             });
+        }
 
-            // Add accuracy circle
+        // Create or recreate accuracy circle
+        if (!this.accuracyCircle || !this.accuracyCircle.getMap()) {
             this.accuracyCircle = new google.maps.Circle({
                 map: this.map,
                 fillColor: '#EC4899',
@@ -244,58 +297,52 @@
                 strokeOpacity: 0.4,
                 strokeWeight: 1
             });
-
-            let lastPosition = null;
-            let lastHeading = 0;
-
-            console.log('Starting location watch with high accuracy...');
-            this.userWatchId = navigator.geolocation.watchPosition(
-                (position) => {
-                    const pos = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                    };
-
-                    // Calculate heading if we have a previous position
-                    if (lastPosition) {
-                        const heading = google.maps.geometry.spherical.computeHeading(
-                            new google.maps.LatLng(lastPosition),
-                            new google.maps.LatLng(pos)
-                        );
-                        if (heading !== 0) {
-                            lastHeading = heading;
-                        }
-                    }
-
-                    // Update marker with new position and rotation
-                    const icon = this.userMarker.getIcon();
-                    icon.rotation = position.coords.heading || lastHeading;
-                    this.userMarker.setIcon(icon);
-                    this.userMarker.setPosition(pos);
-
-                    // Update accuracy circle
-                    this.accuracyCircle.setCenter(pos);
-                    this.accuracyCircle.setRadius(position.coords.accuracy);
-
-                    // Automatically center the map on the first position
-                    if (!lastPosition) {
-                        this.map.setCenter(pos);
-                        this.map.setZoom(17);
-                    }
-
-                    lastPosition = pos;
-                    console.log('Updated position:', pos, 'Accuracy:', position.coords.accuracy, 'Heading:', icon.rotation);
-                },
-                (error) => {
-                    console.error('Geolocation error:', error);
-                },
-                {
-                    enableHighAccuracy: true,
-                    timeout: 5000,
-                    maximumAge: 0
-                }
-            );
         }
+
+        let lastPosition = null;
+        let lastHeading = 0;
+
+        // Start new watch with high accuracy
+        this.userWatchId = navigator.geolocation.watchPosition(
+            (position) => {
+                const pos = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+
+                if (lastPosition) {
+                    const heading = google.maps.geometry.spherical.computeHeading(
+                        new google.maps.LatLng(lastPosition),
+                        new google.maps.LatLng(pos)
+                    );
+                    if (heading !== 0) {
+                        lastHeading = heading;
+                    }
+                }
+
+                const icon = this.userMarker.getIcon();
+                icon.rotation = position.coords.heading || lastHeading;
+                this.userMarker.setIcon(icon);
+                this.userMarker.setPosition(pos);
+
+                this.accuracyCircle.setCenter(pos);
+                this.accuracyCircle.setRadius(position.coords.accuracy);
+
+                if (!lastPosition) {
+                    this.map.panTo(pos);
+                }
+
+                lastPosition = pos;
+            },
+            (error) => {
+                console.error('Geolocation watch error:', error);
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+            }
+        );
     }
 }"
 class="min-h-screen bg-gray-100 relative"
@@ -682,14 +729,27 @@ x-init="
     <script>
         function getLocation() {
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition, showError, {
-                    enableHighAccuracy: true,
-                    timeout: 10000,
-                    maximumAge: 0
+                // Add a specific permission prompt
+                navigator.permissions.query({ name: 'geolocation' }).then(function(result) {
+                    if (result.state === 'granted') {
+                        requestLocation();
+                    } else if (result.state === 'prompt') {
+                        requestLocation();
+                    } else if (result.state === 'denied') {
+                        alert("Please enable location access in your browser settings to use this feature.");
+                    }
                 });
             } else {
                 alert("Geolocation is not supported by this browser.");
             }
+        }
+
+        function requestLocation() {
+            navigator.geolocation.getCurrentPosition(showPosition, showError, {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            });
         }
 
         function showPosition(position) {
