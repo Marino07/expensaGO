@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use App\Livewire\Event\Event;
 use App\Livewire\SOSComponent;
 use App\Livewire\Trip\EditTrip;
 use App\Livewire\Trip\StartTrip;
@@ -36,6 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/plaid/get-access-token', [PlaidController::class, 'getAccessToken']);
     Route::get('/plaid/transactions', [PlaidController::class, 'getTransactions'])->middleware('auth');
     Route::post('/webhook/plaid', [PlaidWebhookController::class, 'handleWebhook']);
+    Route::get('/events',Event::class)->name('events');
 });
 Route::view('profile', 'profile')
     ->middleware(['auth'])
