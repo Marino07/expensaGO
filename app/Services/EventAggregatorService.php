@@ -28,10 +28,12 @@ class EventAggregatorService
 
         // Get Ticketmaster events
         $ticketmasterEvents = $this->ticketmasterService->searchEvents($location, $startDate, $endDate);
+        Log::debug('Ticketmaster API Response', ['body' => $ticketmasterEvents]);
         $events = array_merge($events, $this->formatTicketmasterEvents($ticketmasterEvents));
 
         // Get Eventbrite events
         $eventbriteEvents = $this->eventbriteService->searchEvents($location, $startDate, $endDate);
+        Log::debug('Eventbrite API Response', ['body' => $eventbriteEvents]);
         $events = array_merge($events, $this->formatEventbriteEvents($eventbriteEvents));
 
         Log::info('Total events found', ['count' => count($events)]);
@@ -46,7 +48,7 @@ class EventAggregatorService
                 'id' => $event['id'] ?? '',
                 'title' => $event['name'] ?? '',
                 'description' => $event['description'] ?? '',
-                'start_date' => $event['dates']['start']['dateTime'] ?? '',
+                'start_date' => \Carbon\Carbon::parse($event['dates']['start']['dateTime'] ?? '')->format('Y-m-d'),
                 'location' => $event['_embedded']['venues'][0]['name'] ?? '',
                 'image' => $event['images'][0]['url'] ?? '',
                 'price' => $event['priceRanges'][0]['min'] ?? null,
@@ -63,7 +65,7 @@ class EventAggregatorService
                 'id' => $event['id'] ?? '',
                 'title' => $event['name']['text'] ?? '',
                 'description' => $event['description']['text'] ?? '',
-                'start_date' => $event['start']['utc'] ?? '',
+                'start_date' => \Carbon\Carbon::parse($event['start']['utc'] ?? '')->format('Y-m-d'),
                 'location' => $event['venue']['name'] ?? '',
                 'image' => $event['logo']['url'] ?? '',
                 'price' => $event['ticket_availability']['minimum_ticket_price']['major_value'] ?? null,

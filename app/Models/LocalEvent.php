@@ -10,6 +10,7 @@ class LocalEvent extends Model
     /** @use HasFactory<\Database\Factories\LocalEventFactory> */
     use HasFactory;
     protected $fillable = [
+        'trip_id',
         'name',
         'location',
         'start_date',
@@ -17,6 +18,9 @@ class LocalEvent extends Model
         'description',
         'type',
         'price',
-        'place_id'
+        'place_id',
+        'image_url',
+        'price_min',
+        'price_max',
     ];
 }

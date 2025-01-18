@@ -17,11 +17,13 @@ return new class extends Migration
             $table->string('name');
             $table->string('location');
             $table->date('start_date');
-            $table->date('end_date');
             $table->text('description');
             $table->string('type');
-            $table->decimal('price', 8, 2);
+            $table->decimal('price', 8, 2)->nullable();
+            $table->decimal('price_min', 8, 2)->nullable();
+            $table->decimal('price_max', 8, 2)->nullable();
             $table->string('google_place_id')->nullable(); // Optional reference to Google Place
+            $table->string('image_url')->nullable(); // URL for event image
             $table->timestamps();
         });
     }
