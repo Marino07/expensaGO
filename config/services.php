@@ -44,4 +44,12 @@ return [
         'timeout' => env('OLLAMA_TIMEOUT', 30),
     ],
 
+    'ticketmaster' => [
+        'api_key' => env('TICKETMASTER_API_KEY'),
+    ],
+
+    'eventbrite' => [
+        'api_key' => env('EVENTBRITE_API_KEY'),
+    ],
+
 ];
