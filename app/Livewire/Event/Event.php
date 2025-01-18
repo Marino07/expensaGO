@@ -3,6 +3,7 @@
 namespace App\Livewire\Event;
 
 use Livewire\Component;
+use Livewire\WithPagination;
 use App\Services\EventAggregatorService;
 use App\Models\Trip;
 use Illuminate\Support\Facades\Log;
@@ -11,7 +12,8 @@ use Carbon\Carbon;
 
 class Event extends Component
 {
-    public $events = [];
+    use WithPagination;
+
     public $loading = true;
 
     public function mount(EventAggregatorService $eventService)
@@ -63,14 +65,16 @@ class Event extends Component
             ]);
         }
 
-        $this->events = LocalEvent::where('trip_id', $latestTrip->id)->get();
         $this->loading = false;
     }
 
     public function render()
     {
+        $latestTrip = Trip::latest()->first();
+        $events = LocalEvent::where('trip_id', $latestTrip->id)->paginate(10);
+
         return view('livewire.event.event', [
-            'events' => $this->events
+            'events' => $events
         ])->layout('layouts.event');
     }
 }

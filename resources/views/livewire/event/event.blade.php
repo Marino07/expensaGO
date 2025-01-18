@@ -2,60 +2,6 @@
     selectedCategory: 'all',
     searchQuery: '',
     categories: ['all', 'Concerts', 'Festivals', 'Theater', 'Sports', 'Nightlife', 'Cultural'],
-    events: [
-        {
-            id: 1,
-            title: 'Red Hot Chili Peppers Live',
-            description: 'Experience RHCP\'s world tour with their latest album and greatest hits.',
-            date: 'March 15',
-            time: '20:00',
-            location: 'Arena Stadium',
-            image: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7',
-            category: 'Concerts',
-            price: '€89',
-            attendees: 12400,
-            featured: true
-        },
-        {
-            id: 2,
-            title: 'Summer Music Festival',
-            description: 'Three days of non-stop music featuring top artists from around the world.',
-            date: 'July 20',
-            time: '12:00',
-            location: 'City Park',
-            image: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3',
-            category: 'Festivals',
-            price: '€199',
-            attendees: 25000,
-            featured: true
-        },
-        {
-            id: 3,
-            title: 'Romeo & Juliet',
-            description: 'Classic Shakespeare play performed by the National Theater Company.',
-            date: 'May 5',
-            time: '19:30',
-            location: 'National Theater',
-            image: 'https://images.unsplash.com/photo-1507676184212-d03ab07a01bf',
-            category: 'Theater',
-            price: '€45',
-            attendees: 820,
-            featured: false
-        },
-        {
-            id: 4,
-            title: 'Local Jazz Night',
-            description: 'Evening of smooth jazz with local artists at the historic jazz club.',
-            date: 'April 10',
-            time: '21:00',
-            location: 'Blue Note Club',
-            image: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629',
-            category: 'Nightlife',
-            price: '€25',
-            attendees: 120,
-            featured: false
-        }
-    ]
 }">
     <x-barapp />
     <!-- Hero Section -->
@@ -104,7 +50,7 @@
                         <span class="bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full">FEATURED</span>
                     </div>
                     <div class="relative h-48">
-                        <img src="{{$event->image_url}}" alt="event"
+                        <img src="{{$event->image_url ? $event->image_url : asset('events.jpeg') }}" alt="event"
                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                         <div class="absolute bottom-4 left-4 text-white">
@@ -144,6 +90,9 @@
                     </div>
                 </div>
             @endforeach
+        </div>
+        <div class="mt-6 flex justify-center">
+            {{ $events->links('pagination::tailwind') }}
         </div>
     </div>
 
