@@ -3,39 +3,58 @@
         open: false,
         categories: ['all', 'Concerts', 'Festivals', 'Theater', 'Sports', 'Nightlife', 'Cultural'],
         selectedCategory: 'all',
-        showTooltip: null
-    }" wire:ignore>
+        showTooltip: null,
+        searchFocused: false
+    }">
     <x-barapp />
     <!-- Hero Section -->
-    <div class="relative overflow-hidden bg-gradient-to-b from-blue-900 to-blue-800 text-white">
+    <div class="relative overflow-hidden bg-gradient-to-r from-blue-600 to-blue-800 text-white">
         <div class="absolute inset-0 bg-pattern opacity-10"></div>
         <div class="max-w-7xl mx-auto px-4 py-6 relative">
-            <!-- Search Bar with Filter Icon -->
-            <div class="max-w-2xl mx-auto mb-4 flex gap-4 bg-white/10 backdrop-blur-lg p-2 rounded-lg">
-                <input
-                    type="text"
-                    wire:model.live.debounce.300ms="search"
-                    placeholder="Search events..."
-                    class="form-control w-full bg-white/80 backdrop-blur-sm text-gray-900 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                <button
-                    @click="open = true"
-                    type="button"
-                    class="bg-white/80 text-blue-900 px-3 rounded-lg hover:bg-white/90 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                    </svg>
-                </button>
-                <button wire:click="search" class="bg-white text-blue-900 px-6 py-2 rounded-lg font-semibold hover:bg-blue-50 transition-colors">
-                    Search
-                </button>
+            <h1 class="text-2xl md:text-3xl font-bold text-center mb-[22px]">Discover Amazing Events</h1>
+
+            <!-- Enhanced Search Bar -->
+            <div class="max-w-2xl mx-auto  relative">
+                <div class="relative flex items-center"
+                     :class="{ 'ring-2 ring-white/50': searchFocused }">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                    <input
+                        type="text"
+                        wire:model.live.debounce.300ms="search"
+                        @focus="searchFocused = true"
+                        @blur="searchFocused = false"
+                        placeholder="Search for events, venues, or artists..."
+                        class="w-full bg-white/10 backdrop-blur-lg text-white placeholder-gray-300 rounded-l-xl pl-12 pr-4 py-3 focus:outline-none focus:bg-white/20 transition-all duration-300"
+                    >
+                    <button
+                        @click="open = true"
+                        class="flex items-center gap-2 bg-white/20 hover:bg-white/30 transition-colors px-6 py-3 rounded-r-xl border-l border-white/10">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                        </svg>
+                        <span class="hidden sm:inline">Filters</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick Filters -->
+            <div class="max-w-2xl mx-auto mt-3 pt-5">
+                <div class="flex justify-center flex-wrap gap-2">
+                    <button class="px-3 py-1.5 text-sm bg-white/10 hover:bg-white/20 rounded-full transition-colors">Today</button>
+                    <button class="px-3 py-1.5 text-sm bg-white/10 hover:bg-white/20 rounded-full transition-colors">This Weekend</button>
+                    <button class="px-3 py-1.5 text-sm bg-white/10 hover:bg-white/20 rounded-full transition-colors">Free Events</button>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Simplified Modal -->
     <div
-        x-show="open"
+        x-show="open" x-cloak
         class="fixed inset-0 overflow-hidden z-50">
 
         <!-- Dark overlay -->
@@ -137,7 +156,9 @@
 
     <!-- Featured Events -->
     <div class="max-w-7xl mx-auto px-4 py-12">
-        <h2 class="text-2xl font-bold mb-8">Featured Events</h2>
+        <h2 class="text-2xl font-bold mb-8"><div class="flex gap-2 items-center"><span class="italic font-light">Featured Events</span> <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="h-5 w-5 text-yellow-400" viewBox="0 0 16 16">
+            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+          </svg></span></div></h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach ($events as $event)
                 <div class="group relative bg-white rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-1 transition-all duration-300">
@@ -158,7 +179,7 @@
                         <div class="flex justify-between items-center mb-4">
                             <div class="flex items-center gap-2">
                                 <span class="text-blue-600 font-medium">
-                                    {{ $event->price ? '€' . $event->price : 'Free' }}
+                                    {{ $event->price ? '€' . $event->price : 'Unknown Price' }}
                                 </span>
                                 <span class="text-sm text-gray-500">•</span>
                             </div>
@@ -189,7 +210,7 @@
                                 </svg>
                                 <span class="truncate" tabindex="0">{{$event->start_date}}</span>
                                 <!-- Tooltip for date -->
-                                <div
+                                <div x-cloak
                                     x-show="showTooltip === 'date-{{$event->id}}'"
                                     class="absolute bottom-full left-0 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg whitespace-nowrap z-10"
                                     x-transition:enter="transition ease-out duration-200"
@@ -209,7 +230,7 @@
                                 </svg>
                                 <span class="truncate" tabindex="0">{{$event->location}}</span>
                                 <!-- Tooltip for location -->
-                                <div
+                                <div x-cloak
                                     x-show="showTooltip === 'location-{{$event->id}}'"
                                     class="absolute bottom-full right-0 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg whitespace-nowrap z-10"
                                     x-transition:enter="transition ease-out duration-200"
