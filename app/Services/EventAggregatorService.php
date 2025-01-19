@@ -28,7 +28,7 @@ class EventAggregatorService
 
         // Get Ticketmaster events
         $ticketmasterEvents = $this->ticketmasterService->searchEvents($location, $startDate, $endDate);
-        Log::debug('Ticketmaster API Response', ['body' => $ticketmasterEvents]);
+        //Log::debug('Ticketmaster API Response', ['body' => $ticketmasterEvents]);
         $events = array_merge($events, $this->formatTicketmasterEvents($ticketmasterEvents));
 
         // Get Eventbrite events

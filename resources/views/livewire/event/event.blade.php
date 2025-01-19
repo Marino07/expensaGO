@@ -2,6 +2,7 @@
     selectedCategory: 'all',
     searchQuery: '',
     categories: ['all', 'Concerts', 'Festivals', 'Theater', 'Sports', 'Nightlife', 'Cultural'],
+
 }">
     <x-barapp />
     <!-- Hero Section -->
@@ -10,10 +11,13 @@
         <div class="max-w-7xl mx-auto px-4 py-6 relative">
             <!-- Search Bar -->
             <div class="max-w-2xl mx-auto mb-4 flex gap-4 bg-white/10 backdrop-blur-lg p-2 rounded-lg">
-                <input type="text" x-model="searchQuery"
-                    class="w-full bg-transparent border border-white/20 rounded-lg px-4 py-2 text-white placeholder-white/70"
-                    placeholder="Search events...">
-                <button class="bg-white text-blue-900 px-6 py-2 rounded-lg font-semibold hover:bg-blue-50 transition-colors">
+                <input
+                    type="text"
+                    wire:model.live.debounce.300ms="search"
+                    placeholder="Search events..."
+                    class="form-control w-full bg-white/80 backdrop-blur-sm text-gray-900 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                <button wire:click="search" class="bg-white text-blue-900 px-6 py-2 rounded-lg font-semibold hover:bg-blue-50 transition-colors">
                     Search
                 </button>
             </div>
@@ -37,8 +41,6 @@
         </div>
 
     </div>
-
-
 
     <!-- Featured Events -->
     <div class="max-w-7xl mx-auto px-4 py-12">
@@ -91,9 +93,11 @@
                 </div>
             @endforeach
         </div>
+        @if(!empty($events))
         <div class="mt-6 flex justify-center">
             {{ $events->links('pagination::tailwind') }}
         </div>
+        @endif
     </div>
 
 </div>

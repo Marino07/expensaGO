@@ -15,6 +15,13 @@ class Event extends Component
     use WithPagination;
 
     public $loading = true;
+    public $search = '';
+
+    // Reset pagination when search changes
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
 
     public function mount(EventAggregatorService $eventService)
     {
@@ -41,8 +48,6 @@ class Event extends Component
                 $startDate = \Carbon\Carbon::parse($event['start_date'])->format('Y-m-d');
                 $imageUrl = isset($event['images'][0]['url']) ? $event['images'][0]['url'] : null;
 
-                Log::info('Image URL', ['image_url' => $imageUrl]);
-
                 $price = isset($event['price']) && $event['price'] > 0 ? $event['price'] : null;
                 $priceMin = isset($event['priceRanges'][0]['min']) ? $event['priceRanges'][0]['min'] : null;
                 LocalEvent::updateOrCreate(
@@ -68,13 +73,30 @@ class Event extends Component
         $this->loading = false;
     }
 
-    public function render()
+    private function getEvents()
     {
         $latestTrip = Trip::latest()->first();
-        $events = LocalEvent::where('trip_id', $latestTrip->id)->paginate(10);
 
+        if (!$latestTrip) {
+            return collect();
+        }
+
+        return LocalEvent::where('trip_id', $latestTrip->id)
+            ->when($this->search, function($query) { //when $this->search je null ili '' -> false
+                $query->where(function($q) {
+                    $q->where('name', 'like', '%' . $this->search . '%')
+                      ->orWhere('description', 'like', '%' . $this->search . '%')
+                      ->orWhere('location', 'like', '%' . $this->search . '%');
+                });
+            })
+            ->orderBy('start_date')
+            ->paginate(10);
+    }
+
+    public function render()
+    {
         return view('livewire.event.event', [
-            'events' => $events
+            'events' => $this->getEvents()
         ])->layout('layouts.event');
     }
 }
