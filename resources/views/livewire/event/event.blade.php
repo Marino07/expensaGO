@@ -178,9 +178,15 @@
                         <!-- Price and Heart Section -->
                         <div class="flex justify-between items-center mb-4">
                             <div class="flex items-center gap-2">
-                                <span class="text-blue-600 font-medium">
-                                    {{ $event->price ? '€' . $event->price : 'Unknown Price' }}
-                                </span>
+                                @if($event->free)
+                                 <span>Free</span>
+                                 @elseif($event->price)
+                                <span>€{{ $event->price }}</span>
+                                @elseif($event->price_min && $event->price_max)
+                                 <span>€{{ $event->price_min }} - €{{ $event->price_max }}</span>
+                                @else
+                                 <span>Price not available</span>
+                                @endif
                                 <span class="text-sm text-gray-500">•</span>
                             </div>
                             <button class="text-blue-600 hover:text-blue-700 flex-shrink-0">

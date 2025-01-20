@@ -25,6 +25,7 @@ return new class extends Migration
             $table->decimal('price_max', 8, 2)->nullable();
             $table->string('google_place_id')->nullable(); // Optional reference to Google Place
             $table->string('image_url')->nullable(); // URL for event image
+            $table->boolean('free')->default(false);
             $table->timestamps();
         });
     }

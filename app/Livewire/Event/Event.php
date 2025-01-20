@@ -46,37 +46,9 @@ class Event extends Component
             );
 
             foreach ($fetchedEvents as $event) {
-                // Debug the raw event data
-               // Log::debug('Raw event data', ['event' => $event]);
+                $startDate = Carbon::parse($event['start_date'])->format('Y-m-d');
 
-                $startDate = \Carbon\Carbon::parse($event['start_date'])->format('Y-m-d');
-                $imageUrl = isset($event['images'][0]['url']) ? $event['images'][0]['url'] : null;
-
-                $price = isset($event['price']) && $event['price'] > 0 ? $event['price'] : null;
-                $priceMin = isset($event['priceRanges'][0]['min']) ? $event['priceRanges'][0]['min'] : null;
-
-                // Simplified category extraction using direct classifications field
-                $category = 'Unknown';
-                if (!empty($event['classifications']) && is_array($event['classifications'])) {
-                    Log::debug('Processing classifications', [
-                        'event_name' => $event['title'],
-                        'classifications' => $event['classifications']
-                    ]);
-
-                    foreach ($event['classifications'] as $classification) {
-                        if (isset($classification['segment']['name'])) {
-                            $category = $classification['segment']['name'];
-                            break;
-                        }
-                    }
-                }
-
-               /* Log::debug('Event category extraction result', [
-                    'event_name' => $event['title'],
-                    'category' => $category,
-                    'has_classifications' => isset($event['classifications'])
-                ]);*/
-
+                // Store event with proper price handling
                 LocalEvent::updateOrCreate(
                     [
                         'trip_id' => $latestTrip->id,
@@ -86,11 +58,14 @@ class Event extends Component
                         'location' => $event['location'],
                         'start_date' => $startDate,
                         'description' => $event['description'],
-                        'category' => $category,
+                        'category' => $event['category'] ?? 'Other',
                         'type' => $event['source'],
-                        'price' => $price,
+                        'price' => $event['price'],  // Average or single price
+                        'price_min' => $event['price_min'], // Minimum price if range exists
+                        'price_max' => $event['price_max'], // Maximum price if range exists
                         'google_place_id' => null,
                         'image_url' => $event['image'],
+                        'free' => $event['free'] ?? false,
                     ]
                 );
             }

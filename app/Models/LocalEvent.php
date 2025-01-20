@@ -23,5 +23,6 @@ class LocalEvent extends Model
         'price_min',
         'price_max',
         'category',
+        'free',
     ];
 }
