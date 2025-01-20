@@ -16,11 +16,36 @@ class Event extends Component
 
     public $loading = true;
     public $search = '';
-    public $category;
+    public $selectedCategory = 'all';
+    public $selectedPrice = 'all';
+    public $selectedDate = 'all';
+    public $activeFilter = null;
 
     // Reset pagination when search changes
     public function updatedSearch()
     {
+        $this->resetPage();
+    }
+
+    // Add this method
+    public function setFilter($filter)
+    {
+        $this->activeFilter = $this->activeFilter === $filter ? null : $filter;
+        $this->resetPage();
+    }
+
+    // Dodajemo getter za kategorije iz baze
+    public function getCategories()
+    {
+        return ['all'] + LocalEvent::distinct('category')->pluck('category')->toArray();
+    }
+
+    // Dodajemo metodu za ažuriranje filtera iz modala
+    public function updateFilters($category = null, $price = null, $date = null)
+    {
+        $this->selectedCategory = $category ?? $this->selectedCategory;
+        $this->selectedPrice = $price ?? $this->selectedPrice;
+        $this->selectedDate = $date ?? $this->selectedDate;
         $this->resetPage();
     }
 
@@ -93,6 +118,57 @@ class Event extends Component
                       ->orWhere('description', 'like', '%' . $this->search . '%')
                       ->orWhere('location', 'like', '%' . $this->search . '%');
                 });
+            })
+            ->when($this->selectedCategory !== 'all', function($query) {
+                $query->where('category', $this->selectedCategory);
+            })
+            ->when($this->selectedPrice !== 'all', function($query) {
+                switch($this->selectedPrice) {
+                    case 'free':
+                        $query->where('free', true);
+                        break;
+                    case 'paid':
+                        $query->where('free', false);
+                        break;
+                }
+            })
+            ->when($this->selectedDate !== 'all', function($query) {
+                switch($this->selectedDate) {
+                    case 'today':
+                        $query->whereDate('start_date', Carbon::today());
+                        break;
+                    case 'week':
+                        $query->whereBetween('start_date', [
+                            Carbon::now(),
+                            Carbon::now()->endOfWeek()
+                        ]);
+                        break;
+                    case 'month':
+                        $query->whereBetween('start_date', [
+                            Carbon::now(),
+                            Carbon::now()->endOfMonth()
+                        ]);
+                        break;
+                }
+            })
+            ->when($this->activeFilter, function($query) {
+                switch($this->activeFilter) {
+                    case 'today':
+                        $query->whereDate('start_date', Carbon::today());
+                        break;
+                        case 'weekend':
+                            $today = Carbon::now();
+                            $endOfWeek = Carbon::now()->endOfWeek(Carbon::SUNDAY); // Kraj tekuće nedjelje
+
+                            $query->whereBetween('start_date', [
+                                $today->format('Y-m-d'), // curr date
+                                $endOfWeek->format('Y-m-d') // end of week
+                            ]);
+                            break;
+                    case 'free':
+                        $query->where('free', true);
+                        break;
+                }
             })
             ->orderBy('start_date')
             ->paginate(10);

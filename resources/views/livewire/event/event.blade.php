@@ -44,9 +44,21 @@
             <!-- Quick Filters -->
             <div class="max-w-2xl mx-auto mt-3 pt-5">
                 <div class="flex justify-center flex-wrap gap-2">
-                    <button class="px-3 py-1.5 text-sm bg-white/10 hover:bg-white/20 rounded-full transition-colors">Today</button>
-                    <button class="px-3 py-1.5 text-sm bg-white/10 hover:bg-white/20 rounded-full transition-colors">This Weekend</button>
-                    <button class="px-3 py-1.5 text-sm bg-white/10 hover:bg-white/20 rounded-full transition-colors">Free Events</button>
+                    <button
+                        wire:click="setFilter('today')"
+                        class="px-3 py-1.5 text-sm rounded-full transition-colors {{ $activeFilter === 'today' ? 'bg-white/30' : 'bg-white/10 hover:bg-white/20' }}">
+                        Today
+                    </button>
+                    <button
+                        wire:click="setFilter('weekend')"
+                        class="px-3 py-1.5 text-sm rounded-full transition-colors {{ $activeFilter === 'weekend' ? 'bg-white/30' : 'bg-white/10 hover:bg-white/20' }}">
+                        This Weekend
+                    </button>
+                    <button
+                        wire:click="setFilter('free')"
+                        class="px-3 py-1.5 text-sm rounded-full transition-colors {{ $activeFilter === 'free' ? 'bg-white/30' : 'bg-white/10 hover:bg-white/20' }}">
+                        Free Events
+                    </button>
                 </div>
             </div>
         </div>
@@ -91,17 +103,11 @@
                     </div>
                     <div class="relative">
                         <select
-                            x-model="selectedCategory"
-                            @change="open = false"
+                            wire:model="selectedCategory"
                             class="appearance-none w-full bg-gray-50 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            <template x-for="category in categories" :key="category">
-                                <option
-                                    :value="category"
-                                    :selected="selectedCategory === category"
-                                    x-text="category"
-                                    class="py-2">
-                                </option>
-                            </template>
+                            @foreach($this->getCategories() as $category)
+                                <option value="{{ $category }}">{{ ucfirst($category) }}</option>
+                            @endforeach
                         </select>
                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                             <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -120,9 +126,21 @@
                         <h3 class="text-sm font-semibold text-gray-900">Price Range</h3>
                     </div>
                     <div class="flex items-center space-x-4">
-                        <button class="px-4 py-2 text-sm bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">Free</button>
-                        <button class="px-4 py-2 text-sm bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">Paid</button>
-                        <button class="px-4 py-2 text-sm bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">All</button>
+                        <button
+                            wire:click="updateFilters(null, 'free')"
+                            class="px-4 py-2 text-sm {{ $selectedPrice === 'free' ? 'bg-blue-100 text-blue-700' : 'bg-gray-50 text-gray-700' }} rounded-lg hover:bg-gray-100">
+                            Free
+                        </button>
+                        <button
+                            wire:click="updateFilters(null, 'paid')"
+                            class="px-4 py-2 text-sm {{ $selectedPrice === 'paid' ? 'bg-blue-100 text-blue-700' : 'bg-gray-50 text-gray-700' }} rounded-lg hover:bg-gray-100">
+                            Paid
+                        </button>
+                        <button
+                            wire:click="updateFilters(null, 'all')"
+                            class="px-4 py-2 text-sm {{ $selectedPrice === 'all' ? 'bg-blue-100 text-blue-700' : 'bg-gray-50 text-gray-700' }} rounded-lg hover:bg-gray-100">
+                            All
+                        </button>
                     </div>
                 </div>
 
@@ -135,10 +153,26 @@
                         <h3 class="text-sm font-semibold text-gray-900">Date</h3>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
-                        <button class="px-4 py-2 text-sm bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">Today</button>
-                        <button class="px-4 py-2 text-sm bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">This Week</button>
-                        <button class="px-4 py-2 text-sm bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">This Month</button>
-                        <button class="px-4 py-2 text-sm bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">All Time</button>
+                        <button
+                            wire:click="updateFilters(null, null, 'today')"
+                            class="px-4 py-2 text-sm {{ $selectedDate === 'today' ? 'bg-blue-100 text-blue-700' : 'bg-gray-50 text-gray-700' }} rounded-lg hover:bg-gray-100">
+                            Today
+                        </button>
+                        <button
+                            wire:click="updateFilters(null, null, 'week')"
+                            class="px-4 py-2 text-sm {{ $selectedDate === 'week' ? 'bg-blue-100 text-blue-700' : 'bg-gray-50 text-gray-700' }} rounded-lg hover:bg-gray-100">
+                            This Week
+                        </button>
+                        <button
+                            wire:click="updateFilters(null, null, 'month')"
+                            class="px-4 py-2 text-sm {{ $selectedDate === 'month' ? 'bg-blue-100 text-blue-700' : 'bg-gray-50 text-gray-700' }} rounded-lg hover:bg-gray-100">
+                            This Month
+                        </button>
+                        <button
+                            wire:click="updateFilters(null, null, 'all')"
+                            class="px-4 py-2 text-sm {{ $selectedDate === 'all' ? 'bg-blue-100 text-blue-700' : 'bg-gray-50 text-gray-700' }} rounded-lg hover:bg-gray-100">
+                            All Time
+                        </button>
                     </div>
                 </div>
 
