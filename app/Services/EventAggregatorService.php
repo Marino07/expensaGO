@@ -43,24 +43,33 @@ class EventAggregatorService
 
     protected function formatTicketmasterEvents($events)
     {
-        return array_map(function($event) {
-            return [
-                'id' => $event['id'] ?? '',
-                'title' => $event['name'] ?? '',
-                'description' => $event['description'] ?? '',
-                'start_date' => \Carbon\Carbon::parse($event['dates']['start']['dateTime'] ?? '')->format('Y-m-d'),
-                'location' => $event['_embedded']['venues'][0]['name'] ?? '',
-                'image' => $event['images'][0]['url'] ?? '',
-                'price' => $event['priceRanges'][0]['min'] ?? null,
-                'url' => $event['url'] ?? '',
-                'source' => 'ticketmaster'
-            ];
+        return array_map(function ($event) {
+            return $this->transformTicketmasterEvent($event);
         }, $events);
+    }
+
+    private function transformTicketmasterEvent($event)
+    {
+        return [
+            'id' => $event['id'] ?? null,
+            'title' => $event['name'] ?? '',
+            'description' => $event['description'] ?? '',
+            'start_date' => isset($event['dates']['start']['localDate'])
+                ? $event['dates']['start']['localDate']
+                : null,
+            'location' => $event['_embedded']['venues'][0]['name'] ?? '',
+            'image' => isset($event['images'][0]['url']) ? $event['images'][0]['url'] : null,
+            'price' => isset($event['priceRanges'][0]['min']) ? $event['priceRanges'][0]['min'] : null,
+            'url' => $event['url'] ?? '',
+            'source' => 'ticketmaster',
+            'classifications' => $event['classifications'] ?? null,
+            'raw_data' => $event
+        ];
     }
 
     protected function formatEventbriteEvents($events)
     {
-        return array_map(function($event) {
+        return array_map(function ($event) {
             return [
                 'id' => $event['id'] ?? '',
                 'title' => $event['name']['text'] ?? '',
