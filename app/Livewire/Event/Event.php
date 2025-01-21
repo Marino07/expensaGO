@@ -9,6 +9,8 @@ use App\Models\Trip;
 use Illuminate\Support\Facades\Log;
 use App\Models\LocalEvent;
 use Carbon\Carbon;
+use App\Jobs\SendEventReminder;
+use Illuminate\Support\Facades\Auth;
 
 class Event extends Component
 {
@@ -101,6 +103,28 @@ class Event extends Component
         }
 
         $this->loading = false;
+    }
+
+    public function subscribeToEvent($eventId)
+    {
+        $event = LocalEvent::find($eventId);
+        $user = Auth::user();
+
+        if (!$event || !$user) {
+            session()->flash('error', 'Could not subscribe to event.');
+            return;
+        }
+
+        $notificationTime = Carbon::parse($event->start_date)->subDay();
+
+        if ($notificationTime->isFuture()) {
+            SendEventReminder::dispatch($event, $user)
+                ->delay($notificationTime);
+
+            session()->flash('message', 'You will be notified about this event!');
+        } else {
+            session()->flash('error', 'This event is too soon for notifications.');
+        }
     }
 
     private function getEvents()
