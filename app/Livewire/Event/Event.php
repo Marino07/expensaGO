@@ -22,6 +22,7 @@ class Event extends Component
     public $selectedPrice = 'all';
     public $selectedDate = 'all';
     public $activeFilter = null;
+    public $subscribedEvents = [];
 
     // Reset pagination when search changes
     public function updatedSearch()
@@ -110,20 +111,23 @@ class Event extends Component
         $event = LocalEvent::find($eventId);
         $user = Auth::user();
 
-        if (!$event || !$user) {
-            session()->flash('error', 'Could not subscribe to event.');
+        if (!$event) {
+            session()->flash('error', 'Event not found.');
             return;
         }
 
-        $notificationTime = Carbon::parse($event->start_date)->subDay();
+        if (!$user) {
+            session()->flash('error', 'Please login first.');
+            return;
+        }
 
-        if ($notificationTime->isFuture()) {
-            SendEventReminder::dispatch($event, $user)
-                ->delay($notificationTime);
-
-            session()->flash('message', 'You will be notified about this event!');
-        } else {
-            session()->flash('error', 'This event is too soon for notifications.');
+        try {
+            SendEventReminder::dispatch($event, $user);
+            $this->subscribedEvents[$eventId] = true;
+            session()->flash('message', 'Notification sent successfully!');
+        } catch (\Exception $e) {
+            session()->flash('error', 'Failed to send notification: ' . $e->getMessage());
+            \Log::error('Notification failed:', ['error' => $e->getMessage()]);
         }
     }
 

@@ -20,6 +20,11 @@ use App\Livewire\Places\RestaurantFinder;
 use App\Http\Controllers\PlaidWebhookController;
 
 Route::get('/', WelcomeComponent::class)->name('index');
+Route::get('/email_test', function () {
+    $event = \App\Models\LocalEvent::where('id', 16)->first();
+    $actionUrl = url('/events');
+    return view('emails.event-notification', ['event' => $event, 'formattedDate' => '2021-09-09', 'actionUrl' => $actionUrl, 'user' => User::first()]);
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/app', Application::class)->name('app');

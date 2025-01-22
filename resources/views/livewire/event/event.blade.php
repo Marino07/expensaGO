@@ -4,9 +4,57 @@
         categories: ['all', 'Concerts', 'Festivals', 'Theater', 'Sports', 'Nightlife', 'Cultural'],
         selectedCategory: 'all',
         showTooltip: null,
-        searchFocused: false
-    }">
+        searchFocused: false,
+        notification: null,
+        showNotification: false,
+
+        handleNotification(message) {
+            this.notification = message;
+            this.showNotification = true;
+            setTimeout(() => {
+                this.showNotification = false;
+            }, 3000);
+        },
+        scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }"
+    @showNotification.window="handleNotification($event.detail)"
+    @scrollTop.window="scrollToTop"
+>
     <x-barapp />
+
+    <!-- Fixed Notifications -->
+    @if (session()->has('message'))
+        <div class="fixed top-4 right-4 z-50 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg shadow-lg"
+             x-data="{ show: true }"
+             x-show="show"
+             x-init="setTimeout(() => show = false, 3000)">
+            <span class="block sm:inline">{{ session('message') }}</span>
+        </div>
+    @endif
+
+    @if (session()->has('error'))
+        <div class="fixed top-4 right-4 z-50 bg-red-100 border border-red-400 text-red-700 px-6 py-3 rounded-lg shadow-lg"
+             x-data="{ show: true }"
+             x-show="show"
+             x-init="setTimeout(() => show = false, 3000)">
+            <span class="block sm:inline">{{ session('error') }}</span>
+        </div>
+    @endif
+
+    <!-- Floating Notification -->
+    <div
+        x-show="showNotification"
+        x-transition
+        class="fixed bottom-4 right-4 z-50"
+        style="display: none;">
+        <div class="bg-white shadow-lg rounded-lg p-4 max-w-md border-l-4"
+             :class="notification && notification[0] === 'success' ? 'border-green-500' : 'border-red-500'">
+            <p class="text-sm" x-text="notification?.[1]"></p>
+        </div>
+    </div>
+
     <!-- Hero Section -->
     <div class="relative overflow-hidden bg-gradient-to-r from-blue-600 to-blue-800 text-white">
         <div class="absolute inset-0 bg-pattern opacity-10"></div>
@@ -223,9 +271,18 @@
                                 @endif
                                 <span class="text-sm text-gray-500">•</span>
                             </div>
-                            <button class="text-blue-600 hover:text-blue-700 flex-shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            <button
+                                wire:click="subscribeToEvent({{$event->id}})"
+                                class="text-blue-600 hover:text-blue-700 flex-shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     class="h-6 w-6"
+                                     viewBox="0 0 24 24"
+                                     :class="{'fill-blue-600': @js(isset($subscribedEvents[$event->id])), 'fill-none': !@js(isset($subscribedEvents[$event->id]))}"
+                                     stroke="currentColor">
+                                    <path stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          stroke-width="2"
+                                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                                 </svg>
                             </button>
                         </div>
@@ -284,6 +341,7 @@
                 </div>
             @endforeach
         </div>
+
         @if(!empty($events))
         <div class="mt-6 flex justify-center">
             {{ $events->links('pagination::tailwind') }}
@@ -292,5 +350,6 @@
     </div>
 
 </div>
+
 
 

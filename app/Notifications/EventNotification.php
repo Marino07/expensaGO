@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\LocalEvent;
+use Carbon\Carbon;
 
 class EventNotification extends Notification
 {
@@ -25,15 +26,15 @@ class EventNotification extends Notification
 
     public function toMail(object $notifiable): MailMessage
     {
+        $formattedDate = Carbon::parse($this->event->start_date)->format('l, F j, Y');
+
         return (new MailMessage)
-            ->subject('Reminder: ' . $this->event->name)
-            ->greeting('Hello!')
-            ->line('This is a reminder for your upcoming event:')
-            ->line('Event: ' . $this->event->name)
-            ->line('Date: ' . $this->event->start_date)
-            ->line('Location: ' . $this->event->location)
-            ->action('View Event Details', url('/events'))
-            ->line('Thank you for using ExpensaGO!');
+            ->view('emails.event-notification', [
+                'event' => $this->event,
+                'user' => $notifiable,
+                'formattedDate' => $formattedDate,
+                'actionUrl' => url('/events')
+            ]);
     }
 
     public function toArray(object $notifiable): array
