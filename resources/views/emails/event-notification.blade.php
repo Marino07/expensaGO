@@ -8,21 +8,13 @@
 </head>
 
 <body
-    style="background: linear-gradient(135deg, #bdd1eb 0%, #aec8e7 100%); font-family: Arial, sans-serif; margin: 0; padding: 10px;">
+    style="background: linear-gradient(135deg, #f4f6f9 0%, #aec8e7 100%); font-family: Arial, sans-serif; margin: 0; padding: 10px;">
     <table
         style="max-width: 650px; width: 100%; margin: 10px auto; background-color: #a2c9f9; border-radius: 24px; overflow: hidden; box-shadow: 0 15px 30px -12px rgba(0, 0, 0, 0.1);"
         cellpadding="0" cellspacing="0">
         <tr>
             <td style="padding: 0;">
-                <div style="width: 100%; height: 200px; overflow: hidden; position: relative;">
-                    <img src="{{ $event->image_url }}" alt="Event banner"
-                        style="width: 100%; height: 100%; object-fit: cover;">
-                    <div
-                        style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.7) 100%); padding: 20px;">
-                    </div>
-                </div>
-                <!-- Updated ExpensaGO Logo/Title -->
-                <!-- Using the EmailLogo component -->
+                <!-- Logo only at the top -->
                 {!! App\View\Components\EmailLogo::render() !!}
             </td>
         </tr>
@@ -31,8 +23,8 @@
                 <div
                     style="background: linear-gradient(135deg, #a9d0f2 0%, #dbeafe 100%); border-radius: 16px; padding: 20px; margin-bottom: 20px;">
                     <h2 style="font-size: 20px; color: #1e40af; margin: 0 0 15px 0;">Hi, {{ $user->name }}! 👋</h2>
-                    <p style="font-size: 15px; color: #334155; line-height: 1.5;">We're thrilled to invite you to this
-                        exclusive event <span style="font-size: 20px;">🎗️</span></p>
+                    <p style="font-size: 16px; color: #334155; line-height: 1.5;">There is new event in the town,
+                        maybe you are interest?</p>
 
                     <!-- Simplified event name presentation -->
                     <div style="margin-top: 12px; text-align: center;">
@@ -46,6 +38,11 @@
                             </svg>
                         </h3>
                     </div>
+
+                    <!-- Event image moved here -->
+                    <div style="margin-top: 20px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                        <img src="{{ $event->image_url }}" alt="Event banner" style="width: 100%; height: auto; max-height: 250px; object-fit: cover; display: block;">
+                    </div>
                 </div>
 
                 <table
@@ -56,74 +53,104 @@
                             <table style="width: 100%;" cellpadding="0" cellspacing="0">
                                 <tr>
                                     <td style="padding: 12px 0;">
-                                        <div style="display: flex; align-items: center;">
-                                            <div
-                                                style="margin-right: 12px; background-color: #bfdbfe; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                                                💰
-                                            </div>
-                                            <div style="text-align: left;">
-                                                <div style="font-size: 14px; color: #64748b;">Price</div>
-                                                <div style="font-size: 16px; color: #0f172a; font-weight: 600;">
-                                                    @if ($event->free)
-                                                        Free Event
-                                                    @elseif($event->price)
-                                                        €{{ $event->price }}
-                                                    @elseif($event->price_min && $event->price_max)
-                                                        €{{ $event->price_min }} - €{{ $event->price_max }}
-                                                    @else
-                                                        Price not available
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="padding: 12px 0;">
-                                        <div style="display: flex; align-items: center;">
-                                            <div
-                                                style="margin-right: 12px; background-color: #bfdbfe; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                                                📅
-                                            </div>
-                                            <div style="text-align: left;">
-                                                <div style="font-size: 14px; color: #64748b;">Date & Time</div>
-                                                <div style="font-size: 16px; color: #0f172a; font-weight: 600;">
-                                                    {{ $formattedDate }}</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="padding: 12px 0;">
-                                        <div
-                                            style="display: flex; align-items: center; justify-content: space-between;">
-                                            <div style="display: flex; align-items: center;">
-                                                <div
-                                                    style="margin-right: 12px; background-color: #bfdbfe; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                                                    📍
-                                                </div>
-                                                <div style="text-align: left;">
-                                                    <div style="font-size: 14px; color: #64748b;">Location</div>
+                                        <table cellpadding="0" cellspacing="0" style="width: 100%;">
+                                            <tr>
+                                                <td width="40" style="padding-right: 12px;">
+                                                    <div style="background-color: #bfdbfe; border-radius: 50%; width: 40px; height: 40px; text-align: center; line-height: 40px; font-size: 20px;">
+                                                        💰
+                                                    </div>
+                                                </td>
+                                                <td style="text-align: left;">
+                                                    <div style="font-size: 14px; color: #64748b;">Price</div>
                                                     <div style="font-size: 16px; color: #0f172a; font-weight: 600;">
-                                                        {{ $event->location }}</div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                                        @if($event->free)
+                                                            Free Event
+                                                        @elseif($event->price)
+                                                            €{{ $event->price }}
+                                                        @elseif($event->price_min && $event->price_max)
+                                                            €{{ $event->price_min }} - €{{ $event->price_max }}
+                                                        @else
+                                                            Price not available
+                                                        @endif
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px 0;">
+                                        <table cellpadding="0" cellspacing="0" style="width: 100%;">
+                                            <tr>
+                                                <td width="40" style="padding-right: 12px;">
+                                                    <div style="background-color: #bfdbfe; border-radius: 50%; width: 40px; height: 40px; text-align: center; line-height: 40px; font-size: 20px;">
+                                                        📅
+                                                    </div>
+                                                </td>
+                                                <td style="text-align: left;">
+                                                    <div style="font-size: 14px; color: #64748b;">Date & Time</div>
+                                                    <div style="font-size: 16px; color: #0f172a; font-weight: 600;">{{ $formattedDate }}</div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px 0;">
+                                        <table cellpadding="0" cellspacing="0" style="width: 100%;">
+                                            <tr>
+                                                <td width="40" style="padding-right: 12px;">
+                                                    <div style="background-color: #bfdbfe; border-radius: 50%; width: 40px; height: 40px; text-align: center; line-height: 40px; font-size: 20px;">
+                                                        📍
+                                                    </div>
+                                                </td>
+                                                <td style="text-align: left;">
+                                                    <div style="font-size: 14px; color: #64748b;">Location</div>
+                                                    <div style="font-size: 16px; color: #0f172a; font-weight: 600;">{{ $event->location }}</div>
+                                                </td>
+                                            </tr>
+                                        </table>
                                     </td>
                                 </tr>
                             </table>
                         </td>
                     </tr>
                 </table>
+
+                <!-- New CTA Section -->
+                <table cellpadding="0" cellspacing="0" style="width: 100%; margin-bottom: 24px;">
+                    <tr>
+                        <td style="text-align: center; padding: 10px 0;">
+                            <a href="{{ $actionUrl }}"
+                               style="display: inline-block;
+                                      background: linear-gradient(135deg, #3095c3 0%, #9cc3e5 100%);
+                                      color: white;
+                                      text-decoration: none;
+                                      padding: 14px 28px;
+                                      border-radius: 50px;
+                                      font-size: 15px;
+                                      font-weight: 500;
+                                      letter-spacing: 0.3px;
+                                      box-shadow: 0 4px 15px rgba(49, 149, 195, 0.2);
+                                      border: 1px solid rgba(255, 255, 255, 0.15);
+                                      transition: all 0.3s ease;">
+                                <span style="display: inline-flex; align-items: center; gap: 6px;">
+                                    See more details
+                                    <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; margin-left: 4px;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M5 12h14"></path>
+                                        <path d="M12 5l7 7-7 7"></path>
+                                    </svg>
+                                </span>
+                            </a>
+                        </td>
+                    </tr>
+                </table>
             </td>
         </tr>
         <tr>
-            <td
-                style="background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; padding: 24px; text-align: center;">
-                <p style="color: white; margin-bottom: 8px; font-size: 16px; font-weight: 500;">Looking forward to
-                    seeing you! 🎉</p>
-                <p style="color: #bfdbfe; font-size: 12px; margin: 0;">&copy; {{ date('Y') }}
-                    {{ config('app.name') }}</p>
+            <td style="background: linear-gradient(135deg, #789ae4 0%, #576cb1 100%); border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; padding: 24px; text-align: center;">
+                <p style="color: white; margin-bottom: 8px; font-size:16px; font-style: italic; font-weight: 500;">Plan your journey with ease ✈️ </p>
+                <p style="color: #bfdbfe; font-size: 12px; margin: 0;">&copy; {{ date('Y') }} {{ config('app.name') }}</p>
             </td>
         </tr>
     </table>
