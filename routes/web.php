@@ -26,7 +26,7 @@ Route::get('/email_test', function () {
     return view('emails.event-notification', ['event' => $event, 'formattedDate' => '2021-09-09', 'actionUrl' => $actionUrl, 'user' => User::first()]);
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/app', Application::class)->name('app');
     Route::get('start-trip', StartTrip::class)->name('start-trip');
     Route::get('new-expense', NewExpense::class)->name('new-expense');
