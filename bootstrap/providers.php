@@ -2,6 +2,8 @@
 
 return [
     App\Providers\AppServiceProvider::class,
-    App\Providers\VoltServiceProvider::class,
     App\Providers\RouteServiceProvider::class,
+    App\Providers\ScheduleServiceProvider::class,
+    App\Providers\VoltServiceProvider::class,
+    App\Providers\ScheduleServiceProvider::class,
 ];
