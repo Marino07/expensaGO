@@ -621,6 +621,14 @@ x-init="
                                     </svg>
                                     Get Directions
                                 </button>
+
+                                <button wire:click="savePlace('{{ $place['place_id'] }}')"
+                                        class="mt-2 w-full bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
+                                    </svg>
+                                    Save Place
+                                </button>
                             </div>
                         </div>
                     </div>

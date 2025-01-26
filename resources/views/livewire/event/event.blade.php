@@ -272,7 +272,7 @@
                                 <span class="text-sm text-gray-500">•</span>
                             </div>
                             <button
-                                wire:click="subscribeToEvent({{$event->id}})"
+                                wire:click="saveEvent({{$event->id}})"
                                 class="text-blue-600 hover:text-blue-700 flex-shrink-0">
                                 <svg xmlns="http://www.w3.org/2000/svg"
                                      class="h-6 w-6"

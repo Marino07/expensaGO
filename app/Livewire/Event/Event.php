@@ -2,16 +2,17 @@
 
 namespace App\Livewire\Event;
 
-use App\Models\SubEvent;
-use Livewire\Component;
-use Livewire\WithPagination;
-use App\Services\EventAggregatorService;
-use App\Models\Trip;
-use Illuminate\Support\Facades\Log;
-use App\Models\LocalEvent;
 use Carbon\Carbon;
+use App\Models\Trip;
+use Livewire\Component;
+use App\Models\SubEvent;
+use App\Models\SavedItem;
+use App\Models\LocalEvent;
+use Livewire\WithPagination;
 use App\Jobs\SendEventReminder;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use App\Services\EventAggregatorService;
 
 class Event extends Component
 {
@@ -103,43 +104,49 @@ class Event extends Component
                 'count' => count($fetchedEvents)
             ]);
         }
-        $subscribedEvents = SubEvent::where('user_id', auth()->id())->pluck('event_id')->toArray();
+        $subscribedEvents = SavedItem::where('user_id', auth()->id())
+            ->where('type', 'event')
+            ->pluck('event_id')
+            ->toArray();
+
         $this->subscribedEvents = array_flip($subscribedEvents);
 
         $this->loading = false;
     }
 
-    public function subscribeToEvent($eventId)
+    public function saveEvent($eventId)
     {
-        /*
         $event = LocalEvent::find($eventId);
-        $user = Auth::user();
 
         if (!$event) {
-            session()->flash('error', 'Event not found.');
             return;
         }
 
-        if (!$user) {
-            session()->flash('error', 'Please login first.');
-            return;
-        }
+        SavedItem::updateOrCreate(
+            [
+                'user_id' => Auth::id(),
+                'type' => 'event',
+                'event_id' => $eventId
+            ],
+            [
+                'place_name' => $event->name,
+                'place_address' => $event->location
+            ]
+        );
 
-        try {
-            SendEventReminder::dispatch($event, $user);
-            $this->subscribedEvents[$eventId] = true;
-            session()->flash('message', 'Notification sent successfully!');
-        } catch (\Exception $e) {
-            session()->flash('error', 'Failed to send notification: ' . $e->getMessage());
-            \Log::error('Notification failed:', ['error' => $e->getMessage()]);
-        } */
-
-        $event = LocalEvent::find($eventId);
-        SubEvent::firstOrCreate([
-            'event_id' => $eventId,
-            'user_id' => Auth::id()
-        ]);
         $this->subscribedEvents[$eventId] = true;
+        $this->dispatch('event-saved');
+    }
+
+    public function removeSavedEvent($eventId)
+    {
+        SavedItem::where('user_id', Auth::id())
+                 ->where('saveable_type', LocalEvent::class)
+                 ->where('saveable_id', $eventId)
+                 ->delete();
+
+        unset($this->subscribedEvents[$eventId]);
+        $this->dispatch('event-removed');
     }
 
     private function getEvents()

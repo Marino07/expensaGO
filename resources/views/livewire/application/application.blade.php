@@ -154,35 +154,31 @@
             </div>
 
             <!-- Pending Reports Card -->
-            <div class="bg-gradient-to-br from-blue-200 to-indigo-400 rounded-lg shadow-lg overflow-hidden">
+            <div class="bg-gradient-to-br from-red-200 to-pink-400 rounded-lg shadow-lg overflow-hidden">
                 <div class="px-4 py-5 sm:p-6">
                     <div class="flex items-center">
                         <div class="flex-shrink-0 bg-white rounded-md p-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-blue-400">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
                             </svg>
                         </div>
                         <div class="ml-5 w-0 flex-1">
                             <dl>
                                 <dt class="text-sm font-medium text-gray-100 truncate">
-                                    Pending Reports
+                                    Saved Places & Events
                                 </dt>
                                 <dd class="text-3xl font-semibold text-white">
-                                    3
+                                    5
                                 </dd>
                             </dl>
                         </div>
                     </div>
                 </div>
-                <div class="bg-yellow-600 px-4 py-4 sm:px-6">
+                <div class="bg-red-500 px-4 py-4 sm:px-6">
                     <div class="text-sm">
-                        <a href="{{ route('places') }}"
-                            class="font-medium text-white hover:text-yellow-100 transition ease-in-out duration-150">
-                            Search Best Places &rarr;
+                        <a href="#"
+                            class="font-medium text-white hover:text-red-100 transition ease-in-out duration-150">
+                            View Saved Items &rarr;
                         </a>
                     </div>
                 </div>

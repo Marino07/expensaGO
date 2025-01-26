@@ -4,6 +4,7 @@ namespace App\Livewire\Places;
 
 use App\Models\Trip;
 use Livewire\Component;
+use App\Models\SavedItem;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 
@@ -145,6 +146,44 @@ class PlaceFinder extends Component
         $user = auth()->user();
         $user->tutorial_completed = $this->tutorialState;
         $user->save();
+    }
+
+    public function savePlace($placeId)
+    {
+        $place = collect($this->places)->firstWhere('place_id', $placeId);
+
+        if (!$place) {
+            return;
+        }
+
+        SavedItem::updateOrCreate(
+            [
+                'user_id' => Auth::id(),
+                'type' => 'place',
+                'api_place_id' => $placeId,
+            ],
+            [
+                'place_name' => $place['name'],
+                'place_address' => $place['vicinity'] ?? null,
+                'place_details' => [
+                    'location' => $place['geometry']['location'] ?? null,
+                    'rating' => $place['rating'] ?? null,
+                    'types' => $place['types'] ?? [],
+                    'photo_reference' => $place['photos'][0]['photo_reference'] ?? null,
+                ]
+            ]
+        );
+
+        $this->dispatch('place-saved');
+    }
+
+    public function removeSavedPlace($placeId)
+    {
+        SavedItem::where('user_id', Auth::id())
+                 ->where('api_place_id', $placeId)
+                 ->delete();
+
+        $this->dispatch('place-removed');
     }
 
     public function render()

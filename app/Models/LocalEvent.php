@@ -25,7 +25,10 @@ class LocalEvent extends Model
         'category',
         'free',
     ];
-    public function subevents(){
-        return $this->hasMany(SubEvent::class);
+   
+
+    public function savedItems()
+    {
+        return $this->morphMany(SavedItem::class, 'saveable');
     }
 }
