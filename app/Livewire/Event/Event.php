@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Event;
 
+use App\Models\SubEvent;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Services\EventAggregatorService;
@@ -102,12 +103,15 @@ class Event extends Component
                 'count' => count($fetchedEvents)
             ]);
         }
+        $subscribedEvents = SubEvent::where('user_id', auth()->id())->pluck('event_id')->toArray();
+        $this->subscribedEvents = array_flip($subscribedEvents);
 
         $this->loading = false;
     }
 
     public function subscribeToEvent($eventId)
     {
+        /*
         $event = LocalEvent::find($eventId);
         $user = Auth::user();
 
@@ -128,7 +132,14 @@ class Event extends Component
         } catch (\Exception $e) {
             session()->flash('error', 'Failed to send notification: ' . $e->getMessage());
             \Log::error('Notification failed:', ['error' => $e->getMessage()]);
-        }
+        } */
+
+        $event = LocalEvent::find($eventId);
+        SubEvent::firstOrCreate([
+            'event_id' => $eventId,
+            'user_id' => Auth::id()
+        ]);
+        $this->subscribedEvents[$eventId] = true;
     }
 
     private function getEvents()

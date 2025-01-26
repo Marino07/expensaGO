@@ -68,4 +68,7 @@ class User extends Authenticatable implements MustVerifyEmail
         }
         return $lastTrip->expenses;
     }
+    public function subEvents(){
+        return $this->hasMany(SubEvent::class);
+    }
 }

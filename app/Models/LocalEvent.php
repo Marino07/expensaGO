@@ -25,4 +25,7 @@ class LocalEvent extends Model
         'category',
         'free',
     ];
+    public function subevents(){
+        return $this->hasMany(SubEvent::class);
+    }
 }
