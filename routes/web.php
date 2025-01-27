@@ -13,6 +13,7 @@ use App\Livewire\WelcomeComponent;
 use App\Livewire\Trip\GeneratePlan;
 use App\Livewire\Places\PlaceFinder;
 use Illuminate\Support\Facades\Route;
+use App\Livewire\SavedItems\SavedItems;
 use App\Livewire\Trip\ItineraryBuilder;
 use App\Http\Controllers\PlaidController;
 use App\Livewire\Application\Application;
@@ -43,6 +44,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/plaid/transactions', [PlaidController::class, 'getTransactions'])->middleware('auth');
     Route::post('/webhook/plaid', [PlaidWebhookController::class, 'handleWebhook']);
     Route::get('/events',Event::class)->name('events');
+    Route::get('/saved-items',SavedItems::class)->name('saved-items');
+
 });
 Route::view('profile', 'profile')
     ->middleware(['auth'])

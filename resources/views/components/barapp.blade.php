@@ -1,4 +1,8 @@
-<header x-data="{ isOpen: false }" class="px-4 lg:px-6 h-14 flex items-center border-b bg-blue-100">
+<header x-data="{ isOpen: false }" @class([
+    'px-4 lg:px-6 h-14 flex items-center border-b',
+    'bg-blue-200' => request()->routeIs('saved-items'),
+    'bg-blue-100' => !request()->routeIs('saved-items')
+])>
     <a href="{{ route('index') }}" class="flex items-center justify-center">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-primary">
@@ -18,7 +22,11 @@
     </button>
 
     <!-- Navigation menu -->
-    <nav :class="{'hidden': !isOpen}" class="absolute top-14 left-0 right-0 bg-blue-100 md:bg-transparent md:relative md:top-0 md:flex md:ml-auto md:items-center md:gap-4 sm:gap-6 z-50">
+    <nav :class="{'hidden': !isOpen}" @class([
+        'absolute top-14 left-0 right-0 md:bg-transparent md:relative md:top-0 md:flex md:ml-auto md:items-center md:gap-4 sm:gap-6 z-50',
+        'bg-blue-200' => request()->routeIs('saved-items'),
+        'bg-blue-100' => !request()->routeIs('saved-items')
+    ])>
         <div class="flex flex-col md:flex-row items-center gap-4 p-4 md:p-0">
             @auth
                 @if (!auth()->check() || !auth()->user()->plaid_access_token)
