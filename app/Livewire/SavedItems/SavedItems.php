@@ -5,112 +5,95 @@ namespace App\Livewire\SavedItems;
 use App\Models\SavedItem;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
-use Livewire\WithPagination;
 
 class SavedItems extends Component
 {
-    use WithPagination;
+    public $savedPlaces = [];
+    public $savedEvents = [];
 
-    protected function getStaticPlaces()
+    public function mount()
     {
-        return [
-            [
-                'id' => 1,
-                'place_name' => 'Amazing Restaurant',
-                'place_address' => '123 Main Street, London',
-                'place_details' => [
-                    'rating' => 4.5,
-                    'user_ratings_total' => 253,
-                    'price_level' => 2,
-                    'types' => ['restaurant', 'food'],
-                    'opening_hours' => ['open_now' => true],
-                ]
-            ],
-            [
-                'id' => 2,
-                'place_name' => 'Cool Cafe',
-                'place_address' => '456 Park Avenue, London',
-                'place_details' => [
-                    'rating' => 4.8,
-                    'user_ratings_total' => 542,
-                    'price_level' => 1,
-                    'types' => ['cafe', 'restaurant'],
-                    'opening_hours' => ['open_now' => false],
-                ]
-            ],
-            [
-                'id' => 3,
-                'place_name' => 'Local Pub',
-                'place_address' => '789 River Road, London',
-                'place_details' => [
-                    'rating' => 4.2,
-                    'user_ratings_total' => 128,
-                    'price_level' => 2,
-                    'types' => ['bar', 'restaurant'],
-                    'opening_hours' => ['open_now' => true],
-                ]
-            ],
-        ];
+        $this->loadSavedItems();
     }
 
-    protected function getStaticEvents()
+    public function loadSavedItems()
     {
-        return [
-            [
-                'id' => 1,
-                'event' => [
-                    'name' => 'Summer Music Festival',
-                    'description' => 'Amazing outdoor music festival featuring top artists',
-                    'location' => 'Hyde Park, London',
-                    'start_date' => '2024-07-15',
-                    'category' => 'Music',
-                    'image_url' => 'https://example.com/images/festival.jpg',
-                    'price' => 49.99,
-                    'free' => false
-                ]
-            ],
-            [
-                'id' => 2,
-                'event' => [
-                    'name' => 'Art Exhibition',
-                    'description' => 'Contemporary art showcase by local artists',
-                    'location' => 'Modern Gallery, London',
-                    'start_date' => '2024-06-20',
-                    'category' => 'Art',
-                    'image_url' => null,
-                    'price' => null,
-                    'free' => true
-                ]
-            ],
-            [
-                'id' => 3,
-                'event' => [
-                    'name' => 'Food & Wine Festival',
-                    'description' => 'Taste the best local and international cuisine',
-                    'location' => 'Trafalgar Square, London',
-                    'start_date' => '2024-08-01',
-                    'category' => 'Food',
-                    'image_url' => 'https://example.com/images/food.jpg',
-                    'price' => 29.99,
-                    'free' => false
-                ]
-            ]
-        ];
+        // Load saved places
+        $this->savedPlaces = SavedItem::where('user_id', Auth::id())
+            ->where('type', 'place')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'name' => $item->place_name,
+                    'location' => $item->place_address,
+                    'category' => $item->place_details['types'][0] ?? 'Place',
+                    'image' => $this->getPlaceImage($item->place_details['photo_reference'] ?? null)
+                ];
+            });
+
+        // Load saved events
+        $this->savedEvents = SavedItem::where('user_id', Auth::id())
+            ->where('type', 'event')
+            ->with('event')
+            ->get()
+            ->map(function ($item) {
+                $event = $item->event;
+
+                // Determine price display
+                $priceDisplay = 'N/A';
+                $isFree = false;
+
+                if ($event) {
+                    if ($event->free) {
+                        $priceDisplay = 'Free';
+                        $isFree = true;
+                    } elseif ($event->price) {
+                        $priceDisplay = '€' . number_format($event->price, 2);
+                    } elseif ($event->price_min && $event->price_max) {
+                        $avgPrice = ($event->price_min + $event->price_max) / 2;
+                        $priceDisplay = '~€' . number_format($avgPrice, 2);
+                    } else {
+                        $priceDisplay = 'Price TBA';
+                    }
+                }
+
+                return [
+                    'id' => $item->id,
+                    'name' => $event->name ?? $item->place_name,
+                    'location' => $event->location ?? $item->place_address,
+                    'date' => $event->start_date ?? null,
+                    'image' => $event->image_url ?? null,
+                    'category' => $event->category ?? 'Event',
+                    'is_free' => $isFree,
+                    'price_display' => $priceDisplay
+                ];
+            });
     }
 
-    public function removeItem($id)
+    private function getPlaceImage($photoReference)
     {
-        // Simulacija brisanja
+        if (!$photoReference) {
+            return 'https://via.placeholder.com/400x300?text=No+Image';
+        }
+
+        $apiKey = env('GOOGLE_PLACES_API_KEY');
+        return "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference={$photoReference}&key={$apiKey}";
+    }
+
+    public function removeItem($id, $type)
+    {
+        SavedItem::where('id', $id)->where('user_id', Auth::id())->delete();
+        $this->loadSavedItems();
+
         $this->dispatch('item-removed', [
-            'message' => 'Item removed successfully'
+            'message' => ucfirst($type) . ' removed successfully'
         ]);
     }
 
     public function render()
     {
-        return view('livewire.saved-items.saved-items', [
-            'savedPlaces' => collect($this->getStaticPlaces()),
-            'savedEvents' => collect($this->getStaticEvents())
-        ])->layout('layouts.application');
+        return view('livewire.saved-items.saved-items')
+            ->layout('layouts.application');
     }
 }
