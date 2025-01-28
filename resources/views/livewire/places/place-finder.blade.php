@@ -571,7 +571,23 @@ x-init="
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($places as $place)
                     <div @click="focusMarker('{{ $place['place_id'] }}')"
-                         class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+                         class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer relative flex flex-col h-[500px]"> <!-- dodali smo flex flex-col i fiksnu visinu -->
+
+                        <!-- Heart button - dodajte ovo odmah nakon opening div-a -->
+                        <button wire:click.stop="toggleSavePlace('{{ $place['place_id'] }}')"
+                                class="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-all duration-300 group shadow-md">
+                            @if($this->isPlaceSaved($place['place_id']))
+                                <svg class="w-6 h-6 text-red-500 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                </svg>
+                            @else
+                                <svg class="w-6 h-6 text-gray-600 group-hover:text-red-500 transition-colors duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                                </svg>
+                            @endif
+                        </button>
+
+                        <!-- Ostatak kartice ostaje isti -->
                         @php
                             $defaultImage = match($placeType) {
                                 'restaurant' => 'images/defaults/restaurant-image.jpg',
@@ -581,10 +597,21 @@ x-init="
                                 default => 'images/defaults/place.png',
                             };
                         @endphp
-                        <img src="{{ $place['photo'] ?? asset($defaultImage) }}" alt="{{ $place['name'] }}" class="w-full h-48 object-full">
-                        <div class="p-6">
-                            <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ $place['name'] }}</h3>
-                            <div class="flex items-center mb-2">
+                        <div class="w-full h-48 flex-shrink-0"> <!-- wrapper div za sliku -->
+                            <img src="{{ $place['photo'] ?? asset($defaultImage) }}"
+                                 alt="{{ $place['name'] }}"
+                                 class="w-full h-full object-cover">
+                        </div>
+
+                        <!-- Content wrapper - dodajemo flex-grow za dinamičku visinu -->
+                        <div class="p-6 flex flex-col flex-grow">
+                            <!-- Naziv - ograničavamo na 2 reda -->
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2 line-clamp-2 h-14">
+                                {{ $place['name'] }}
+                            </h3>
+
+                            <!-- Rating sekcija - fiksna visina -->
+                            <div class="flex items-center mb-2 h-6">
                                 <div class="flex text-yellow-400">
                                     @for($i = 0; $i < 5; $i++)
                                         @if($i < floor($place['rating'] ?? 0))
@@ -603,31 +630,63 @@ x-init="
                                     ({{ $place['user_ratings_total'] ?? 0 }} reviews)
                                 </span>
                             </div>
-                            <p class="text-gray-600 text-sm mb-4">{{ $place['vicinity'] ?? 'No address available' }}</p>
-                            @if(isset($place['opening_hours']['open_now']))
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $place['opening_hours']['open_now'] ? 'bg-blue-100 text-blue-800' : 'bg-red-100 text-red-800' }}">
-                                    {{ $place['opening_hours']['open_now'] ? 'Open Now' : 'Closed' }}
-                                </span>
-                            @elseif(empty($place['opening_hours']))
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                    Unknown
-                                </span>
-                            @endif
-                            <div class="mt-4">
-                                <button @click.stop="showDirections('{{ $place['place_id'] }}')"
-                                        class="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M9.293 2.293a1 1 0 011.414 0l7 7A1 1 0 0117 11h-1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-3a1 1 0 00-1-1H9a1 1 0 00-1 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-6H3a1 1 0 01-.707-1.707l7-7z" />
-                                    </svg>
-                                    Get Directions
-                                </button>
 
-                                <button wire:click="savePlace('{{ $place['place_id'] }}')"
-                                        class="mt-2 w-full bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                                        <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
-                                    </svg>
-                                    Save Place
+                            <!-- Adresa - ograničavamo na 2 reda -->
+                            <p class="text-gray-600 text-sm mb-4 line-clamp-2 h-10">
+                                {{ $place['vicinity'] ?? 'No address available' }}
+                            </p>
+
+                            <!-- Status (Open/Closed) -->
+                            <div class="h-6 mb-4">
+                                @if(isset($place['opening_hours']['open_now']))
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $place['opening_hours']['open_now'] ? 'bg-blue-100 text-blue-800' : 'bg-red-100 text-red-800' }}">
+                                        {{ $place['opening_hours']['open_now'] ? 'Open Now' : 'Closed' }}
+                                    </span>
+                                @elseif(empty($place['opening_hours']))
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                        Unknown
+                                    </span>
+                                @endif
+                            </div>
+
+                            <!-- Buttons section - uvijek na dnu kartice -->
+                            <div class="mt-auto">
+                                <!-- Get Directions Button -->
+                                <button @click.stop="showDirections('{{ $place['place_id'] }}')"
+                                        class="relative w-full overflow-hidden group">
+                                    <!-- Button Container -->
+                                    <div class="relative px-6 py-3 bg-gradient-to-r from-blue-500 via-blue-600 to-cyan-500 rounded-lg
+                                                transform transition-all duration-300 ease-out
+                                                group-hover:scale-[1.02] group-hover:shadow-xl
+                                                group-active:scale-[0.98]">
+                                        <!-- Hover Effect -->
+                                        <div class="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-400 opacity-0 
+                                                    group-hover:opacity-50 transition-opacity duration-300 rounded-lg"></div>
+                                        
+                                        <!-- Shimmer Effect -->
+                                        <div class="absolute inset-0 transform translate-x-[-100%] group-hover:translate-x-[100%] 
+                                                    transition-transform duration-1000
+                                                    bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+                                        
+                                        <!-- Content -->
+                                        <div class="relative flex items-center justify-center space-x-3">
+                                            <!-- Icon -->
+                                            <span class="flex items-center transform transition-transform duration-300 group-hover:scale-110">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                          d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                                                </svg>
+                                            </span>
+                                            <!-- Text -->
+                                            <span class="text-white font-medium tracking-wide">
+                                                Get Directions
+                                            </span>
+                                        </div>
+
+                                        <!-- Decorative Elements -->
+                                        <div class="absolute -right-1 -top-1 w-2 h-2 bg-cyan-300 rounded-full opacity-70 animate-pulse"></div>
+                                        <div class="absolute -left-1 -bottom-1 w-2 h-2 bg-blue-300 rounded-full opacity-70 animate-pulse delay-300"></div>
+                                    </div>
                                 </button>
                             </div>
                         </div>
@@ -680,7 +739,7 @@ x-init="
                                @keydown.enter="calculateRoute('address')">
                         <svg class="absolute left-4 top-4 h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 006 0z"/>
                         </svg>
                     </div>
 

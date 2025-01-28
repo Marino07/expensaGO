@@ -73,7 +73,7 @@ class PlaceFinder extends Component
                 return;
             }
 
-            // First we get location coordinates for the search location
+            // First get location coordinates
             $geocodeUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=".urlencode($this->search)."&key=".$apiKey;
             $geocodeResponse = Http::get($geocodeUrl)->json();
 
@@ -81,7 +81,7 @@ class PlaceFinder extends Component
                 $location = $geocodeResponse['results'][0]['geometry']['location'];
                 $this->geo_lat_lng = $location['lat'] . ',' . $location['lng'];
 
-                // Then we search for places near that location
+                // Search for places
                 $placesUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?";
                 $params = [
                     'location' => $this->geo_lat_lng,
@@ -95,7 +95,14 @@ class PlaceFinder extends Component
                 $response = $response->json();
 
                 if (isset($response['results'])) {
-                    $this->places = $response['results'];
+                    // Add photo URLs to each place
+                    $this->places = array_map(function($place) use ($apiKey) {
+                        if (isset($place['photos'][0]['photo_reference'])) {
+                            $place['photo'] = $this->getPhotoUrl($place['photos'][0]['photo_reference'], $apiKey);
+                        }
+                        return $place;
+                    }, $response['results']);
+
                     $this->sortPlaces();
                     $this->dispatch('places-updated');
                 }
@@ -105,6 +112,14 @@ class PlaceFinder extends Component
         }
 
         $this->loading = false;
+    }
+
+    private function getPhotoUrl($photoReference, $apiKey, $maxwidth = 400)
+    {
+        return "https://maps.googleapis.com/maps/api/place/photo?"
+             . "maxwidth={$maxwidth}&"
+             . "photo_reference={$photoReference}&"
+             . "key={$apiKey}";
     }
 
     public function sortPlaces()
@@ -184,6 +199,22 @@ class PlaceFinder extends Component
                  ->delete();
 
         $this->dispatch('place-removed');
+    }
+
+    public function isPlaceSaved($placeId)
+    {
+        return SavedItem::where('user_id', Auth::id())
+                       ->where('api_place_id', $placeId)
+                       ->exists();
+    }
+
+    public function toggleSavePlace($placeId)
+    {
+        if ($this->isPlaceSaved($placeId)) {
+            $this->removeSavedPlace($placeId);
+        } else {
+            $this->savePlace($placeId);
+        }
     }
 
     public function render()
