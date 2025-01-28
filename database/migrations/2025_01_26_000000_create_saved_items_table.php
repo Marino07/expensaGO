@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('place_name')->nullable();
             $table->string('place_address')->nullable();
             $table->json('place_details')->nullable();
-          
+
             $table->foreignId('event_id')->nullable()->constrained('local_events')->onDelete('cascade');
 
             $table->timestamps();

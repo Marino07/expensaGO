@@ -27,9 +27,10 @@ class SavedItems extends Component
                     'id' => $item->id,
                     'name' => $item->place_name,
                     'location' => $item->place_address,
-                    'category' => $item->place_details['types'][0] ?? 'Place',
+                    'category' => $item->place_details['types'] ?? 'Place',
                     'image' => $this->getPlaceImage($item->place_details['photo_reference'] ?? null),
-                    'rating' => $item->place_details['rating'] ?? null
+                    'rating' => $item->place_details['rating'] ?? null,
+                    'place_id' => $item->api_place_id ?? null
                 ];
             });
 
@@ -48,7 +49,9 @@ class SavedItems extends Component
                     'image' => $event->image_url,
                     'category' => $event->category,
                     'is_free' => $event->free,
-                    'price_display' => $this->getPriceDisplay($event)
+                    'price_display' => $this->getPriceDisplay($event),
+                    'url' => $event->event_url
+
                 ];
             });
     }
@@ -78,7 +81,7 @@ class SavedItems extends Component
             return '$' . number_format($averagePrice, 2);
         }
 
-        return 'Price not available';
+        return 'Price not fixed';
     }
 
     public function removeItem($id, $type)
@@ -93,6 +96,6 @@ class SavedItems extends Component
 
     public function render()
     {
-        return view('livewire.saved-items.saved-items')->layout('layouts.application');
+        return view('livewire.saved-items.saved-items')->layout('layouts.event');
     }
 }

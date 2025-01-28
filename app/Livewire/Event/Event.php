@@ -96,6 +96,7 @@ class Event extends Component
                         'google_place_id' => null,
                         'image_url' => $event['image'],
                         'free' => $event['free'] ?? false,
+                        'event_url' => $event['event_url'],
                     ]
                 );
             }
@@ -130,7 +131,8 @@ class Event extends Component
             ],
             [
                 'place_name' => $event->name,
-                'place_address' => $event->location
+                'place_address' => $event->location,
+                'url'=> $event->event_url
             ]
         );
 

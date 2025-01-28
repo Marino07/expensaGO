@@ -112,11 +112,14 @@
                             </div>
                             @endif
 
-                            <div class="flex items-center gap-2 text-gray-600">
-                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                                </svg>
-                                <span>{{ ucfirst($place['category']) }}</span>
+                            <div class="flex flex-wrap gap-2">
+                                @if ($place['category'])
+                                    @foreach(array_slice($place['category'], 0, 3) as $category)
+                                        <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
+                                            {{ $category }}
+                                        </span>
+                                    @endforeach
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -129,7 +132,7 @@
         </div>
 
         <!-- Saved Events -->
-        <div x-show="activeTab === 'events'" x-transition:enter="transition ease-out duration-300">
+        <div x-show="activeTab === 'events'" x-cloak x-transition:enter="transition ease-out duration-300">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @forelse($savedEvents as $event)
                     <div class="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-500 hover:scale-105 hover:shadow-xl relative">
@@ -146,7 +149,13 @@
                         <div class="relative h-64">
                             <img src="{{ $event['image'] }}" alt="{{ $event['name'] }}" class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
-                                <button class="bg-white text-gray-800 px-4 py-2 rounded-full font-semibold hover:bg-gray-100 transition duration-300">View More</button>
+                                <a href="{{ $event['url'] }}" target="_blank" class="bg-white text-gray-800 px-4 py-2 rounded-full font-semibold hover:bg-gray-100 transition duration-300">
+                                    {{ match($event['price_display']){
+                                        'Free' => 'Book for Free',
+                                        'Price not fixed' => 'More Info',
+                                        default => 'Book a Ticket'
+                                    } }}
+                                </a>
                             </div>
                         </div>
                         <div class="p-6">

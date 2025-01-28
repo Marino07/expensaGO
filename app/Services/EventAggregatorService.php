@@ -28,7 +28,7 @@ class EventAggregatorService
 
         // Get Ticketmaster events
         $ticketmasterEvents = $this->ticketmasterService->searchEvents($location, $startDate, $endDate);
-        //Log::debug('Ticketmaster API Response', ['body' => $ticketmasterEvents]);
+        Log::debug('Ticketmaster API Response', ['body' => $ticketmasterEvents]);
         $events = array_merge($events, $this->formatTicketmasterEvents($ticketmasterEvents));
 
         // Get Eventbrite events
@@ -66,7 +66,7 @@ class EventAggregatorService
             'price' => $prices['price'],
             'price_min' => $prices['price_min'],
             'price_max' => $prices['price_max'],
-            'url' => $event['url'] ?? '',
+            'event_url' => $event['url'] ?? '',
             'source' => 'ticketmaster',
             'category' => $category,
             'free' => $isFree,
@@ -140,7 +140,7 @@ class EventAggregatorService
                 'location' => $event['venue']['name'] ?? '',
                 'image' => $event['logo']['url'] ?? '',
                 'price' => $event['ticket_availability']['minimum_ticket_price']['major_value'] ?? null,
-                'url' => $event['url'] ?? '',
+                'event_url' => $event['url'] ?? '',
                 'source' => 'eventbrite'
             ];
         }, $events);

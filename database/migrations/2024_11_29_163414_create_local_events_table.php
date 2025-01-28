@@ -19,6 +19,7 @@ return new class extends Migration
             $table->date('start_date');
             $table->text('description');
             $table->string('category')->nullable();
+            $table->string('event_url')->nullable();
             $table->string('type');
             $table->decimal('price', 8, 2)->nullable();
             $table->decimal('price_min', 8, 2)->nullable();

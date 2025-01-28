@@ -24,8 +24,9 @@ class LocalEvent extends Model
         'price_max',
         'category',
         'free',
+        'event_url'
     ];
-   
+
 
     public function savedItems()
     {
