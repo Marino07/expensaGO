@@ -217,6 +217,18 @@ class PlaceFinder extends Component
         }
     }
 
+    public function setPlaceType($type)
+    {
+        $this->placeType = $type;
+        $this->searchPlaces();
+    }
+
+    public function setSortCriteria($criteria)
+    {
+        $this->sortCriteria = $criteria;
+        $this->sortPlaces();
+    }
+
     public function render()
     {
         return view('livewire.places.place-finder')->layout('layouts.trip');

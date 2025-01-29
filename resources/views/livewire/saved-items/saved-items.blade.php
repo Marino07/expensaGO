@@ -1,6 +1,6 @@
 <div class="flex flex-col min-h-screen bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 font-sans"
     x-data="{
-        activeTab: 'places',
+        activeTab: 'events',
         showScrollTop: false,
         scrollToTop() {
             window.scrollTo({
@@ -62,7 +62,7 @@
         </div>
 
         <!-- Saved Places -->
-        <div x-show="activeTab === 'places'" x-transition:enter="transition ease-out duration-300">
+        <div x-show="activeTab === 'places'" x-cloak x-transition:enter="transition ease-out duration-300">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @forelse($savedPlaces as $place)
                     <div class="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-500 hover:scale-105 hover:shadow-xl relative">

@@ -17,6 +17,7 @@
     map: null,
     startMarker: null,
     endMarker: null,
+    selectedPlaceType: $wire.placeType,
     initMap() {
         this.mapLoaded = false;
         this.markers = [];
@@ -446,34 +447,133 @@ x-init="
         </div>
 
         <!-- Filter Content -->
-        <div class="p-6 space-y-6">
+        <div class="p-6 space-y-6 overflow-y-auto max-h-[calc(100vh-180px)]">
             <!-- Place Type Filter -->
-            <div class="space-y-2">
-                <label for="placeType" class="block text-sm font-medium text-gray-700">Place Type</label>
-                <select id="placeType"
-                        wire:model="placeType"
-                        wire:change="searchPlaces"
-                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500">
-                    <option value="restaurant">Restaurant</option>
-                    <option value="store">Store</option>
-                    <option value="cafe">Cafe</option>
-                    <option value="bar">Bar</option>
-                </select>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <label class="text-lg font-semibold text-gray-900">Categories</label>
+                    <span class="text-sm text-gray-500">Select a category to explore</span>
+                </div>
+
+                <!-- Food & Drinks -->
+                <div class="space-y-3">
+                    <h3 class="text-sm font-medium text-gray-700 uppercase tracking-wide">Food & Drinks</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button @click="
+                            selectedPlaceType = 'restaurant';
+                            $wire.setPlaceType('restaurant');
+                        "
+                        :class="{
+                            'border-blue-500 bg-blue-50': selectedPlaceType === 'restaurant',
+                            'border-gray-200 hover:border-blue-200': selectedPlaceType !== 'restaurant'
+                        }"
+                        class="flex items-center p-3 rounded-lg border-2 transition-all duration-200">
+                            <svg class="w-6 h-6 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6h18M3 12h18M3 18h18"/>
+                            </svg>
+                            <span class="font-medium">Restaurants</span>
+                        </button>
+
+                        <button @click="
+                            selectedPlaceType = 'cafe';
+                            $wire.setPlaceType('cafe');
+                        "
+                        :class="{
+                            'border-blue-500 bg-blue-50': selectedPlaceType === 'cafe',
+                            'border-gray-200 hover:border-blue-200': selectedPlaceType !== 'cafe'
+                        }"
+                        class="flex items-center p-3 rounded-lg border-2 transition-all duration-200">
+                            <svg class="w-6 h-6 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/>
+                            </svg>
+                            <span class="font-medium">Cafes</span>
+                        </button>
+
+                        <button @click="
+                            selectedPlaceType = 'bar';
+                            $wire.setPlaceType('bar');
+                        "
+                        :class="{
+                            'border-blue-500 bg-blue-50': selectedPlaceType === 'bar',
+                            'border-gray-200 hover:border-blue-200': selectedPlaceType !== 'bar'
+                        }"
+                        class="flex items-center p-3 rounded-lg border-2 transition-all duration-200">
+                            <svg class="w-6 h-6 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                            </svg>
+                            <span class="font-medium">Bars</span>
+                        </button>
+
+                        <button @click="
+                            selectedPlaceType = 'night_club';
+                            $wire.setPlaceType('night_club');
+                        "
+                        :class="{
+                            'border-blue-500 bg-blue-50': selectedPlaceType === 'night_club',
+                            'border-gray-200 hover:border-blue-200': selectedPlaceType !== 'night_club'
+                        }"
+                        class="flex items-center p-3 rounded-lg border-2 transition-all duration-200">
+                            <svg class="w-6 h-6 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                            </svg>
+                            <span class="font-medium">Night Clubs</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Entertainment & Culture -->
+                <div class="space-y-3">
+                    <h3 class="text-sm font-medium text-gray-700 uppercase tracking-wide">Shopping & Services</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button @click="$wire.setPlaceType('shopping_mall')"
+                                class="flex items-center p-3 rounded-lg border-2 transition-all duration-200"
+                                :class="{'border-blue-500 bg-blue-50': $wire.placeType === 'shopping_mall', 'border-gray-200 hover:border-blue-200': $wire.placeType !== 'shopping_mall'}">
+                            <svg class="w-6 h-6 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                            </svg>
+                            <span class="font-medium">Shopping Malls</span>
+                        </button>
+
+                        <button @click="$wire.setPlaceType('store')"
+                                class="flex items-center p-3 rounded-lg border-2 transition-all duration-200"
+                                :class="{'border-blue-500 bg-blue-50': $wire.placeType === 'store', 'border-gray-200 hover:border-blue-200': $wire.placeType !== 'store'}">
+                            <svg class="w-6 h-6 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M3 3h18v18H3zM12 8v8m-4-4h8"/>
+                            </svg>
+                            <span class="font-medium">Stores</span>
+                        </button>
+                    </div>
+                </div>
             </div>
 
-            <!-- Sort Filter -->
-            <div class="space-y-2">
-                <label for="sort" class="block text-sm font-medium text-gray-700">Sort by</label>
-                <select id="sort"
-                        wire:model="sortCriteria"
-                        wire:change="sortPlaces"
-                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500">
-                    <option value="rating">Rating</option>
-                    <option value="price">Price</option>
-                </select>
-            </div>
+            <!-- Sort Options -->
+            <div class="space-y-3 border-t pt-6">
+                <h3 class="text-sm font-medium text-gray-700 uppercase tracking-wide">Sort Results</h3>
+                <div class="flex space-x-3">
+                    <button @click="$wire.setSortCriteria('rating')"
+                            class="flex-1 p-3 rounded-lg border-2 transition-all duration-200"
+                            :class="{'border-blue-500 bg-blue-50': $wire.sortCriteria === 'rating', 'border-gray-200': $wire.sortCriteria !== 'rating'}">
+                        <div class="flex items-center justify-center">
+                            <svg class="w-5 h-5 mr-2 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                            </svg>
+                            <span class="font-medium">By Rating</span>
+                        </div>
+                    </button>
 
-            <!-- Additional filters can be added here -->
+                    <button @click="$wire.setSortCriteria('price')"
+                            class="flex-1 p-3 rounded-lg border-2 transition-all duration-200"
+                            :class="{'border-blue-500 bg-blue-50': $wire.sortCriteria === 'price', 'border-gray-200': $wire.sortCriteria !== 'price'}">
+                        <div class="flex items-center justify-center">
+                            <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2-1.343-2-3-2z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z"/>
+                            </svg>
+                            <span class="font-medium">By Price</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
         </div>
 
         <!-- Apply Filters Button -->
@@ -660,20 +760,20 @@ x-init="
                                                 group-hover:scale-[1.02] group-hover:shadow-xl
                                                 group-active:scale-[0.98]">
                                         <!-- Hover Effect -->
-                                        <div class="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-400 opacity-0 
+                                        <div class="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-400 opacity-0
                                                     group-hover:opacity-50 transition-opacity duration-300 rounded-lg"></div>
-                                        
+
                                         <!-- Shimmer Effect -->
-                                        <div class="absolute inset-0 transform translate-x-[-100%] group-hover:translate-x-[100%] 
+                                        <div class="absolute inset-0 transform translate-x-[-100%] group-hover:translate-x-[100%]
                                                     transition-transform duration-1000
                                                     bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-                                        
+
                                         <!-- Content -->
                                         <div class="relative flex items-center justify-center space-x-3">
                                             <!-- Icon -->
                                             <span class="flex items-center transform transition-transform duration-300 group-hover:scale-110">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                           d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
                                                 </svg>
                                             </span>

@@ -168,7 +168,7 @@
                                     Saved Places & Events
                                 </dt>
                                 <dd class="text-3xl font-semibold text-white">
-                                    5
+                                    {{$countSavedItems}}
                                 </dd>
                             </dl>
                         </div>
@@ -176,7 +176,7 @@
                 </div>
                 <div class="bg-red-500 px-4 py-4 sm:px-6">
                     <div class="text-sm">
-                        <a href="#"
+                        <a href="{{route('saved-items')}}"
                             class="font-medium text-white hover:text-red-100 transition ease-in-out duration-150">
                             View Saved Items &rarr;
                         </a>

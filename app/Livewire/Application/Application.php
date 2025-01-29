@@ -3,6 +3,7 @@
 namespace App\Livewire\Application;
 
 use App\Models\Category;
+use App\Models\SavedItem;
 use App\Models\Trip;
 use App\Models\Expense;
 use Livewire\Component;
@@ -23,6 +24,7 @@ class Application extends Component
     public $hasExpenses = false;
     public $openFirst = false;
     public $lastFiveExpenses = [];
+    public $countSavedItems;
 
     protected $listeners = ['echo:openq-channel,OpenQEvent' => 'OpenFirstVisitQuestionnaire'];
 
@@ -79,6 +81,7 @@ class Application extends Component
 
             Log::info('Initial value of openFirst: ' . $this->openFirst);
             Log::info('Listeners registered: ' . json_encode($this->getListeners()));
+            $this->countSavedItems = SavedItem::where('user_id', Auth::user()->id)->count();
 
         }
 
