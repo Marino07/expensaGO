@@ -6,6 +6,7 @@ use App\Models\Trip;
 use App\Models\Planner;
 use Livewire\Component;
 use App\Services\GooglePlacesService;
+use Carbon\Carbon;
 
 class TripPlanner extends Component
 {
@@ -14,12 +15,14 @@ class TripPlanner extends Component
     public $planner = null;
     private $usedPlaceIds = [];
     public $averageDayCost;
+    public $cardsToShow;
 
     public function mount(Trip $trip)
     {
         $this->trip = $trip;
         $this->planner = $trip->planner;
         $this->averageDayCost = $trip->budget / $trip->duration;
+        $this->UnlockCards();
     }
 
     private function getPreferenceType($preference)
@@ -407,6 +410,13 @@ class TripPlanner extends Component
         $this->dispatch('generation-completed');
 
         return redirect()->route('trip-planner', ['trip' => $this->trip->id]);
+    }
+    public function UnlockCards(){
+    $startDate = Carbon::parse($this->trip->start_date); // Početni datum putovanja
+    $today = Carbon::today(); // Danasnji datum
+    $daysPassed = $startDate->diffInDays($today); // Broj dana proteklih od početka tripa
+    $cardsToShow = min($daysPassed + 2, $this->trip->duration); // Uvijek barem 2, ali ne preko ukupnog broja dana
+    $this->cardsToShow = $cardsToShow;
     }
 
     public function render()

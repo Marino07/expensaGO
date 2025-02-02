@@ -86,15 +86,19 @@ x-data="{
                   </div>
                 </div>
               </h2>
-                <div x-data="{ activeDay: {}, isLoading: false }" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    @foreach($plannerDays as $day)
-                        <div class="relative h-[450px] perspective-1000"
-                             x-data="{ flipped: false }"
-                             x-on:click="flipped = !flipped">
 
-                            <!-- Front of card -->
+                <div x-data="{ activeDay: {}, isLoading: false }" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    @foreach($plannerDays as $index => $day)
+                        <div class="relative h-[450px] perspective-1000"
+                             x-data="{ flipped: false }">
+
+                            <!-- Inner container with blur -->
                             <div class="w-full h-full transition-all duration-500 preserve-3d"
-                                 :class="flipped ? 'rotate-y-180' : ''"
+                                 :class="{
+                                     'blur-md pointer-events-none': {{ $index >= $cardsToShow }},
+                                     'rotate-y-180': flipped
+                                 }"
+                                 x-on:click="flipped = !flipped"
                                  :style="flipped ? 'transform: rotateY(180deg)' : ''">
 
                                 <!-- Front Content -->
@@ -230,6 +234,16 @@ x-data="{
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Lock overlay for locked cards -->
+                            <template x-if="{{ $index >= $cardsToShow }}">
+                                <div class="absolute inset-0 z-10 flex flex-col items-center justify-center">
+                                    <svg class="w-12 h-12 text-gray-600 mb-3" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 1a5 5 0 0 0-5 5v2H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-1V6a5 5 0 0 0-5-5zm3 7H9V6a3 3 0 1 1 6 0z"/>
+                                    </svg>
+                                    <p class="text-gray-700 font-medium">Day Locked</p>
+                                </div>
+                            </template>
                         </div>
                     @endforeach
                 </div>
