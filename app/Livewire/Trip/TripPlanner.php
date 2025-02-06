@@ -415,8 +415,12 @@ class TripPlanner extends Component
     $startDate = Carbon::parse($this->trip->start_date); // Početni datum putovanja
     $today = Carbon::today(); // Danasnji datum
     $daysPassed = $startDate->diffInDays($today); // Broj dana proteklih od početka tripa
-    $cardsToShow = min($daysPassed + 2, $this->trip->duration); // Uvijek barem 2, ali ne preko ukupnog broja dana
-    $this->cardsToShow = $cardsToShow;
+    if($daysPassed > 0){
+        $cardsToShow = min($daysPassed + 2, $this->trip->duration); // Uvijek barem 2, ali ne preko ukupnog broja dana
+        $this->cardsToShow = $cardsToShow;
+    }
+    $this->cardsToShow = 1;
+
     }
 
     public function render()

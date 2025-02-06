@@ -236,7 +236,7 @@ x-data="{
                             </div>
 
                             <!-- Lock overlay for locked cards -->
-                            <template x-if="{{ $index >= $cardsToShow }}">
+                            <template x- cloak x-if="{{ $index >= $cardsToShow }}">
                                 <div class="absolute inset-0 z-10 flex flex-col items-center justify-center">
                                     <svg class="w-12 h-12 text-gray-600 mb-3" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M12 1a5 5 0 0 0-5 5v2H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-1V6a5 5 0 0 0-5-5zm3 7H9V6a3 3 0 1 1 6 0z"/>

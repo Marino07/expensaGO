@@ -6,6 +6,21 @@
     progress: 25,
     updateProgress() {
         this.progress = (this.currentStep / this.totalSteps) * 100;
+    },
+    hasAnySelection() {
+        return Object.values(this.preferences).some(value => value === true);
+    },
+    isStepValid() {
+        switch(this.currentStep) {
+            case 1:
+                return this.preferences.attractions || this.preferences.events;
+            case 2:
+                return this.preferences.restaurants || this.preferences.localCuisine;
+            case 3:
+                return this.preferences.shopping || this.preferences.nature;
+            default:
+                return true;
+        }
     }
 }"
 x-show="show"
@@ -39,6 +54,7 @@ x-cloak>
                                 <span class="mt-2 text-lg font-medium text-slate-700">Events</span>
                             </label>
                         </div>
+                        <p x-show="!isStepValid()" class="text-amber-600 text-sm mt-2 italic">Select at least one option to enhance your travel experience with exciting attractions and events.</p>
                     </div>
 
                     <div x-show="currentStep === 2" class="space-y-6 transition-opacity duration-500" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100">
@@ -55,6 +71,7 @@ x-cloak>
                                 <span class="mt-2 text-lg font-medium text-gray-900">Local Cuisine</span>
                             </label>
                         </div>
+                        <p x-show="!isStepValid()" class="text-amber-600 text-sm mt-2 italic">Choose at least one dining preference to discover amazing culinary experiences.</p>
                     </div>
 
                     <div x-show="currentStep === 3" class="space-y-6 transition-opacity duration-500" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100">
@@ -71,12 +88,19 @@ x-cloak>
                                 <span class="mt-2 text-lg font-medium text-gray-900">Nature</span>
                             </label>
                         </div>
+                        <p x-show="!isStepValid()" class="text-amber-600 text-sm mt-2 italic">Pick at least one leisure activity to make your journey more enjoyable.</p>
                     </div>
 
                     <div x-show="currentStep === 4" class="space-y-6 transition-opacity duration-500" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100">
                         <h3 class="text-2xl font-semibold text-gray-800">You're ready for adventure!</h3>
                         <p class="text-lg text-gray-600">Thank you for sharing your preferences. We're ready to provide you with an unforgettable experience!</p>
                     </div>
+
+                    @if (session('error'))
+                        <div class="text-red-500 text-sm mt-2">
+                            {{ session('error') }}
+                        </div>
+                    @endif
 
                     <div class="flex justify-end">
                         <button
@@ -89,8 +113,9 @@ x-cloak>
                         </button>
                         <button
                             x-show="currentStep < totalSteps"
-                            @click="currentStep++"
+                            @click="isStepValid() && currentStep++"
                             type="button"
+                            x-bind:class="{'opacity-50 cursor-not-allowed': !isStepValid()}"
                             class="px-6 py-3 bg-sky-500 text-white rounded-full hover:bg-sky-600 transition-colors duration-300"
                         >
                             Next
@@ -98,6 +123,8 @@ x-cloak>
                         <button
                             x-show="currentStep === totalSteps"
                             type="submit"
+                            x-bind:disabled="!isStepValid()"
+                            x-bind:class="{'opacity-50 cursor-not-allowed': !isStepValid()}"
                             class="px-6 py-3 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors duration-300"
                         >
                             Start Journey

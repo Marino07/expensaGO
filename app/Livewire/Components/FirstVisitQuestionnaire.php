@@ -32,9 +32,39 @@ class FirstVisitQuestionnaire extends Component
 
     }
 
+    public function hasAtLeastOneSelection()
+    {
+        return collect($this->preferences)->contains(true);
+    }
+
+    public function validateStep($step)
+    {
+        switch($step) {
+            case 1:
+                return $this->preferences['attractions'] || $this->preferences['events'];
+            case 2:
+                return $this->preferences['restaurants'] || $this->preferences['localCuisine'];
+            case 3:
+                return $this->preferences['shopping'] || $this->preferences['nature'];
+            default:
+                return true;
+        }
+    }
+
     public function savePreferences()
     {
         if (!$this->trip) {
+            return;
+        }
+
+        // Validate all steps before saving
+        if (!$this->validateStep(1) || !$this->validateStep(2) || !$this->validateStep(3)) {
+            session()->flash('error', 'Please select at least one option from each category for a more personalized travel experience.');
+            return;
+        }
+
+        if (!$this->hasAtLeastOneSelection()) {
+            session()->flash('error', 'Please select at least one preference');
             return;
         }
 
