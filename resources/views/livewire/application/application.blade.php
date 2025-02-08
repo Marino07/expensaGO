@@ -85,102 +85,118 @@
         <div x-show="openFirst">
             <livewire:components.first-visit-questionnaire />
         </div>
-        @if($trip)
-        <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <!-- Total Expenses Card -->
-            <div class="bg-gradient-to-br from-blue-400 to-indigo-600 rounded-lg shadow-lg overflow-hidden">
-                <div class="px-4 py-5 sm:p-6">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0 bg-white rounded-md p-3">
-                            <svg class="h-6 w-6 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+        @if ($trip)
+            <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                <!-- Total Expenses Card -->
+                <div class="bg-gradient-to-br from-blue-400 to-indigo-600 rounded-lg shadow-lg overflow-hidden">
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-white rounded-md p-3">
+                                <svg class="h-6 w-6 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <dl>
+                                    <dt class="text-sm font-medium text-gray-100 truncate">
+                                        Total Expenses
+                                    </dt>
+                                    <dd class="text-3xl font-semibold text-white">
+                                        {{ $AllExpenses }} $
+                                    </dd>
+                                </dl>
+                            </div>
                         </div>
-                        <div class="ml-5 w-0 flex-1">
-                            <dl>
-                                <dt class="text-sm font-medium text-gray-100 truncate">
-                                    Total Expenses
-                                </dt>
-                                <dd class="text-3xl font-semibold text-white">
-                                    {{ $AllExpenses }} $
-                                </dd>
-                            </dl>
+                    </div>
+                    <div class="bg-indigo-600 px-4 py-4 sm:px-6">
+                        <div class="text-sm">
+                            <a href="{{ route('all-expenses') }}"
+                                class="font-medium text-white hover:text-indigo-100 transition ease-in-out duration-150">
+                                View all expenses &rarr;
+                            </a>
                         </div>
                     </div>
                 </div>
-                <div class="bg-indigo-600 px-4 py-4 sm:px-6">
-                    <div class="text-sm">
-                        <a href="{{ route('all-expenses') }}"
-                            class="font-medium text-white hover:text-indigo-100 transition ease-in-out duration-150">
-                            View all expenses &rarr;
-                        </a>
+
+                <!-- Active Trips Card -->
+                <div class="bg-gradient-to-br from-blue-300 to-indigo-500 rounded-lg shadow-lg overflow-hidden">
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-white rounded-md p-3">
+                                <svg class="h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                                </svg>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <dl>
+                                    <dt class="text-sm font-medium text-gray-100 truncate">
+                                        Active Trip
+                                    </dt>
+                                    <dd class=" inline-block text-3xl font-semibold text-white">
+                                        {{ $trip->location }}
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-green-600 px-4 py-4 sm:px-6">
+                        <div class="text-sm">
+                            <a href="{{ route('manage-trips') }}"
+                                class="font-medium text-white hover:text-green-100 transition ease-in-out duration-150">
+                                Manage trips &rarr;
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pending Reports Card -->
+                <div class="bg-gradient-to-br from-red-200 to-pink-400 rounded-lg shadow-lg overflow-hidden">
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-white rounded-md p-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                                </svg>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <dl>
+                                    <dt class="text-sm font-medium text-gray-100 truncate">
+                                        Saved Places & Events
+                                    </dt>
+                                    <dd class="text-3xl font-semibold text-white">
+                                        {{ $countSavedItems }}
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-red-500 px-4 py-4 sm:px-6">
+                        <div class="text-sm">
+                            <a href="{{ route('saved-items') }}"
+                                class="font-medium text-white hover:text-red-100 transition ease-in-out duration-150">
+                                View Saved Items &rarr;
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Active Trips Card -->
-            <div class="bg-gradient-to-br from-blue-300 to-indigo-500 rounded-lg shadow-lg overflow-hidden">
-                <div class="px-4 py-5 sm:p-6">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0 bg-white rounded-md p-3">
-                            <svg class="h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                            </svg>
-                        </div>
-                        <div class="ml-5 w-0 flex-1">
-                            <dl>
-                                <dt class="text-sm font-medium text-gray-100 truncate">
-                                    Active Trip
-                                </dt>
-                                <dd class=" inline-block text-3xl font-semibold text-white">
-                                    {{ $trip->location }}
-                                </dd>
-                            </dl>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-green-600 px-4 py-4 sm:px-6">
-                    <div class="text-sm">
-                        <a href="{{ route('manage-trips') }}"
-                            class="font-medium text-white hover:text-green-100 transition ease-in-out duration-150">
-                            Manage trips &rarr;
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Pending Reports Card -->
-            <div class="bg-gradient-to-br from-red-200 to-pink-400 rounded-lg shadow-lg overflow-hidden">
-                <div class="px-4 py-5 sm:p-6">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0 bg-white rounded-md p-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                            </svg>
-                        </div>
-                        <div class="ml-5 w-0 flex-1">
-                            <dl>
-                                <dt class="text-sm font-medium text-gray-100 truncate">
-                                    Saved Places & Events
-                                </dt>
-                                <dd class="text-3xl font-semibold text-white">
-                                    {{$countSavedItems}}
-                                </dd>
-                            </dl>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-red-500 px-4 py-4 sm:px-6">
-                    <div class="text-sm">
-                        <a href="{{route('saved-items')}}"
-                            class="font-medium text-white hover:text-red-100 transition ease-in-out duration-150">
-                            View Saved Items &rarr;
-                        </a>
-                    </div>
+        @else
+        <div class="bg-gradient-to-r from-blue-100 to-indigo-100 rounded-xl p-6 mb-6 shadow-lg border border-blue-100">
+            <div class="max-w-2xl mx-auto text-center">
+                <h1 class="text-4xl font-bold text-gray-900 mb-6">Welcome to Expensago! ✈️</h1>
+                <div class="space-y-6">
+                    <h2 class="text-2xl font-semibold text-gray-800">
+                        Start Your Journey
+                    </h2>
+                    <p class="text-lg text-gray-600">
+                        Effortlessly track expenses, plan trips, and manage your finances. Create your first trip, connect your bank account, and get personalized insights for seamless financial management.
+                    </p>
                 </div>
             </div>
         </div>
@@ -268,29 +284,40 @@
                         </svg>
                     </span>
                 </div>
-
-                <div
+                <div id="plaidon"
                     class="relative group bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-blue-500 rounded-lg shadow-lg hover:bg-blue-50 transition-all duration-200">
                     <div>
                         <span class="rounded-lg inline-flex p-3 bg-blue-100 text-blue-700 ring-4 ring-white">
-                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
+                            <svg class="w-6 h-6 {{auth()->user()->plaid_access_token ? 'text-green-400' : 'text-orange-700'}}" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0
+00-3 3v8a3 3 0 003 3z" />
+                                    </svg>
+
                         </span>
                     </div>
                     <div class="mt-8">
-                        <h3 class="text-lg font-medium">
-                            <a href="#" class="focus:outline-none">
-                                <span class="absolute inset-0" aria-hidden="true"></span>
-                                Generate Report
-                            </a>
+                        <h3 class="text-lg font-medium pb-2">
+                            Bank account
                         </h3>
-                        <p class="mt-2 text-sm text-gray-500">
-                            Create a detailed expense report for your trips.
-                        </p>
                     </div>
+                    @auth
+                        @if (!auth()->user()->plaid_access_token)
+                            <button @click="initPlaid" class="text-orange-700  font-medium">
+                                Connect Now →
+                            </button>
+                        @else
+                            <span class="text-sm font-medium text-green-700 flex items-center">
+                                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span class="text-base">Connected</span>
+                            </span>
+                        @endif
+                    @endauth
                     <span class="pointer-events-none absolute top-6 right-6 text-gray-300 group-hover:text-yellow-400"
                         aria-hidden="true">
                         <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
@@ -300,141 +327,121 @@
                         </svg>
                     </span>
                 </div>
-                @if($trip)
-                <div
-                    class="relative group bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-blue-500 rounded-lg shadow-lg hover:bg-blue-50 transition-all duration-200">
-                    <div>
-                        <span class="rounded-lg inline-flex p-3 bg-blue-100 text-blue-700 ring-4 ring-white">
-                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                @if ($trip)
+                    <div
+                        class="relative group bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-blue-500 rounded-lg shadow-lg hover:bg-blue-50 transition-all duration-200">
+                        <div>
+                            <span class="rounded-lg inline-flex p-3 bg-blue-100 text-blue-700 ring-4 ring-white">
+
+                                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.036-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959v0a.64.64 0 0 1-.657.643 48.39 48.39 0 0 1-4.163-.3c.186 1.613.293 3.25.315 4.907a.656.656 0 0 1-.658.663v0c-.355 0-.676-.186-.959-.401a1.647 1.647 0 0 0-1.003-.349c-1.036 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401v0c.31 0 .555.26.532.57a48.039 48.039 0 0 1-.642 5.056c1.518.19 3.058.309 4.616.354a.64.64 0 0 0 .657-.643v0c0-.355-.186-.676-.401-.959a1.647 1.647 0 0 1-.349-1.003c0-1.035 1.008-1.875 2.25-1.875 1.243 0 2.25.84 2.25 1.875 0 .369-.128.713-.349 1.003-.215.283-.4.604-.4.959v0c0 .333.277.599.61.58a48.1 48.1 0 0 0 5.427-.63 48.05 48.05 0 0 0 .582-4.717.532.532 0 0 0-.533-.57v0c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.035 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.37 0 .713.128 1.003.349.283.215.604.401.96.401v0a.656.656 0 0 0 .658-.663 48.422 48.422 0 0 0-.37-5.36c-1.886.342-3.81.574-5.766.689a.578.578 0 0 1-.61-.58v0Z" />
+                                  </svg>
+
+                            </span>
+                        </div>
+                        <div class="mt-8">
+                            <h3 class="text-lg font-medium">
+                                <a href="{{ route('trip-planner', ['trip' => $trip->id]) }}"
+                                    class="focus:outline-none">
+                                    <span class="absolute inset-0" aria-hidden="true"></span>
+                                    @if(!$trip->planner)
+                                    Generate Trip Plan
+                                    @else
+                                    Trip Planner
+                                    @endif
+
+                                </a>
+                            </h3>
+                            <p class="mt-2 text-sm text-gray-500">
+                                @if(!$trip->planner)
+                                Create an AI-powered plan for your trip.
+                                @else
+                                Unlocking planner days every few days
+                                @endif
+                            </p>
+                        </div>
+                        <span
+                            class="pointer-events-none absolute top-6 right-6 text-gray-300 group-hover:text-purple-400"
+                            aria-hidden="true">
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                viewBox="0 0 24 24">
+                                <path
+                                    d="M20 4h1a1 1 0 00-1-1v1zm-1 12a1 1 0 102 0h-2zM8 3a1 1 0 000 2V3zM3.293 19.293a1 1 0 101.414 1.414l-1.414-1.414zM19 4v12h2V4h-2zm1-1H8v2h12V3zm-.707.293l-16 16 1.414 1.414 16-16-1.414-1.414z" />
                             </svg>
                         </span>
                     </div>
-                    <div class="mt-8">
-                        <h3 class="text-lg font-medium">
-                            <a href="{{ route('trip-planner', ['trip' => $trip->id]) }}" class="focus:outline-none">
-                                <span class="absolute inset-0" aria-hidden="true"></span>
-                                Generate Trip Plan
-                            </a>
-                        </h3>
-                        <p class="mt-2 text-sm text-gray-500">
-                            Create an AI-powered plan for your trip.
-                        </p>
+                    <div
+                        class="relative group bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-blue-500 rounded-lg shadow-lg hover:bg-blue-50 transition-all duration-200">
+                        <div>
+                            <span class="rounded-lg inline-flex p-3 bg-blue-100 text-blue-700 ring-4 ring-white">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
+                                  </svg>
+
+                            </span>
+                        </div>
+                        <div class="mt-8">
+                            <h3 class="text-lg font-medium">
+                                <a href="{{ route('trip-planner', ['trip' => $trip->id]) }}"
+                                    class="focus:outline-none">
+                                    <span class="absolute inset-0" aria-hidden="true"></span>
+                                    Events
+                                </a>
+                            </h3>
+                            <p class="mt-2 text-sm text-gray-500">
+                                Events near you
+                            </p>
+                        </div>
+                        <span
+                            class="pointer-events-none absolute top-6 right-6 text-gray-300 group-hover:text-purple-400"
+                            aria-hidden="true">
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                viewBox="0 0 24 24">
+                                <path
+                                    d="M20 4h1a1 1 0 00-1-1v1zm-1 12a1 1 0 102 0h-2zM8 3a1 1 0 000 2V3zM3.293 19.293a1 1 0 101.414 1.414l-1.414-1.414zM19 4v12h2V4h-2zm1-1H8v2h12V3zm-.707.293l-16 16 1.414 1.414 16-16-1.414-1.414z" />
+                            </svg>
+                        </span>
                     </div>
-                    <span class="pointer-events-none absolute top-6 right-6 text-gray-300 group-hover:text-purple-400"
-                        aria-hidden="true">
-                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                            viewBox="0 0 24 24">
-                            <path
-                                d="M20 4h1a1 1 0 00-1-1v1zm-1 12a1 1 0 102 0h-2zM8 3a1 1 0 000 2V3zM3.293 19.293a1 1 0 101.414 1.414l-1.414-1.414zM19 4v12h2V4h-2zm1-1H8v2h12V3zm-.707.293l-16 16 1.414 1.414 16-16-1.414-1.414z" />
-                        </svg>
-                    </span>
-                </div>
-                <div
-                class="relative group bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-blue-500 rounded-lg shadow-lg hover:bg-blue-50 transition-all duration-200">
-                <div>
-                    <span class="rounded-lg inline-flex p-3 bg-blue-100 text-blue-700 ring-4 ring-white">
-                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                        </svg>
-                    </span>
-                </div>
-                <div class="mt-8">
-                    <h3 class="text-lg font-medium">
-                        <a href="{{ route('trip-planner', ['trip' => $trip->id]) }}" class="focus:outline-none">
-                            <span class="absolute inset-0" aria-hidden="true"></span>
-                            Events
-                        </a>
-                    </h3>
-                    <p class="mt-2 text-sm text-gray-500">
-                        Events near you
-                    </p>
-                </div>
-                <span class="pointer-events-none absolute top-6 right-6 text-gray-300 group-hover:text-purple-400"
-                    aria-hidden="true">
-                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                        viewBox="0 0 24 24">
-                        <path
-                            d="M20 4h1a1 1 0 00-1-1v1zm-1 12a1 1 0 102 0h-2zM8 3a1 1 0 000 2V3zM3.293 19.293a1 1 0 101.414 1.414l-1.414-1.414zM19 4v12h2V4h-2zm1-1H8v2h12V3zm-.707.293l-16 16 1.414 1.414 16-16-1.414-1.414z" />
-                    </svg>
-                </span>
-            </div>
-            <div
-            class="relative group bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-blue-500 rounded-lg shadow-lg hover:bg-blue-50 transition-all duration-200">
-            <div>
-                <span class="rounded-lg inline-flex p-3 bg-blue-100 text-blue-700 ring-4 ring-white">
-                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                    </svg>
-                </span>
-            </div>
-            <div class="mt-8">
-                <h3 class="text-lg font-medium">
-                    <a href="{{ route('trip-planner', ['trip' => $trip->id]) }}" class="focus:outline-none">
-                        <span class="absolute inset-0" aria-hidden="true"></span>
-                        Ask AI
-                    </a>
-                </h3>
-                <p class="mt-2 text-sm text-gray-500">
-                    Ask whatever you want.
-                </p>
-            </div>
-            <span class="pointer-events-none absolute top-6 right-6 text-gray-300 group-hover:text-purple-400"
-                aria-hidden="true">
-                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                    viewBox="0 0 24 24">
-                    <path
-                        d="M20 4h1a1 1 0 00-1-1v1zm-1 12a1 1 0 102 0h-2zM8 3a1 1 0 000 2V3zM3.293 19.293a1 1 0 101.414 1.414l-1.414-1.414zM19 4v12h2V4h-2zm1-1H8v2h12V3zm-.707.293l-16 16 1.414 1.414 16-16-1.414-1.414z" />
-                </svg>
-            </span>
-        </div>
+                    <div
+                        class="relative group bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-blue-500 rounded-lg shadow-lg hover:bg-blue-50 transition-all duration-200">
+                        <div>
+                            <span class="rounded-lg inline-flex p-3 bg-blue-100 text-blue-700 ring-4 ring-white">
+
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m20.893 13.393-1.135-1.135a2.252 2.252 0 0 1-.421-.585l-1.08-2.16a.414.414 0 0 0-.663-.107.827.827 0 0 1-.812.21l-1.273-.363a.89.89 0 0 0-.738 1.595l.587.39c.59.395.674 1.23.172 1.732l-.2.2c-.212.212-.33.498-.33.796v.41c0 .409-.11.809-.32 1.158l-1.315 2.191a2.11 2.11 0 0 1-1.81 1.025 1.055 1.055 0 0 1-1.055-1.055v-1.172c0-.92-.56-1.747-1.414-2.089l-.655-.261a2.25 2.25 0 0 1-1.383-2.46l.007-.042a2.25 2.25 0 0 1 .29-.787l.09-.15a2.25 2.25 0 0 1 2.37-1.048l1.178.236a1.125 1.125 0 0 0 1.302-.795l.208-.73a1.125 1.125 0 0 0-.578-1.315l-.665-.332-.091.091a2.25 2.25 0 0 1-1.591.659h-.18c-.249 0-.487.1-.662.274a.931.931 0 0 1-1.458-1.137l1.411-2.353a2.25 2.25 0 0 0 .286-.76m11.928 9.869A9 9 0 0 0 8.965 3.525m11.928 9.868A9 9 0 1 1 8.965 3.525" />
+                                  </svg>
+
+                            </span>
+                        </div>
+                        <div class="mt-8">
+                            <h3 class="text-lg font-medium">
+                                <a href="{{ route('trip-planner', ['trip' => $trip->id]) }}"
+                                    class="focus:outline-none">
+                                    <span class="absolute inset-0" aria-hidden="true"></span>
+                                    Local Tips
+                                </a>
+                            </h3>
+                            <p class="mt-2 text-sm text-gray-500">
+                                Recommended places and more
+                            </p>
+                        </div>
+                        <span
+                            class="pointer-events-none absolute top-6 right-6 text-gray-300 group-hover:text-purple-400"
+                            aria-hidden="true">
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                viewBox="0 0 24 24">
+                                <path
+                                    d="M20 4h1a1 1 0 00-1-1v1zm-1 12a1 1 0 102 0h-2zM8 3a1 1 0 000 2V3zM3.293 19.293a1 1 0 101.414 1.414l-1.414-1.414zM19 4v12h2V4h-2zm1-1H8v2h12V3zm-.707.293l-16 16 1.414 1.414 16-16-1.414-1.414z" />
+                            </svg>
+                        </span>
+                    </div>
+
                 @endif
             </div>
         </div>
 
-        <!-- New Section for Linking Bank Account -->
-        <div id="plaidon" class="bg-white shadow-lg rounded-lg overflow-hidden mt-4">
-            <div class="px-6 py-8">
-                <div class="flex items-center mb-6">
-                    <svg class="w-8 h-8 text-blue-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z">
-                        </path>
-                    </svg>
-                    <h3 class="text-2xl font-semibold text-gray-900">Bank Account</h3>
-                </div>
-
-                @auth
-                    @if (auth()->check() && !auth()->user()->plaid_access_token)
-                        <p class="text-gray-600 mb-6">Connect your bank account to start managing your finances.</p>
-                        <button onclick="initPlaid()"
-                            class="w-full sm:w-auto px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300 ease-in-out flex items-center justify-center">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                            </svg>
-                            Connect Bank Account
-                        </button>
-                    @else
-                        <p class="text-green-600 flex items-center">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
-                                </path>
-                            </svg>
-                            Your bank account is connected
-                        </p>
-                    @endif
-                @endauth
-                <!--
+        {{-- webhook --}}
+        <!--
                         <form action="{{ url('/webhook/plaid') }}" method="POST">
                             @csrf
                             <label for="webhook_type">Webhook Type:</label>
@@ -454,9 +461,8 @@
 
 
 
-                <!-- Rest of your transactions view code -->
-            </div>
-        </div>
+        <!-- Rest of your transactions view code -->
+
     </main>
     <x-footer />
     <!-- AI Chat Button and Modal -->
