@@ -1,48 +1,55 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ env('APP_NAME') }}</title>
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-        <link rel="manifest" href="/site.webmanifest">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-        <script src="https://maps.googleapis.com/maps/api/js?key={{env('GOOGLE_PLACES_API_KEY')}}&libraries=places,geocoding,geometry&callback=initMap" async defer></script>
-        <style>
-            @keyframes dashdraw {
-                from {
-                    stroke-dashoffset: 100;
-                }
-                to {
-                    stroke-dashoffset: 0;
-                }
+    <title>{{ env('APP_NAME') }}</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_PLACES_API_KEY') }}&libraries=places,geocoding,geometry&callback=initMap"
+        async defer></script>
+    <style>
+
+        @keyframes dashdraw {
+            from {
+                stroke-dashoffset: 100;
             }
 
-            .tutorial-arrow path:first-child {
-                animation: dashdraw 1.5s linear infinite;
+            to {
+                stroke-dashoffset: 0;
             }
+        }
 
-            .no-blur {
-                position: relative;
-                z-index: 60;
-                backdrop-filter: none !important;
-            }
-        </style>
+        .tutorial-arrow path:first-child {
+            animation: dashdraw 1.5s linear infinite;
+        }
 
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-        @livewireStyles
-    </head>
-    <body>
-        {{$slot}}
-        <!-- Scripts -->
-        @livewireScripts
-    </body>
+        .no-blur {
+            position: relative;
+            z-index: 60;
+            backdrop-filter: none !important;
+        }
+    </style>
+
+    <!-- Scripts -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @livewireStyles
+</head>
+
+<body>
+    {{ $slot }}
+    <!-- Scripts -->
+    @livewireScripts
+</body>
+
 </html>

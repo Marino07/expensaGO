@@ -60,10 +60,7 @@
                                                 class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                             Finish Trip
                                         </button>
-                                        <a href="{{route('generate-plan',$trip->id)}}"
-                                            class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                        Mang
-                                    </a>
+
                                     </div>
 
                                 </div>
@@ -101,7 +98,6 @@
                                     x-transition:enter-start="opacity-0 transform translate-x-full"
                                     x-transition:enter-end="opacity-100 transform translate-x-0"
                                     class="mt-6 bg-white p-6 rounded-lg shadow-md">
-                                    <h4 class="flex justify-center text-xl font-semibold mb-4 text-blue-400">We hope you enjoy 😊</h4>
                                     <h4 class="text-xl font-semibold mb-4 text-indigo-700">Recent Expenses</h4>
                                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
                                         <template x-for="expense in expenses.slice(-3).reverse()" :key="expense.id">

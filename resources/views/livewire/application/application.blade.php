@@ -382,7 +382,7 @@
                         </div>
                         <div class="mt-8">
                             <h3 class="text-lg font-medium">
-                                <a href="{{ route('trip-planner', ['trip' => $trip->id]) }}"
+                                <a href="{{ route('events') }}"
                                     class="focus:outline-none">
                                     <span class="absolute inset-0" aria-hidden="true"></span>
                                     Events
@@ -415,7 +415,7 @@
                         </div>
                         <div class="mt-8">
                             <h3 class="text-lg font-medium">
-                                <a href="{{ route('trip-planner', ['trip' => $trip->id]) }}"
+                                <a href="{{ route('places') }}"
                                     class="focus:outline-none">
                                     <span class="absolute inset-0" aria-hidden="true"></span>
                                     Local Tips
