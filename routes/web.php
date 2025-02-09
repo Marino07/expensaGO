@@ -35,9 +35,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('all_expenses', AllExpenses::class)->name('all-expenses');
     Route::get('finish_trip/{trip}', EditTrip::class)->name('finish-trip');
     Route::get('/places', PlaceFinder::class)->name('places');
-    Route::get('/generate_plan/{trip}', GeneratePlan::class)->name('generate-plan');
     Route::get('/sos', SOSComponent::class)->name('sos');
-    Route::get('/itinerary_builder/{trip}', ItineraryBuilder::class)->name('itinerary_builder');
     Route::get('/trip-planner/{trip}', TripPlanner::class)->name('trip-planner');
     Route::post('/plaid/create-link-token', [PlaidController::class, 'createLinkToken']);
     Route::post('/plaid/get-access-token', [PlaidController::class, 'getAccessToken']);
