@@ -21,5 +21,7 @@ class ScheduleServiceProvider extends ServiceProvider
     public function boot(Schedule $schedule): void
     {
         $schedule->command('events:send-reminders')->everyFiveMinutes();
+        $schedule->command('trips:end-expired')->everyFiveMinutes();
+
     }
 }

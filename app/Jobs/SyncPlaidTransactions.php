@@ -87,17 +87,21 @@ class SyncPlaidTransactions implements ShouldQueue
         $category = Category::firstOrCreate([
             'name' => $transaction['category'][0] ?? 'Other'
         ]);
+        $last_active_trip = Trip::where('user_id', $this->user->id)->where('status', 'active')->latest()->first();
 
         // Create expense with simplified title
-        $expense = Expense::create([
-            'user_id' => $this->user->id,
-            'trip_id' => 1,
-            'title' => $transaction['merchant_name'] ?? $transaction['name'],
-            'amount' => $transaction['amount'],
-            'category_id' => $category->id,
-            'date' => $transaction['date'],
-        ]);
+        if($last_active_trip){
+            $expense = Expense::create([
+                'user_id' => $this->user->id,
+                'trip_id' => $last_active_trip->id,
+                'title' => $transaction['merchant_name'] ?? $transaction['name'],
+                'amount' => $transaction['amount'],
+                'category_id' => $category->id,
+                'date' => $transaction['date'],
+            ]);
 
-        Log::info('Expense created:', $expense->toArray());
+            Log::info('Expense created:', $expense->toArray());
+        }
+
     }
 }
