@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Expense;
 use App\Models\Category;
 use Illuminate\Bus\Queueable;
+use App\Events\TransactionCreated;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Queue\SerializesModels;
@@ -99,6 +100,9 @@ class SyncPlaidTransactions implements ShouldQueue
                 'category_id' => $category->id,
                 'date' => $transaction['date'],
             ]);
+            event(new TransactionCreated($expense,$this->user));
+
+
 
             Log::info('Expense created:', $expense->toArray());
         }

@@ -9,6 +9,8 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use App\Events\TransactionCreated;
+
 
 class PlaidController extends Controller
 {
@@ -112,7 +114,7 @@ class PlaidController extends Controller
                         continue;
                     }
 
-                    Expense::create([
+                    $expense = Expense::create([
                         'title' => $transaction['name'],
                         'amount' => $transaction['amount'],
                         'date' => Carbon::parse($transaction['date']),
@@ -120,6 +122,8 @@ class PlaidController extends Controller
                         'trip_id' => $trip->id,
                         'is_recurring' => 0
                     ]);
+                    event(new TransactionCreated($expense, \App\Models\User::find(auth()->id())));
+
                 }
 
                 \Log::info('Plaid transactions processed:', $response->json());
