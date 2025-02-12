@@ -43,7 +43,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/webhook/plaid', [PlaidWebhookController::class, 'handleWebhook']);
     Route::get('/events',Event::class)->name('events');
     Route::get('/saved-items',SavedItems::class)->name('saved-items');
-
+   
 });
 Route::view('profile', 'profile')
     ->middleware(['auth'])

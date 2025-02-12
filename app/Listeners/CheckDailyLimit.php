@@ -56,8 +56,8 @@ class CheckDailyLimit implements ShouldQueue
             ->sum('amount');
         Log::info('Total Spent Today: ' . $totalSpentToday);
 
-        if ($totalSpentToday > $dailyLimit) {
-            Log::info('Daily limit exceeded. Sending email.');
+        if ($totalSpentToday > $dailyLimit * 1.15) {
+            Log::info('Daily limit exceeded by 15%. Sending email.');
             Mail::to($user->email)->send(new DailyLimitExceeded($user, $totalSpentToday));
         } else {
             Log::info('Daily limit not exceeded.');

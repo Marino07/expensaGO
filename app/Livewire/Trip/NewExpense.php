@@ -18,7 +18,6 @@ class NewExpense extends Component
     public $amount;
     public $category_id;
     public $isRecurring;
-    public $test;
     public $user;
     protected $listeners = ['OpenQ' => 'test'];
     public function mount()
@@ -64,10 +63,6 @@ class NewExpense extends Component
     {
         Auth::logout(); // Odjava korisnika
         return redirect()->route('new-expense');
-    }
-    public function test()
-    {
-        $this->test = 'test';
     }
     public function render()
     {
