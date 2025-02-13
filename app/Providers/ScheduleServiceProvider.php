@@ -22,6 +22,8 @@ class ScheduleServiceProvider extends ServiceProvider
     {
         $schedule->command('events:send-reminders')->daily();
         $schedule->command('trips:end-expired')->dailyAt('00:00');
+        $schedule->command('trip:send-report')->everyMinute();
+
 
     }
 }

@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Trip extends Model
 {
@@ -34,6 +35,12 @@ class Trip extends Model
     public function planner()
     {
         return $this->hasOne(Planner::class);
+    }
+    public function isHalfway()
+    {
+        $startDate = Carbon::parse($this->start_date);
+        $halfwayPoint = $startDate->addDays($this->duration / 2);
+        return Carbon::now()->greaterThanOrEqualTo($halfwayPoint);
     }
 }
 
