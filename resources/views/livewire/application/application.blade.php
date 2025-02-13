@@ -92,19 +92,17 @@
                     <div class="px-4 py-5 sm:p-6">
                         <div class="flex items-center">
                             <div class="flex-shrink-0 bg-white rounded-md p-3">
-                                <svg class="h-6 w-6 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="text-indigo-600 h-6 w-6" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M0 0h1v15h15v1H0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5"/>
+                                  </svg>
                             </div>
                             <div class="ml-5 w-0 flex-1">
                                 <dl>
                                     <dt class="text-sm font-medium text-gray-100 truncate">
-                                        Total Expenses
+                                        See all analytics with ease
                                     </dt>
                                     <dd class="text-3xl font-semibold text-white">
-                                        {{ $AllExpenses }} $
+                                        For Free
                                     </dd>
                                 </dl>
                             </div>
@@ -114,7 +112,7 @@
                         <div class="text-sm">
                             <a href="{{ route('all-expenses') }}"
                                 class="font-medium text-white hover:text-indigo-100 transition ease-in-out duration-150">
-                                View all expenses &rarr;
+                                Detail analytics of expenses &rarr;
                             </a>
                         </div>
                     </div>
@@ -133,10 +131,11 @@
                             </div>
                             <div class="ml-5 w-0 flex-1">
                                 <dl>
-                                    <dt class="text-sm font-medium text-gray-100 truncate">
-                                        Active Trip
-                                    </dt>
-                                    <dd class=" inline-block text-3xl font-semibold text-white">
+                                    <div class="flex justify-between text-sm font-medium text-gray-100">
+                                        <dt>Active Trip</dt>
+                                        <dt>Expenses: <span class="{{$AllExpenses > $trip->budget ?  'text-red-600' : 'text-green-200';}}">{{ $AllExpenses }}</span></dt>
+                                    </div>
+                                    <dd class="mt-1 text-3xl font-semibold text-white">
                                         {{ $trip->location }}
                                     </dd>
                                 </dl>

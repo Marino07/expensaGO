@@ -78,9 +78,9 @@ class SyncPlaidTransactions implements ShouldQueue
     {
         Log::info('Processing transaction:', $transaction);
 
-        // Skip transfers
-        if (in_array('Transfer', $transaction['category'] ?? [])) {
-            Log::info('Skipping transfer transaction:', ['transaction_id' => $transaction['transaction_id']]);
+        // Skip transfers and payments
+        if (in_array('Transfer', $transaction['category'] ?? []) || in_array('Payment', $transaction['category'] ?? [])) {
+            Log::info('Skipping transfer/payment transaction:', ['transaction_id' => $transaction['transaction_id']]);
             return;
         }
 

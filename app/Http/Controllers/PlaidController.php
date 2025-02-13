@@ -109,8 +109,8 @@ class PlaidController extends Controller
                 $data = $response->json();
 
                 foreach ($data['transactions'] as $transaction) {
-                    // Skip if transaction is a transfer
-                    if (strtolower($transaction['category'][0]) === 'transfer') {
+                    // Skip if transaction is a transfer or payment
+                    if (in_array(strtolower($transaction['category'][0]), ['transfer', 'payment'])) {
                         continue;
                     }
 
