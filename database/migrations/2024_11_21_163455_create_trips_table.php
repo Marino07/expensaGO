@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('budget');
             $table->string('description');
             $table->string('status')->default('active');
+            $table->boolean('half_away_report')->default(false);
             $table->timestamps();
         });
     }

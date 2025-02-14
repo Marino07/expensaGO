@@ -38,6 +38,9 @@ class Trip extends Model
     }
     public function isHalfway()
     {
+        if ($this->half_away_report) {
+            return false;
+        }
         $startDate = Carbon::parse($this->start_date);
         $halfwayPoint = $startDate->addDays($this->duration / 2);
         return Carbon::now()->greaterThanOrEqualTo($halfwayPoint);

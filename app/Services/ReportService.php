@@ -6,13 +6,14 @@ use App\Models\Expense;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class ReportService
 {
     public static function sendTripReport(Trip $trip)
     {
         try {
-            $expenses = Expense::where('trip_id', $trip->id)->get();
+            $expenses = Expense::where('trip_id', $trip->id)->with('category')->get();
             Log::info('Expenses retrieved', ['trip_id' => $trip->id, 'expenses_count' => $expenses->count()]);
 
             $pdf = self::generatePdfReport($trip, $expenses);
@@ -27,17 +28,20 @@ class ReportService
 
     protected static function generatePdfReport(Trip $trip, $expenses)
     {
-        $totalCost = $expenses->sum('amount');
-        $averageDaily = $trip->duration > 0 ? $totalCost / $trip->duration : 0;
+        $analytics = ExpenseAnalyticsService::analyzeExpenses($trip, $expenses);
 
         $data = [
             'trip' => $trip,
             'expenses' => $expenses,
-            'total_cost' => $totalCost,
-            'average_daily' => $averageDaily,
-            'largest_category' => $expenses->groupBy('category')->sortByDesc(function ($group) {
-                return $group->sum('amount');
-            })->first(),
+            'total_cost' => $expenses->sum('amount'),
+            'average_daily' => $analytics['metrics']['spending_ratio'] * ($trip->budget / $trip->duration),
+            'largest_category' => $analytics['category_analysis']->first(),
+            'transport_cost' => $expenses->where('category.name', 'Transport')->sum('amount'),
+            'budget_difference' => round($analytics['metrics']['budget_variance_percentage'], 1),
+            'expenses_by_category' => $analytics['category_analysis'],
+            'recommendations' => $analytics['recommendations'],
+            'projected_overflow' => $analytics['metrics']['projected_overflow'],
+            'days_remaining' => $analytics['metrics']['days_remaining'],
         ];
 
         $pdf = PDF::loadView('reports.trip', $data);
