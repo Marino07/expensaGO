@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Analize\Analize;
 use App\Models\User;
 use App\Livewire\Event\Event;
 use App\Livewire\SOSComponent;
@@ -43,6 +44,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/webhook/plaid', [PlaidWebhookController::class, 'handleWebhook']);
     Route::get('/events',Event::class)->name('events');
     Route::get('/saved-items',SavedItems::class)->name('saved-items');
+    Route::get('/analitycs',Analize::class)->name('analytics');
 
 });
 Route::view('profile', 'profile')

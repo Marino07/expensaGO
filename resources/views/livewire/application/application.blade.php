@@ -110,7 +110,7 @@
                     </div>
                     <div class="bg-indigo-600 px-4 py-4 sm:px-6">
                         <div class="text-sm">
-                            <a href="{{ route('all-expenses') }}"
+                            <a href="{{ route('analytics') }}"
                                 class="font-medium text-white hover:text-indigo-100 transition ease-in-out duration-150">
                                 Detail analytics of expenses &rarr;
                             </a>
