@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Trip;
 use Carbon\Carbon;
+use App\Services\DynamicPredictiveAnalytics;
 
 class ExpenseAnalyticsService
 {
@@ -17,13 +18,17 @@ class ExpenseAnalyticsService
         $projectedTotal = ($averageDaily * $trip->duration);
         $plannedDailyBudget = $trip->budget / $trip->duration;
 
-        // Calculate spending metrics
+        // Calculate spending metrics, now including average_daily
         $metrics = [
             'spending_ratio' => $averageDaily / $plannedDailyBudget,
             'budget_variance_percentage' => (($averageDaily - $plannedDailyBudget) / $plannedDailyBudget) * 100,
             'projected_overflow' => max(0, $projectedTotal - $trip->budget),
             'days_remaining' => $trip->duration - $daysElapsed,
+            'average_daily' => $averageDaily,
         ];
+
+        // Incorporate dynamic, data-driven overflow prediction
+        $metrics['dynamic_projected_overflow'] = DynamicPredictiveAnalytics::predictOverflow($trip, $expenses);
 
         // Generate category analysis
         $categoryAnalysis = self::analyzeCategorySpending($expenses, $totalCost);
@@ -65,7 +70,7 @@ class ExpenseAnalyticsService
         }
 
         $highestCategory = $categoryAnalysis->first();
-        if ($highestCategory['percentage'] > 40) {
+        if ($highestCategory && isset($highestCategory['percentage']) && $highestCategory['percentage'] > 25) {
             $categoryName = key($categoryAnalysis->toArray());
             $recommendations[] = [
                 'message' => "Category {$categoryName} accounts for " . number_format($highestCategory['percentage'], 1) . "% of total expenses"

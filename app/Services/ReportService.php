@@ -29,12 +29,13 @@ class ReportService
     protected static function generatePdfReport(Trip $trip, $expenses)
     {
         $analytics = ExpenseAnalyticsService::analyzeExpenses($trip, $expenses);
+        $totalCost = $expenses->sum('amount');
 
         $data = [
             'trip' => $trip,
             'expenses' => $expenses,
-            'total_cost' => $expenses->sum('amount'),
-            'average_daily' => $analytics['metrics']['spending_ratio'] * ($trip->budget / $trip->duration),
+            'total_cost' => $totalCost,
+            'average_daily' => $analytics['metrics']['average_daily'], // changed from spending_ratio based calc
             'largest_category' => $analytics['category_analysis']->first(),
             'transport_cost' => $expenses->where('category.name', 'Transport')->sum('amount'),
             'budget_difference' => round($analytics['metrics']['budget_variance_percentage'], 1),
