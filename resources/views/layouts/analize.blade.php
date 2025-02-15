@@ -25,19 +25,6 @@
 
     <!-- AlpineJS & Tailwind config -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#E3F2FD',
-                        secondary: '#90CAF9',
-                        accent: '#2196F3'
-                    }
-                }
-            }
-        }
-    </script>
 </head>
 
 <body>
