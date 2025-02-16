@@ -211,113 +211,125 @@
             <div class="mt-8 p-4 bg-gray-50">
                 <h2 class="text-3xl font-bold text-gray-800 mb-6">Worth to see</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <!-- City Break Card -->
-                  <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105">
-                    <div class="relative">
-                      <img
-                        src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b"
-                        alt="City Break"
-                        class="w-full h-48 object-cover"
-                      />
-                      <div class="absolute top-0 left-0 bg-blue-500 text-white px-3 py-1 rounded-br-lg text-sm font-semibold">
-                        Popular
-                      </div>
+                    <!-- City Break Card -->
+                    <div
+                        class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b" alt="City Break"
+                                class="w-full h-48 object-cover" />
+                            <div
+                                class="absolute top-0 left-0 bg-blue-500 text-white px-3 py-1 rounded-br-lg text-sm font-semibold">
+                                Popular
+                            </div>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">City Break in Paris</h3>
+                            <p class="text-gray-600 mb-4">Experience the charm of the City of Light</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-blue-500 font-bold">€750 avg/person</span>
+                                <button
+                                    class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full transition duration-300 flex items-center">
+                                    Plan Trip
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="p-5">
-                      <h3 class="text-xl font-semibold text-gray-800 mb-2">City Break in Paris</h3>
-                      <p class="text-gray-600 mb-4">Experience the charm of the City of Light</p>
-                      <div class="flex justify-between items-center">
-                        <span class="text-blue-500 font-bold">€750 avg/person</span>
-                        <button class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full transition duration-300 flex items-center">
-                          Plan Trip
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
 
-                  <!-- Beach Getaway Card -->
-                  <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105">
-                    <div class="relative">
-                      <img
-                        src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e"
-                        alt="Beach Getaway"
-                        class="w-full h-48 object-cover"
-                      />
-                      <div class="absolute top-0 left-0 bg-green-500 text-white px-3 py-1 rounded-br-lg text-sm font-semibold">
-                        Best Value
-                      </div>
+                    <!-- Beach Getaway Card -->
+                    <div
+                        class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e"
+                                alt="Beach Getaway" class="w-full h-48 object-cover" />
+                            <div
+                                class="absolute top-0 left-0 bg-green-500 text-white px-3 py-1 rounded-br-lg text-sm font-semibold">
+                                Best Value
+                            </div>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">Bali Beach Retreat</h3>
+                            <p class="text-gray-600 mb-4">Relax on pristine beaches and explore rich culture</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-green-500 font-bold">€900 avg/person</span>
+                                <button
+                                    class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full transition duration-300 flex items-center">
+                                    Plan Trip
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="p-5">
-                      <h3 class="text-xl font-semibold text-gray-800 mb-2">Bali Beach Retreat</h3>
-                      <p class="text-gray-600 mb-4">Relax on pristine beaches and explore rich culture</p>
-                      <div class="flex justify-between items-center">
-                        <span class="text-green-500 font-bold">€900 avg/person</span>
-                        <button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full transition duration-300 flex items-center">
-                          Plan Trip
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
                 </div>
-              </div>
-              @else
-
-              <div x-data="imageSlider()" x-init="initSlider" class="mt-8 p-4 bg-gray-50">
-                <h2 class="text-3xl font-bold text-gray-800 mb-6">Explore London</h2>
+            </div>
+        @else
+            <div x-data="imageSlider" x-init="initialize()" @load.window="startObserver"
+                @beforeunload.window="cleanup" class="mt-8 p-4 bg-gray-50">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Explore London</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
-                  <!-- Places Card -->
-                  <div class="bg-white rounded-xl shadow-lg overflow-hidden group">
-                    <div class="relative h-96" x-ref="placesCard">
-                      <template x-for="(image, index) in placesImages" :key="index">
-                        <img
-                          :src="image"
-                          alt="London Places"
-                          class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
-                          :class="{'opacity-100': currentPlacesIndex === index, 'opacity-0': currentPlacesIndex !== index}"
-                        />
-                      </template>
-                      <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center transition-opacity duration-300 opacity-100 group-hover:opacity-0">
-                        <h3 class="text-white text-3xl font-bold">Places to Visit</h3>
-                      </div>
-                      <div class="absolute inset-0 bg-black bg-opacity-60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <h3 class="text-white text-3xl font-bold mb-4">Places to Visit</h3>
-                        <p class="text-white text-center px-6 mb-4">Discover iconic landmarks and hidden gems in London.</p>
-                        <span class="text-blue-300 hover:text-blue-100 underline cursor-pointer">See More</span>
-                      </div>
+                    <!-- Places Card -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden group">
+                        <div class="relative h-96" x-ref="placesCard">
+                            <template x-for="(image, index) in placesImages" :key="index">
+                                <img :src="image" alt="London Places"
+                                    class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
+                                    :class="{
+                                        'opacity-100': currentPlacesIndex === index,
+                                        'opacity-0': currentPlacesIndex !==
+                                            index
+                                    }" />
+                            </template>
+                            <div
+                                class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center transition-opacity duration-300 opacity-100 group-hover:opacity-0">
+                                <h3 class="text-white text-3xl font-bold">Places to Visit</h3>
+                            </div>
+                            <div
+                                class="absolute inset-0 bg-black bg-opacity-60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <h3 class="text-white text-3xl font-bold mb-4">Places to Visit</h3>
+                                <p class="text-white text-center px-6 mb-4">Discover iconic landmarks and hidden gems
+                                    in London.</p>
+                                <span class="text-blue-300 hover:text-blue-100 underline cursor-pointer">See
+                                    More</span>
+                            </div>
+                        </div>
                     </div>
-                  </div>
 
-                  <!-- Events Card -->
-                  <div class="bg-white rounded-xl shadow-lg overflow-hidden group">
-                    <div class="relative h-96" x-ref="eventsCard">
-                      <template x-for="(image, index) in eventsImages" :key="index">
-                        <img
-                          :src="image"
-                          alt="London Events"
-                          class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
-                          :class="{'opacity-100': currentEventsIndex === index, 'opacity-0': currentEventsIndex !== index}"
-                        />
-                      </template>
-                      <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center transition-opacity duration-300 opacity-100 group-hover:opacity-0">
-                        <h3 class="text-white text-3xl font-bold">Upcoming Events</h3>
-                      </div>
-                      <div class="absolute inset-0 bg-black bg-opacity-60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <h3 class="text-white text-3xl font-bold mb-4">Upcoming Events</h3>
-                        <p class="text-white text-center px-6 mb-4">Experience exciting events and festivals in the city.</p>
-                        <span class="text-green-300 hover:text-green-100 underline cursor-pointer">See More</span>
-                      </div>
+                    <!-- Events Card -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden group">
+                        <div class="relative h-96" x-ref="eventsCard">
+                            <template x-for="(image, index) in eventsImages" :key="index">
+                                <img :src="image" alt="London Events"
+                                    class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
+                                    :class="{
+                                        'opacity-100': currentEventsIndex === index,
+                                        'opacity-0': currentEventsIndex !==
+                                            index
+                                    }" />
+                            </template>
+                            <div
+                                class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center transition-opacity duration-300 opacity-100 group-hover:opacity-0">
+                                <h3 class="text-white text-3xl font-bold">Upcoming Events</h3>
+                            </div>
+                            <div
+                                class="absolute inset-0 bg-black bg-opacity-60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <h3 class="text-white text-3xl font-bold mb-4">Upcoming Events</h3>
+                                <p class="text-white text-center px-6 mb-4">Experience exciting events and festivals in
+                                    the city.</p>
+                                <span class="text-green-300 hover:text-green-100 underline cursor-pointer">See
+                                    More</span>
+                            </div>
+                        </div>
                     </div>
-                  </div>
                 </div>
-              </div>
-
-
+            </div>
 
             {{-- Commented out original charts
             <div class="mt-8">
@@ -408,8 +420,8 @@
                         <span class="rounded-lg inline-flex p-3 bg-blue-100 text-blue-700 ring-4 ring-white">
                             <svg class="w-6 h-6 {{ auth()->user()->plaid_access_token ? 'text-green-400' : 'text-orange-700' }}"
                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0
-00-3 3v8a3 3 0 003 3z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                             </svg>
 
                         </span>
@@ -798,49 +810,84 @@
                     alert('Failed to initialize Plaid. Please try again later.');
                 });
         }
-    function imageSlider() {
-    return {
-      placesImages: [
-        'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad',
-        'https://images.unsplash.com/photo-1533929736458-ca588d08c8be',
-        'https://images.unsplash.com/photo-1520967824495-b529aeba26df'
-      ],
-      eventsImages: [
-        'https://images.unsplash.com/photo-1529156069898-49953e39b3ac',
-        'https://images.unsplash.com/photo-1541532713592-79a0317b6b77',
-        'https://images.unsplash.com/photo-1459749411175-04bf5292ceea'
-      ],
-      currentPlacesIndex: 0,
-      currentEventsIndex: 0,
-      sliderInterval: null,
-      initSlider() {
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              this.startSlider();
-              observer.unobserve(entry.target);
-            }
-          });
-        }, { threshold: 0.5 });
 
-        observer.observe(this.$refs.placesCard);
-        observer.observe(this.$refs.eventsCard);
-      },
-      startSlider() {
-        if (this.sliderInterval) return; // Prevent multiple intervals
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('imageSlider', () => ({
+                placesImages: [
+                    '/images/defaults/place.png',
+                    '/images/defaults/default.png',
+                    '/images/defaults/restaurant-image.jpg'
+                ],
+                eventsImages: [
+                    '/images/defaults/place.png',
+                    '/images/defaults/default.png',
+                    '/images/defaults/restaurant-image.jpg'
+                ],
+                currentPlacesIndex: 0,
+                currentEventsIndex: 0,
+                sliderInterval: null,
+                observer: null,
+                isVisible: false,
+                transitioning: false,
 
-        this.sliderInterval = setInterval(() => {
-          this.currentPlacesIndex = (this.currentPlacesIndex + 1) % this.placesImages.length;
-          this.currentEventsIndex = (this.currentEventsIndex + 1) % this.eventsImages.length;
-        }, 5000);
-      },
-      stopSlider() {
-        if (this.sliderInterval) {
-          clearInterval(this.sliderInterval);
-          this.sliderInterval = null;
-        }
-      }
-    }
-  }
+                initialize() {
+                    this.setupObserver();
+                    this.$watch('isVisible', (value) => {
+                        value ? this.startSlider() : this.stopSlider();
+                    });
+                },
+
+                setupObserver() {
+                    if (this.observer) return;
+
+                    this.observer = new IntersectionObserver((entries) => {
+                        requestAnimationFrame(() => {
+                            this.isVisible = entries[0].isIntersecting;
+                        });
+                    }, {
+                        threshold: 0.1
+                    });
+
+                    if (this.$refs.placesCard) {
+                        this.observer.observe(this.$refs.placesCard);
+                    }
+                },
+
+                async changeSlide() {
+                    if (this.transitioning) return;
+                    this.transitioning = true;
+
+                    await new Promise(resolve => setTimeout(resolve, 50));
+
+                    this.currentPlacesIndex = (this.currentPlacesIndex + 1) % this.placesImages
+                        .length;
+                    this.currentEventsIndex = (this.currentEventsIndex + 1) % this.eventsImages
+                        .length;
+
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                    this.transitioning = false;
+                },
+
+                startSlider() {
+                    if (this.sliderInterval) return;
+                    this.sliderInterval = setInterval(() => this.changeSlide(), 5000);
+                },
+
+                stopSlider() {
+                    if (this.sliderInterval) {
+                        clearInterval(this.sliderInterval);
+                        this.sliderInterval = null;
+                    }
+                },
+
+                cleanup() {
+                    this.stopSlider();
+                    if (this.observer) {
+                        this.observer.disconnect();
+                        this.observer = null;
+                    }
+                }
+            }));
+        });
     </script>
 @endpush

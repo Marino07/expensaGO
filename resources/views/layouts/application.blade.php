@@ -22,27 +22,38 @@
 
         <style>
             [x-cloak] { display: none !important; }
-            .slider-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-        }
 
-        @keyframes slide-left {
-            0% {
-                transform: translate(100%, -50%);
+            .slider-container {
+                position: relative;
+                width: 100%;
+                height: 100%;
+                will-change: transform;  /* Optimizacija za GPU */
             }
-            100% {
-                transform: translate(-100%, -50%);
+
+            .image-slide {
+                opacity: 0;
+                transition: opacity 300ms ease-in-out;
+                will-change: opacity;
             }
-        }
+
+            .image-slide.active {
+                opacity: 1;
+            }
+
+            /* Optimizirane animacije */
+            @keyframes slide-left {
+                0% { transform: translate3d(100%, -50%, 0); }
+                100% { transform: translate3d(-100%, -50%, 0); }
+            }
 
             .animate-slide-left {
                 animation: slide-left 25s linear infinite;
+                will-change: transform;
             }
+
             .animate-slide-left:hover {
-            animation-play-state: paused;
-        }
+                animation-play-state: paused;
+            }
         </style>
 
         <!-- Scripts -->
