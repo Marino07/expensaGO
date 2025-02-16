@@ -92,9 +92,11 @@
                     <div class="px-4 py-5 sm:p-6">
                         <div class="flex items-center">
                             <div class="flex-shrink-0 bg-white rounded-md p-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="text-indigo-600 h-6 w-6" viewBox="0 0 16 16">
-                                    <path fill-rule="evenodd" d="M0 0h1v15h15v1H0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5"/>
-                                  </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                    class="text-indigo-600 h-6 w-6" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                        d="M0 0h1v15h15v1H0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5" />
+                                </svg>
                             </div>
                             <div class="ml-5 w-0 flex-1">
                                 <dl>
@@ -133,7 +135,9 @@
                                 <dl>
                                     <div class="flex justify-between text-sm font-medium text-gray-100">
                                         <dt>Active Trip</dt>
-                                        <dt>Expenses: <span class="{{$AllExpenses > $trip->budget ?  'text-red-600' : 'text-green-200';}}">{{ $AllExpenses }}</span></dt>
+                                        <dt>Expenses: <span
+                                                class="{{ $AllExpenses > $trip->budget ? 'text-red-600' : 'text-green-200' }}">{{ $AllExpenses }}</span>
+                                        </dt>
                                     </div>
                                     <dd class="mt-1 text-3xl font-semibold text-white">
                                         {{ $trip->location }}
@@ -186,22 +190,136 @@
                 </div>
             </div>
         @else
-        <div class="bg-gradient-to-r from-blue-100 to-indigo-100 rounded-xl p-6 mb-6 shadow-lg border border-blue-100">
-            <div class="max-w-2xl mx-auto text-center">
-                <h1 class="text-4xl font-bold text-gray-900 mb-6">Welcome to Expensago! ✈️</h1>
-                <div class="space-y-6">
-                    <h2 class="text-2xl font-semibold text-gray-800">
-                        Start Your Journey
-                    </h2>
-                    <p class="text-lg text-gray-600">
-                        Effortlessly track expenses, plan trips, and manage your finances. Create your first trip, connect your bank account, and get personalized insights for seamless financial management.
-                    </p>
+            <div
+                class="bg-gradient-to-r from-blue-100 to-indigo-100 rounded-xl p-6 mb-6 shadow-lg border border-blue-100">
+                <div class="max-w-2xl mx-auto text-center">
+                    <h1 class="text-4xl font-bold text-gray-900 mb-6">Welcome to Expensago! ✈️</h1>
+                    <div class="space-y-6">
+                        <h2 class="text-2xl font-semibold text-gray-800">
+                            Start Your Journey
+                        </h2>
+                        <p class="text-lg text-gray-600">
+                            Effortlessly track expenses, plan trips, and manage your finances. Create your first trip,
+                            connect your bank account, and get personalized insights for seamless financial management.
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
         @endif
-        @if ($hasExpenses)
-            <!-- Replace the two separate chart divs with this new layout -->
+        @if (!$trip)
+            {{-- New Travel Gallery Slider --}}
+            <div class="mt-8 p-4 bg-gray-50">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Worth to see</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <!-- City Break Card -->
+                  <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105">
+                    <div class="relative">
+                      <img
+                        src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b"
+                        alt="City Break"
+                        class="w-full h-48 object-cover"
+                      />
+                      <div class="absolute top-0 left-0 bg-blue-500 text-white px-3 py-1 rounded-br-lg text-sm font-semibold">
+                        Popular
+                      </div>
+                    </div>
+                    <div class="p-5">
+                      <h3 class="text-xl font-semibold text-gray-800 mb-2">City Break in Paris</h3>
+                      <p class="text-gray-600 mb-4">Experience the charm of the City of Light</p>
+                      <div class="flex justify-between items-center">
+                        <span class="text-blue-500 font-bold">€750 avg/person</span>
+                        <button class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full transition duration-300 flex items-center">
+                          Plan Trip
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Beach Getaway Card -->
+                  <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105">
+                    <div class="relative">
+                      <img
+                        src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e"
+                        alt="Beach Getaway"
+                        class="w-full h-48 object-cover"
+                      />
+                      <div class="absolute top-0 left-0 bg-green-500 text-white px-3 py-1 rounded-br-lg text-sm font-semibold">
+                        Best Value
+                      </div>
+                    </div>
+                    <div class="p-5">
+                      <h3 class="text-xl font-semibold text-gray-800 mb-2">Bali Beach Retreat</h3>
+                      <p class="text-gray-600 mb-4">Relax on pristine beaches and explore rich culture</p>
+                      <div class="flex justify-between items-center">
+                        <span class="text-green-500 font-bold">€900 avg/person</span>
+                        <button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full transition duration-300 flex items-center">
+                          Plan Trip
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              @else
+
+              <div x-data="imageSlider()" x-init="initSlider" class="mt-8 p-4 bg-gray-50">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Explore London</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
+                  <!-- Places Card -->
+                  <div class="bg-white rounded-xl shadow-lg overflow-hidden group">
+                    <div class="relative h-96" x-ref="placesCard">
+                      <template x-for="(image, index) in placesImages" :key="index">
+                        <img
+                          :src="image"
+                          alt="London Places"
+                          class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
+                          :class="{'opacity-100': currentPlacesIndex === index, 'opacity-0': currentPlacesIndex !== index}"
+                        />
+                      </template>
+                      <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center transition-opacity duration-300 opacity-100 group-hover:opacity-0">
+                        <h3 class="text-white text-3xl font-bold">Places to Visit</h3>
+                      </div>
+                      <div class="absolute inset-0 bg-black bg-opacity-60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <h3 class="text-white text-3xl font-bold mb-4">Places to Visit</h3>
+                        <p class="text-white text-center px-6 mb-4">Discover iconic landmarks and hidden gems in London.</p>
+                        <span class="text-blue-300 hover:text-blue-100 underline cursor-pointer">See More</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Events Card -->
+                  <div class="bg-white rounded-xl shadow-lg overflow-hidden group">
+                    <div class="relative h-96" x-ref="eventsCard">
+                      <template x-for="(image, index) in eventsImages" :key="index">
+                        <img
+                          :src="image"
+                          alt="London Events"
+                          class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
+                          :class="{'opacity-100': currentEventsIndex === index, 'opacity-0': currentEventsIndex !== index}"
+                        />
+                      </template>
+                      <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center transition-opacity duration-300 opacity-100 group-hover:opacity-0">
+                        <h3 class="text-white text-3xl font-bold">Upcoming Events</h3>
+                      </div>
+                      <div class="absolute inset-0 bg-black bg-opacity-60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <h3 class="text-white text-3xl font-bold mb-4">Upcoming Events</h3>
+                        <p class="text-white text-center px-6 mb-4">Experience exciting events and festivals in the city.</p>
+                        <span class="text-green-300 hover:text-green-100 underline cursor-pointer">See More</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+
+            {{-- Commented out original charts
             <div class="mt-8">
                 <h2 class="text-2xl font-semibold text-gray-900 mb-4">Expense Analytics</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -215,6 +333,7 @@
                     </div>
                 </div>
             </div>
+            --}}
         @endif
         <!-- Quick Actions -->
         <div class="mt-8">
@@ -287,12 +406,11 @@
                     class="relative group bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-blue-500 rounded-lg shadow-lg hover:bg-blue-50 transition-all duration-200">
                     <div>
                         <span class="rounded-lg inline-flex p-3 bg-blue-100 text-blue-700 ring-4 ring-white">
-                            <svg class="w-6 h-6 {{auth()->user()->plaid_access_token ? 'text-green-400' : 'text-orange-700'}}" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0
+                            <svg class="w-6 h-6 {{ auth()->user()->plaid_access_token ? 'text-green-400' : 'text-orange-700' }}"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0
 00-3 3v8a3 3 0 003 3z" />
-                                    </svg>
+                            </svg>
 
                         </span>
                     </div>
@@ -332,9 +450,11 @@
                         <div>
                             <span class="rounded-lg inline-flex p-3 bg-blue-100 text-blue-700 ring-4 ring-white">
 
-                                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.036-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959v0a.64.64 0 0 1-.657.643 48.39 48.39 0 0 1-4.163-.3c.186 1.613.293 3.25.315 4.907a.656.656 0 0 1-.658.663v0c-.355 0-.676-.186-.959-.401a1.647 1.647 0 0 0-1.003-.349c-1.036 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401v0c.31 0 .555.26.532.57a48.039 48.039 0 0 1-.642 5.056c1.518.19 3.058.309 4.616.354a.64.64 0 0 0 .657-.643v0c0-.355-.186-.676-.401-.959a1.647 1.647 0 0 1-.349-1.003c0-1.035 1.008-1.875 2.25-1.875 1.243 0 2.25.84 2.25 1.875 0 .369-.128.713-.349 1.003-.215.283-.4.604-.4.959v0c0 .333.277.599.61.58a48.1 48.1 0 0 0 5.427-.63 48.05 48.05 0 0 0 .582-4.717.532.532 0 0 0-.533-.57v0c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.035 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.37 0 .713.128 1.003.349.283.215.604.401.96.401v0a.656.656 0 0 0 .658-.663 48.422 48.422 0 0 0-.37-5.36c-1.886.342-3.81.574-5.766.689a.578.578 0 0 1-.61-.58v0Z" />
-                                  </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.036-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959v0a.64.64 0 0 1-.657.643 48.39 48.39 0 0 1-4.163-.3c.186 1.613.293 3.25.315 4.907a.656.656 0 0 1-.658.663v0c-.355 0-.676-.186-.959-.401a1.647 1.647 0 0 0-1.003-.349c-1.036 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401v0c.31 0 .555.26.532.57a48.039 48.039 0 0 1-.642 5.056c1.518.19 3.058.309 4.616.354a.64.64 0 0 0 .657-.643v0c0-.355-.186-.676-.401-.959a1.647 1.647 0 0 1-.349-1.003c0-1.035 1.008-1.875 2.25-1.875 1.243 0 2.25.84 2.25 1.875 0 .369-.128.713-.349 1.003-.215.283-.4.604-.4.959v0c0 .333.277.599.61.58a48.1 48.1 0 0 0 5.427-.63 48.05 48.05 0 0 0 .582-4.717.532.532 0 0 0-.533-.57v0c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.035 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.37 0 .713.128 1.003.349.283.215.604.401.96.401v0a.656.656 0 0 0 .658-.663 48.422 48.422 0 0 0-.37-5.36c-1.886.342-3.81.574-5.766.689a.578.578 0 0 1-.61-.58v0Z" />
+                                </svg>
 
                             </span>
                         </div>
@@ -343,19 +463,19 @@
                                 <a href="{{ route('trip-planner', ['trip' => $trip->id]) }}"
                                     class="focus:outline-none">
                                     <span class="absolute inset-0" aria-hidden="true"></span>
-                                    @if(!$trip->planner)
-                                    Generate Trip Plan
+                                    @if (!$trip->planner)
+                                        Generate Trip Plan
                                     @else
-                                    Trip Planner
+                                        Trip Planner
                                     @endif
 
                                 </a>
                             </h3>
                             <p class="mt-2 text-sm text-gray-500">
-                                @if(!$trip->planner)
-                                Create an AI-powered plan for your trip.
+                                @if (!$trip->planner)
+                                    Create an AI-powered plan for your trip.
                                 @else
-                                Unlocking planner days every few days
+                                    Unlocking planner days every few days
                                 @endif
                             </p>
                         </div>
@@ -373,16 +493,17 @@
                         class="relative group bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-blue-500 rounded-lg shadow-lg hover:bg-blue-50 transition-all duration-200">
                         <div>
                             <span class="rounded-lg inline-flex p-3 bg-blue-100 text-blue-700 ring-4 ring-white">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
-                                  </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
+                                </svg>
 
                             </span>
                         </div>
                         <div class="mt-8">
                             <h3 class="text-lg font-medium">
-                                <a href="{{ route('events') }}"
-                                    class="focus:outline-none">
+                                <a href="{{ route('events') }}" class="focus:outline-none">
                                     <span class="absolute inset-0" aria-hidden="true"></span>
                                     Events
                                 </a>
@@ -406,16 +527,17 @@
                         <div>
                             <span class="rounded-lg inline-flex p-3 bg-blue-100 text-blue-700 ring-4 ring-white">
 
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="m20.893 13.393-1.135-1.135a2.252 2.252 0 0 1-.421-.585l-1.08-2.16a.414.414 0 0 0-.663-.107.827.827 0 0 1-.812.21l-1.273-.363a.89.89 0 0 0-.738 1.595l.587.39c.59.395.674 1.23.172 1.732l-.2.2c-.212.212-.33.498-.33.796v.41c0 .409-.11.809-.32 1.158l-1.315 2.191a2.11 2.11 0 0 1-1.81 1.025 1.055 1.055 0 0 1-1.055-1.055v-1.172c0-.92-.56-1.747-1.414-2.089l-.655-.261a2.25 2.25 0 0 1-1.383-2.46l.007-.042a2.25 2.25 0 0 1 .29-.787l.09-.15a2.25 2.25 0 0 1 2.37-1.048l1.178.236a1.125 1.125 0 0 0 1.302-.795l.208-.73a1.125 1.125 0 0 0-.578-1.315l-.665-.332-.091.091a2.25 2.25 0 0 1-1.591.659h-.18c-.249 0-.487.1-.662.274a.931.931 0 0 1-1.458-1.137l1.411-2.353a2.25 2.25 0 0 0 .286-.76m11.928 9.869A9 9 0 0 0 8.965 3.525m11.928 9.868A9 9 0 1 1 8.965 3.525" />
-                                  </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="m20.893 13.393-1.135-1.135a2.252 2.252 0 0 1-.421-.585l-1.08-2.16a.414.414 0 0 0-.663-.107.827.827 0 0 1-.812.21l-1.273-.363a.89.89 0 0 0-.738 1.595l.587.39c.59.395.674 1.23.172 1.732l-.2.2c-.212.212-.33.498-.33.796v.41c0 .409-.11.809-.32 1.158l-1.315 2.191a2.11 2.11 0 0 1-1.81 1.025 1.055 1.055 0 0 1-1.055-1.055v-1.172c0-.92-.56-1.747-1.414-2.089l-.655-.261a2.25 2.25 0 0 1-1.383-2.46l.007-.042a2.25 2.25 0 0 1 .29-.787l.09-.15a2.25 2.25 0 0 1 2.37-1.048l1.178.236a1.125 1.125 0 0 0 1.302-.795l.208-.73a1.125 1.125 0 0 0-.578-1.315l-.665-.332-.091.091a2.25 2.25 0 0 1-1.591.659h-.18c-.249 0-.487.1-.662.274a.931.931 0 0 1-1.458-1.137l1.411-2.353a2.25 2.25 0 0 0 .286-.76m11.928 9.869A9 9 0 0 0 8.965 3.525m11.928 9.868A9 9 0 1 1 8.965 3.525" />
+                                </svg>
 
                             </span>
                         </div>
                         <div class="mt-8">
                             <h3 class="text-lg font-medium">
-                                <a href="{{ route('places') }}"
-                                    class="focus:outline-none">
+                                <a href="{{ route('places') }}" class="focus:outline-none">
                                     <span class="absolute inset-0" aria-hidden="true"></span>
                                     Local Tips
                                 </a>
@@ -676,5 +798,49 @@
                     alert('Failed to initialize Plaid. Please try again later.');
                 });
         }
+    function imageSlider() {
+    return {
+      placesImages: [
+        'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad',
+        'https://images.unsplash.com/photo-1533929736458-ca588d08c8be',
+        'https://images.unsplash.com/photo-1520967824495-b529aeba26df'
+      ],
+      eventsImages: [
+        'https://images.unsplash.com/photo-1529156069898-49953e39b3ac',
+        'https://images.unsplash.com/photo-1541532713592-79a0317b6b77',
+        'https://images.unsplash.com/photo-1459749411175-04bf5292ceea'
+      ],
+      currentPlacesIndex: 0,
+      currentEventsIndex: 0,
+      sliderInterval: null,
+      initSlider() {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              this.startSlider();
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.5 });
+
+        observer.observe(this.$refs.placesCard);
+        observer.observe(this.$refs.eventsCard);
+      },
+      startSlider() {
+        if (this.sliderInterval) return; // Prevent multiple intervals
+
+        this.sliderInterval = setInterval(() => {
+          this.currentPlacesIndex = (this.currentPlacesIndex + 1) % this.placesImages.length;
+          this.currentEventsIndex = (this.currentEventsIndex + 1) % this.eventsImages.length;
+        }, 5000);
+      },
+      stopSlider() {
+        if (this.sliderInterval) {
+          clearInterval(this.sliderInterval);
+          this.sliderInterval = null;
+        }
+      }
+    }
+  }
     </script>
 @endpush
