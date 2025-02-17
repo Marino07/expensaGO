@@ -25,20 +25,22 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {{-- Curve Chart --}}
                     <div class="bg-white shadow-sm rounded-lg p-3 border border-blue-100">
-                        <div x-data="curveChart()" x-init="initCurve()" class="h-48">
+                        <h3 class="text-lg font-semibold mb-2">Expense Trend</h3>
+                        <div x-data="curveChart()" x-init="initCurve()" class="h-64">
                             <canvas id="curveChart"></canvas>
                         </div>
                     </div>
                     {{-- Stacked Bar Chart --}}
                     <div class="bg-white shadow-sm rounded-lg p-3 border border-blue-100">
-                        <div x-data="stackedBarChart()" x-init="initStackedBar()" class="h-48">
+                        <h3 class="text-lg font-semibold mb-2">Transactions Overview</h3>
+                        <div x-data="stackedBarChart()" x-init="initStackedBar()" class="h-64">
                             <canvas id="stackedBarChart"></canvas>
                         </div>
                     </div>
                     {{-- Daily vs Average Chart --}}
                     <div class="bg-white shadow-sm rounded-lg p-3 border border-blue-100">
                         <h3 class="text-lg font-semibold mb-2">Daily Expenses vs Average</h3>
-                        <div x-data="dailyChart()" x-init="initDaily()" class="h-48">
+                        <div x-data="dailyChart()" x-init="initDaily()" class="h-64">
                             <canvas id="dailyChart"></canvas>
                         </div>
                     </div>
@@ -58,17 +60,15 @@
     @push('scripts')
         <script>
             document.addEventListener('alpine:init', () => {
-                // Removed progressCharts and spiderChart initialization
-
                 Alpine.data('curveChart', () => ({
                     initCurve() {
                         new Chart(document.getElementById('curveChart'), {
                             type: 'line',
                             data: {
-                                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                                labels: @json($dailyLabels),
                                 datasets: [{
-                                    label: 'Expense Trend',
-                                    data: [34, 45, 37, 56, 34, 43],
+                                    label: 'Trip Expense Trend',
+                                    data: @json($dailyExpenses),
                                     borderColor: '#90CAF9',
                                     backgroundColor: 'rgba(144, 202, 249, 0.2)',
                                     tension: 0.4
@@ -76,7 +76,23 @@
                             },
                             options: {
                                 responsive: true,
-                                maintainAspectRatio: false
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    },
+                                    x: {
+                                        ticks: {
+                                            autoSkip: true,
+                                            maxTicksLimit: 7
+                                        }
+                                    }
+                                }
                             }
                         });
                     }
