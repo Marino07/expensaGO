@@ -35,6 +35,20 @@
                             <canvas id="stackedBarChart"></canvas>
                         </div>
                     </div>
+                    {{-- Daily vs Average Chart --}}
+                    <div class="bg-white shadow-sm rounded-lg p-3 border border-blue-100">
+                        <h3 class="text-lg font-semibold mb-2">Daily Expenses vs Average</h3>
+                        <div x-data="dailyChart()" x-init="initDaily()" class="h-48">
+                            <canvas id="dailyChart"></canvas>
+                        </div>
+                    </div>
+                    {{-- Daily Category Chart --}}
+                    <div class="bg-white shadow-sm rounded-lg p-3 border border-blue-100">
+                        <h3 class="text-lg font-semibold mb-2">Daily Expenses by Category</h3>
+                        <div x-data="dailyCategoryChart()" x-init="initDailyCategory()" class="h-64">
+                            <canvas id="dailyCategoryChart"></canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -73,15 +87,16 @@
                         new Chart(document.getElementById('stackedBarChart'), {
                             type: 'bar',
                             data: {
-                                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                                labels: @json($dailyLabels),
                                 datasets: [{
-                                        label: 'Income',
-                                        data: [500, 600, 700, 650, 800, 750],
+                                        label: 'Daily Limit',
+                                        data: Array(@json($dailyLabels).length).fill(
+                                            {{ $Budget / max($trip->duration, 1) }}),
                                         backgroundColor: '#90CAF9'
                                     },
                                     {
                                         label: 'Expenses',
-                                        data: [400, 450, 500, 480, 520, 500],
+                                        data: @json($dailyExpenses),
                                         backgroundColor: '#E3F2FD'
                                     }
                                 ]
@@ -102,6 +117,101 @@
                                     title: {
                                         display: true,
                                         text: 'Transactions Overview'
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }));
+
+                Alpine.data('dailyChart', () => ({
+                    initDaily() {
+                        new Chart(document.getElementById('dailyChart').getContext('2d'), {
+                            type: 'line',
+                            data: {
+                                labels: @json($dailyLabels),
+                                datasets: [{
+                                        label: 'Daily Expenses',
+                                        data: @json($dailyExpenses),
+                                        borderColor: '#FF7043',
+                                        backgroundColor: 'rgba(255, 112, 67, 0.2)',
+                                        tension: 0.4
+                                    },
+                                    {
+                                        label: 'Avg Daily Budget',
+                                        data: Array(@json($dailyLabels).length).fill(
+                                            {{ $Budget / max($trip->duration, 1) }}),
+                                        borderColor: '#66BB6A',
+                                        backgroundColor: 'rgba(102, 187, 106, 0.2)',
+                                        borderDash: [5, 5],
+                                        tension: 0
+                                    }
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    x: {
+                                        ticks: {
+                                            autoSkip: true,
+                                            maxTicksLimit: 7
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }));
+
+                Alpine.data('dailyCategoryChart', () => ({
+                    initDailyCategory() {
+                        const ctx = document.getElementById('dailyCategoryChart').getContext('2d');
+                        // Predefined colors - extend as needed
+                        const colors = [
+                            'rgba(75, 192, 192, 0.8)',
+                            'rgba(255, 159, 64, 0.8)',
+                            'rgba(255, 205, 86, 0.8)',
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(153, 102, 255, 0.8)',
+                            'rgba(201, 203, 207, 0.8)'
+                        ];
+                        // Generate datasets by categories
+                        const categoryNames = @json($dailyCategories);
+                        const dailyData = @json($dailyCategoryData);
+                        const datasets = categoryNames.map((cat, index) => ({
+                            label: cat,
+                            data: dailyData[cat],
+                            backgroundColor: colors[index % colors.length],
+                            borderWidth: 1
+                        }));
+
+                        new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: @json($dailyLabels),
+                                datasets: datasets
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    x: {
+                                        stacked: true,
+                                        ticks: {
+                                            autoSkip: true,
+                                            maxTicksLimit: 10
+                                        }
+                                    },
+                                    y: {
+                                        stacked: true,
+                                        beginAtZero: true
+                                    }
+                                },
+                                plugins: {
+                                    title: {
+                                        display: true,
+                                        text: 'Daily Expenses Split by Category'
                                     }
                                 }
                             }
