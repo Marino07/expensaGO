@@ -34,8 +34,31 @@ class Application extends Component
 
     public function mount()
     {
-        $this->suggestEvents = SuggestionImages::whereNotNull('event_image')->latest()->limit(3)->pluck('event_image')->toArray();
-        $this->suggestPlaces = SuggestionImages::whereNotNull('place_image')->latest()->limit(3)->pluck('place_image')->toArray();
+        $this->suggestEvents = SuggestionImages::whereNotNull('event_image')
+    ->latest()
+    ->limit(3)
+    ->get()
+    ->map(function ($item) {
+        return [
+            'image' => $item->event_image,
+            'title' => $item->event_title,
+            'url'   => $item->event_url
+        ];
+    })
+    ->toArray();
+
+$this->suggestPlaces = SuggestionImages::whereNotNull('place_image')
+    ->latest()
+    ->limit(3)
+    ->get()
+    ->map(function ($item) {
+        return [
+            'image'    => $item->place_image,
+            'title'    => $item->place_name,
+            'location' => $item->place_location
+        ];
+    })
+    ->toArray();
 
         $this->openFirst = session('openFirst', false);
         session()->forget('openFirst'); // we clearing after using it
