@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Event;
 
+use App\Models\SuggestionImages;
 use Carbon\Carbon;
 use App\Models\Trip;
 use Livewire\Component;
@@ -98,6 +99,10 @@ class Event extends Component
                         'free' => $event['free'] ?? false,
                         'event_url' => $event['event_url'],
                     ]
+                );
+                SuggestionImages::updateOrCreate(
+                    ['event_image' => $event['image']],
+                    ['event_image' => $event['image'], 'event_title' => $event['title'], 'event_url' => $event['event_url']]
                 );
             }
 

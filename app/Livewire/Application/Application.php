@@ -2,14 +2,16 @@
 
 namespace App\Livewire\Application;
 
-use App\Models\Category;
-use App\Models\SavedItem;
+use App\Models\SuggestionImages;
 use App\Models\Trip;
 use App\Models\Expense;
 use Livewire\Component;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
+use App\Models\Category;
+use App\Models\SavedItem;
+use App\Models\LocalEvent;
 use Livewire\Attributes\On;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class Application extends Component
 {
@@ -25,11 +27,16 @@ class Application extends Component
     public $openFirst = false;
     public $lastFiveExpenses = [];
     public $countSavedItems;
+    public $suggestPlaces;
+    public $suggestEvents;
 
     protected $listeners = ['echo:openq-channel,OpenQEvent' => 'OpenFirstVisitQuestionnaire'];
 
     public function mount()
     {
+        $this->suggestEvents = SuggestionImages::whereNotNull('event_image')->latest()->limit(3)->pluck('event_image')->toArray();
+        $this->suggestPlaces = SuggestionImages::whereNotNull('place_image')->latest()->limit(3)->pluck('place_image')->toArray();
+
         $this->openFirst = session('openFirst', false);
         session()->forget('openFirst'); // we clearing after using it
 

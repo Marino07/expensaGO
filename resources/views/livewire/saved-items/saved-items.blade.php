@@ -92,11 +92,13 @@
                         <div class="relative h-64">
                             <img src="{{ $place['image'] }}" alt="{{ $place['name'] }}"
                                 class="w-full h-full object-cover">
-                            <div
+                                <div
                                 class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
-                                <button
-                                    class="bg-white text-gray-800 px-4 py-2 rounded-full font-semibold hover:bg-gray-100 transition duration-300">View
-                                    More</button>
+                                <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($place['name'] . ' ' . $place['location']) }}"
+                                    target="_blank"
+                                    class="bg-white text-gray-800 px-4 py-2 rounded-full font-semibold hover:bg-gray-100 transition duration-300">
+                                    View More
+                                </a>
                             </div>
                         </div>
                         <div class="p-6">

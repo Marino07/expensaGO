@@ -272,12 +272,11 @@
             </div>
         @else
             <div x-data="imageSlider" x-init="initialize()" @load.window="startObserver"
-                @beforeunload.window="cleanup" class="mt-8 p-4 bg-gray-50">
-                <h2 class="text-3xl font-bold text-gray-800 mb-2">Explore London</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
+                @beforeunload.window="cleanup" class="mt-8 p-2 bg-blue-50">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-[2rem] max-w-9xl ">
                     <!-- Places Card -->
                     <div class="bg-white rounded-xl shadow-lg overflow-hidden group">
-                        <div class="relative h-96" x-ref="placesCard">
+                        <div class="relative h-[18rem]" x-ref="placesCard">
                             <template x-for="(image, index) in placesImages" :key="index">
                                 <img :src="image" alt="London Places"
                                     class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
@@ -304,7 +303,7 @@
 
                     <!-- Events Card -->
                     <div class="bg-white rounded-xl shadow-lg overflow-hidden group">
-                        <div class="relative h-96" x-ref="eventsCard">
+                        <div class="relative h-[18rem]" x-ref="eventsCard">
                             <template x-for="(image, index) in eventsImages" :key="index">
                                 <img :src="image" alt="London Events"
                                     class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
@@ -813,16 +812,8 @@
 
         document.addEventListener('alpine:init', () => {
             Alpine.data('imageSlider', () => ({
-                placesImages: [
-                    '/images/defaults/place.png',
-                    '/images/defaults/default.png',
-                    '/images/defaults/restaurant-image.jpg'
-                ],
-                eventsImages: [
-                    '/images/defaults/place.png',
-                    '/images/defaults/default.png',
-                    '/images/defaults/restaurant-image.jpg'
-                ],
+                placesImages: @json($suggestPlaces),
+                eventsImages: @json($suggestEvents),
                 currentPlacesIndex: 0,
                 currentEventsIndex: 0,
                 sliderInterval: null,

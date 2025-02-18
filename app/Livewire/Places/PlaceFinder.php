@@ -5,6 +5,7 @@ namespace App\Livewire\Places;
 use App\Models\Trip;
 use Livewire\Component;
 use App\Models\SavedItem;
+use App\Models\SuggestionImages;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 
@@ -99,6 +100,15 @@ class PlaceFinder extends Component
                     $this->places = array_map(function($place) use ($apiKey) {
                         if (isset($place['photos'][0]['photo_reference'])) {
                             $place['photo'] = $this->getPhotoUrl($place['photos'][0]['photo_reference'], $apiKey);
+                            try {
+                                SuggestionImages::updateOrCreate(
+                                    ['place_image' => $place['photo']], // search criteria
+                                    ['place_image' => $place['photo'], 'place_name' => $place['name'], 'place_location' => $place['vicinity']]  // values to update/create
+                                );
+                            } catch (\Exception $e) {
+                                // Silently handle the error to prevent page crash
+                                \Log::error('Failed to save suggestion image: ' . $e->getMessage());
+                            }
                         }
                         return $place;
                     }, $response['results']);
