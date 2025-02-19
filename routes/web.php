@@ -46,6 +46,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/saved-items',SavedItems::class)->name('saved-items');
     Route::get('/analitycs',Analize::class)->name('analytics');
 
+ 
+
+
 });
 Route::view('profile', 'profile')
     ->middleware(['auth'])

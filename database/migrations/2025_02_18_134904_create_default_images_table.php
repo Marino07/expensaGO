@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('default_images', function (Blueprint $table) {
             $table->id();
             $table->string('event_image')->nullable();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('event_title')->nullable();
             $table->string('event_url')->nullable();
             $table->text('place_image')->nullable();

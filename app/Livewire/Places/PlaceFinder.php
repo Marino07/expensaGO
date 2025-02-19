@@ -20,12 +20,13 @@ class PlaceFinder extends Component
     public $geo_lat_lng;
     public $tutorialState;
 
+
     public function mount()
     {
         $trip = Trip::where('user_id', Auth::id())->latest()->first();
-        if(!$trip){
+        if (!$trip) {
             $this->search = 'London';
-        }else{
+        } else {
             $this->search = $trip->location;
         }
 
@@ -75,7 +76,7 @@ class PlaceFinder extends Component
             }
 
             // First get location coordinates
-            $geocodeUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=".urlencode($this->search)."&key=".$apiKey;
+            $geocodeUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=" . urlencode($this->search) . "&key=" . $apiKey;
             $geocodeResponse = Http::get($geocodeUrl)->json();
 
             if (isset($geocodeResponse['results'][0]['geometry']['location'])) {
@@ -91,19 +92,19 @@ class PlaceFinder extends Component
                     'key' => $apiKey
                 ];
 
-                $fullPlacesUrl = $placesUrl.http_build_query($params);
+                $fullPlacesUrl = $placesUrl . http_build_query($params);
                 $response = Http::get($fullPlacesUrl);
                 $response = $response->json();
 
                 if (isset($response['results'])) {
                     // Add photo URLs to each place
-                    $this->places = array_map(function($place) use ($apiKey) {
+                    $this->places = array_map(function ($place) use ($apiKey) {
                         if (isset($place['photos'][0]['photo_reference'])) {
                             $place['photo'] = $this->getPhotoUrl($place['photos'][0]['photo_reference'], $apiKey);
                             try {
                                 SuggestionImages::updateOrCreate(
                                     ['place_image' => $place['photo']], // search criteria
-                                    ['place_image' => $place['photo'], 'place_name' => $place['name'], 'place_location' => $place['vicinity']]  // values to update/create
+                                    ['user_id' => auth()->user()->id, 'place_image' => $place['photo'], 'place_name' => $place['name'], 'place_location' => $place['vicinity']]  // values to update/create
                                 );
                             } catch (\Exception $e) {
                                 // Silently handle the error to prevent page crash
@@ -127,9 +128,9 @@ class PlaceFinder extends Component
     private function getPhotoUrl($photoReference, $apiKey, $maxwidth = 400)
     {
         return "https://maps.googleapis.com/maps/api/place/photo?"
-             . "maxwidth={$maxwidth}&"
-             . "photo_reference={$photoReference}&"
-             . "key={$apiKey}";
+            . "maxwidth={$maxwidth}&"
+            . "photo_reference={$photoReference}&"
+            . "key={$apiKey}";
     }
 
     public function sortPlaces()
@@ -205,8 +206,8 @@ class PlaceFinder extends Component
     public function removeSavedPlace($placeId)
     {
         SavedItem::where('user_id', Auth::id())
-                 ->where('api_place_id', $placeId)
-                 ->delete();
+            ->where('api_place_id', $placeId)
+            ->delete();
 
         $this->dispatch('place-removed');
     }
@@ -214,8 +215,8 @@ class PlaceFinder extends Component
     public function isPlaceSaved($placeId)
     {
         return SavedItem::where('user_id', Auth::id())
-                       ->where('api_place_id', $placeId)
-                       ->exists();
+            ->where('api_place_id', $placeId)
+            ->exists();
     }
 
     public function toggleSavePlace($placeId)

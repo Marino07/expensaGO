@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('suggestion_images_trip', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('event_image')->nullable();
             $table->string('event_title')->nullable();
             $table->string('event_url')->nullable();

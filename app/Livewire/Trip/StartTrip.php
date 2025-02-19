@@ -4,9 +4,12 @@ namespace App\Livewire\Trip;
 
 use App\Models\Trip;
 use Livewire\Component;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use App\Events\OpenQEvent;
+use App\Models\SuggestionImages;
+use App\Jobs\ExecuteLivewireLogic;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Symfony\Component\Console\Completion\Suggestion;
 
 class StartTrip extends Component
 {
@@ -28,7 +31,7 @@ class StartTrip extends Component
     {
         $this->validate();
 
-        Trip::create([
+        $newTrip = Trip::create([
             'user_id' => Auth::id(),
             'location' => $this->location,
             'start_date' => $this->start_date,
@@ -37,12 +40,19 @@ class StartTrip extends Component
             'description' => $this->description,
         ]);
 
-        session()->flash('message', 'Your trip "' . $this->location . '" has been successfully created. Get ready for an amazing adventure!');
-        session()->put('openFirst', true); // Store in session
+        if ($newTrip) {
+            SuggestionImages::where('user_id', Auth::id())->delete();
+            ExecuteLivewireLogic::dispatch($newTrip->id, Auth::id());
 
-        session()->flash('tripCreated', true); // alternative to dispatch
+            session()->flash('message', 'Your trip "' . $this->location . '" has been successfully created. Get ready for an amazing adventure!');
+            session()->put('openFirst', true);
+            session()->flash('tripCreated', true);
 
-        return redirect()->route('app');
+            return redirect()->route('app');
+        }
+
+        session()->flash('error', 'There was an error creating your trip.');
+        return null;
     }
 
     public function logout()

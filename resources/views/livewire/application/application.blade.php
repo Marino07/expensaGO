@@ -270,86 +270,6 @@
                     </div>
                 </div>
             </div>
-        @else
-        <div x-data="imageSlider" x-init="initialize()" @load.window="stathrortObserver"
-            @beforeunload.window="cleanup" class="mt-8 p-2 bg-blue-50">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-[2rem] max-w-9xl ">
-                <!-- Places Card -->
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden group">
-                    <div class="relative h-[18rem]" x-ref="placesCard">
-                        <!-- Place Marker -->
-                        <div class="absolute top-4 left-4 z-10 bg-white/30 backdrop-blur-sm px-3 py-1 rounded-full flex items-center space-x-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            <span class="text-white text-sm font-medium">Places</span>
-                        </div>
-
-                        <template x-for="(image, index) in placesImages" :key="index">
-                            <img :src="image.image" :alt="image.title"
-                                class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
-                                :class="{
-                                    'opacity-100': currentPlacesIndex === index,
-                                    'opacity-0': currentPlacesIndex !== index
-                                }" />
-                        </template>
-                        <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center transition-opacity duration-300 opacity-100 group-hover:opacity-0">
-                            <h3 class="text-white text-3xl font-bold px-4 truncate max-w-full" x-text="placesImages[currentPlacesIndex].title"></h3>
-                        </div>
-                        <div class="absolute inset-0 bg-black bg-opacity-60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <h3 class="text-white text-3xl font-bold mb-4 px-4 truncate max-w-full" x-text="placesImages[currentPlacesIndex].title"></h3>
-                            <p class="text-white text-center px-6 mb-4">Discover iconic landmarks and hidden gems in London.</p>
-                            <a :href="'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(placesImages[currentPlacesIndex].title + ' ' + placesImages[currentPlacesIndex].location)"
-                               target="_blank"
-                               class="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full transform transition-all duration-300 hover:scale-105 flex items-center space-x-2">
-                               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M6.672 1.911a1 1 0 10-1.932.518l.259.966a1 1 0 001.932-.518l-.26-.966zM2.429 4.74a1 1 0 10-.517 1.932l.966.259a1 1 0 00.517-1.932l-.966-.26zm8.814-.569a1 1 0 00-1.415-1.414l-.707.707a1 1 0 101.415 1.415l.707-.708zm-7.071 7.072l.707-.707A1 1 0 003.465 9.12l-.708.707a1 1 0 001.415 1.415zm3.2-5.171a1 1 0 00-1.3 1.3l4 10a1 1 0 001.823.075l1.38-2.759 3.018 3.02a1 1 0 001.414-1.415l-3.019-3.02 2.76-1.379a1 1 0 00-.076-1.822l-10-4z" clip-rule="evenodd" />
-                            </svg>
-                                <span>View place</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Events Card -->
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden group">
-                    <div class="relative h-[18rem]" x-ref="eventsCard">
-                        <!-- Event Marker -->
-                        <div class="absolute top-4 left-4 z-10 bg-white/30 backdrop-blur-sm px-3 py-1 rounded-full flex items-center space-x-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                            <span class="text-white text-sm font-medium">Events</span>
-                        </div>
-
-                        <template x-for="(image, index) in eventsImages" :key="index">
-                            <img :src="image.image" :alt="image.title"
-                                class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
-                                :class="{
-                                    'opacity-100': currentEventsIndex === index,
-                                    'opacity-0': currentEventsIndex !== index
-                                }" />
-                        </template>
-                        <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center transition-opacity duration-300 opacity-100 group-hover:opacity-0">
-                            <h3 class="text-white text-3xl font-bold px-4 truncate max-w-full" x-text="eventsImages[currentEventsIndex].title"></h3>
-                        </div>
-                        <div class="absolute inset-0 bg-black bg-opacity-60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <h3 class="text-white text-3xl font-bold mb-4 px-4 truncate max-w-full" x-text="eventsImages[currentEventsIndex].title"></h3>
-                            <p class="text-white text-center px-6 mb-4">Experience exciting events and festivals in the city.</p>
-                            <a :href="eventsImages[currentEventsIndex].url"
-                               target="_blank"
-                               class="px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded-full transform transition-all duration-300 hover:scale-105 flex items-center space-x-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M6.672 1.911a1 1 0 10-1.932.518l.259.966a1 1 0 001.932-.518l-.26-.966zM2.429 4.74a1 1 0 10-.517 1.932l.966.259a1 1 0 00.517-1.932l-.966-.26zm8.814-.569a1 1 0 00-1.415-1.414l-.707.707a1 1 0 101.415 1.415l.707-.708zm-7.071 7.072l.707-.707A1 1 0 003.465 9.12l-.708.707a1 1 0 001.415 1.415zm3.2-5.171a1 1 0 00-1.3 1.3l4 10a1 1 0 001.823.075l1.38-2.759 3.018 3.02a1 1 0 001.414-1.415l-3.019-3.02 2.76-1.379a1 1 0 00-.076-1.822l-10-4z" clip-rule="evenodd" />
-                                </svg>
-                                <span>Get Tickets</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
             {{-- Commented out original charts
             <div class="mt-8">
@@ -367,6 +287,88 @@
             </div>
             --}}
         @endif
+
+        @if($suggestPlaces && $suggestEvents)
+        <div x-data="imageSlider" x-init="initialize()" @load.window="stathrortObserver"
+        @beforeunload.window="cleanup" class="mt-8 p-2 bg-blue-50">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-[2rem] max-w-9xl ">
+            <!-- Places Card -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden group">
+                <div class="relative h-[18rem]" x-ref="placesCard">
+                    <!-- Place Marker -->
+                    <div class="absolute top-4 left-4 z-10 bg-white/30 backdrop-blur-sm px-3 py-1 rounded-full flex items-center space-x-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span class="text-white text-sm font-medium">Places</span>
+                    </div>
+
+                    <template x-for="(image, index) in placesImages" :key="index">
+                        <img :src="image.image" :alt="image.title"
+                            class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
+                            :class="{
+                                'opacity-100': currentPlacesIndex === index,
+                                'opacity-0': currentPlacesIndex !== index
+                            }" />
+                    </template>
+                    <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center transition-opacity duration-300 opacity-100 group-hover:opacity-0">
+                        <h3 class="text-white text-3xl font-bold px-4 truncate max-w-full" x-text="placesImages[currentPlacesIndex].title"></h3>
+                    </div>
+                    <div class="absolute inset-0 bg-black bg-opacity-60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <h3 class="text-white text-3xl font-bold mb-4 px-4 truncate max-w-full" x-text="placesImages[currentPlacesIndex].title"></h3>
+                        <p class="text-white text-center px-6 mb-4">Discover iconic landmarks and hidden gems in London.</p>
+                        <a :href="'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(placesImages[currentPlacesIndex].title + ' ' + placesImages[currentPlacesIndex].location)"
+                           target="_blank"
+                           class="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full transform transition-all duration-300 hover:scale-105 flex items-center space-x-2">
+                           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M6.672 1.911a1 1 0 10-1.932.518l.259.966a1 1 0 001.932-.518l-.26-.966zM2.429 4.74a1 1 0 10-.517 1.932l.966.259a1 1 0 00.517-1.932l-.966-.26zm8.814-.569a1 1 0 00-1.415-1.414l-.707.707a1 1 0 101.415 1.415l.707-.708zm-7.071 7.072l.707-.707A1 1 0 003.465 9.12l-.708.707a1 1 0 001.415 1.415zm3.2-5.171a1 1 0 00-1.3 1.3l4 10a1 1 0 001.823.075l1.38-2.759 3.018 3.02a1 1 0 001.414-1.415l-3.019-3.02 2.76-1.379a1 1 0 00-.076-1.822l-10-4z" clip-rule="evenodd" />
+                        </svg>
+                            <span>View place</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Events Card -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden group">
+                <div class="relative h-[18rem]" x-ref="eventsCard">
+                    <!-- Event Marker -->
+                    <div class="absolute top-4 left-4 z-10 bg-white/30 backdrop-blur-sm px-3 py-1 rounded-full flex items-center space-x-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span class="text-white text-sm font-medium">Events</span>
+                    </div>
+
+                    <template x-for="(image, index) in eventsImages" :key="index">
+                        <img :src="image.image" :alt="image.title"
+                            class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
+                            :class="{
+                                'opacity-100': currentEventsIndex === index,
+                                'opacity-0': currentEventsIndex !== index
+                            }" />
+                    </template>
+                    <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center transition-opacity duration-300 opacity-100 group-hover:opacity-0">
+                        <h3 class="text-white text-3xl font-bold px-4 truncate max-w-full" x-text="eventsImages[currentEventsIndex].title"></h3>
+                    </div>
+                    <div class="absolute inset-0 bg-black bg-opacity-60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <h3 class="text-white text-3xl font-bold mb-4 px-4 truncate max-w-full" x-text="eventsImages[currentEventsIndex].title"></h3>
+                        <p class="text-white text-center px-6 mb-4">Experience exciting events and festivals in the city.</p>
+                        <a :href="eventsImages[currentEventsIndex].url"
+                           target="_blank"
+                           class="px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded-full transform transition-all duration-300 hover:scale-105 flex items-center space-x-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M6.672 1.911a1 1 0 10-1.932.518l.259.966a1 1 0 001.932-.518l-.26-.966zM2.429 4.74a1 1 0 10-.517 1.932l.966.259a1 1 0 00.517-1.932l-.966-.26zm8.814-.569a1 1 0 00-1.415-1.414l-.707.707a1 1 0 101.415 1.415l.707-.708zm-7.071 7.072l.707-.707A1 1 0 003.465 9.12l-.708.707a1 1 0 001.415 1.415zm3.2-5.171a1 1 0 00-1.3 1.3l4 10a1 1 0 001.823.075l1.38-2.759 3.018 3.02a1 1 0 001.414-1.415l-3.019-3.02 2.76-1.379a1 1 0 00-.076-1.822l-10-4z" clip-rule="evenodd" />
+                            </svg>
+                            <span>Get Tickets</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
         <!-- Quick Actions -->
         <div class="mt-8">
             <h2 class="text-2xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
