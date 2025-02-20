@@ -206,70 +206,7 @@
                 </div>
             </div>
         @endif
-        @if (!$trip)
-            {{-- New Travel Gallery Slider --}}
-            <div class="mt-8 p-4 bg-gray-50">
-                <h2 class="text-3xl font-bold text-gray-800 mb-6">Worth to see</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- City Break Card -->
-                    <div
-                        class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105">
-                        <div class="relative">
-                            <img src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b" alt="City Break"
-                                class="w-full h-48 object-cover" />
-                            <div
-                                class="absolute top-0 left-0 bg-blue-500 text-white px-3 py-1 rounded-br-lg text-sm font-semibold">
-                                Popular
-                            </div>
-                        </div>
-                        <div class="p-5">
-                            <h3 class="text-xl font-semibold text-gray-800 mb-2">City Break in Paris</h3>
-                            <p class="text-gray-600 mb-4">Experience the charm of the City of Light</p>
-                            <div class="flex justify-between items-center">
-                                <span class="text-blue-500 font-bold">€750 avg/person</span>
-                                <button
-                                    class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full transition duration-300 flex items-center">
-                                    Plan Trip
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Beach Getaway Card -->
-                    <div
-                        class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105">
-                        <div class="relative">
-                            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e"
-                                alt="Beach Getaway" class="w-full h-48 object-cover" />
-                            <div
-                                class="absolute top-0 left-0 bg-green-500 text-white px-3 py-1 rounded-br-lg text-sm font-semibold">
-                                Best Value
-                            </div>
-                        </div>
-                        <div class="p-5">
-                            <h3 class="text-xl font-semibold text-gray-800 mb-2">Bali Beach Retreat</h3>
-                            <p class="text-gray-600 mb-4">Relax on pristine beaches and explore rich culture</p>
-                            <div class="flex justify-between items-center">
-                                <span class="text-green-500 font-bold">€900 avg/person</span>
-                                <button
-                                    class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full transition duration-300 flex items-center">
-                                    Plan Trip
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             {{-- Commented out original charts
             <div class="mt-8">
@@ -286,7 +223,6 @@
                 </div>
             </div>
             --}}
-        @endif
 
         @if($suggestPlaces && $suggestEvents)
         <div x-data="imageSlider" x-init="initialize()" @load.window="stathrortObserver"
@@ -368,6 +304,71 @@
             </div>
         </div>
     </div>
+    @else
+       {{-- New Travel Gallery Slider --}}
+       <div class="mt-8 p-4 bg-gray-50">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">Worth to see</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- City Break Card -->
+            <div
+                class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105">
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b" alt="City Break"
+                        class="w-full h-48 object-cover" />
+                    <div
+                        class="absolute top-0 left-0 bg-blue-500 text-white px-3 py-1 rounded-br-lg text-sm font-semibold">
+                        Popular
+                    </div>
+                </div>
+                <div class="p-5">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">City Break in Paris</h3>
+                    <p class="text-gray-600 mb-4">Experience the charm of the City of Light</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-blue-500 font-bold">€750 avg/person</span>
+                        <a href="{{route('start-trip')}}"
+                            class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full transition duration-300 flex items-center">
+                            Start Trip
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Beach Getaway Card -->
+            <div
+                class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105">
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e"
+                        alt="Beach Getaway" class="w-full h-48 object-cover" />
+                    <div
+                        class="absolute top-0 left-0 bg-green-500 text-white px-3 py-1 rounded-br-lg text-sm font-semibold">
+                        Best Value
+                    </div>
+                </div>
+                <div class="p-5">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Bali Beach Retreat</h3>
+                    <p class="text-gray-600 mb-4">Relax on pristine beaches and explore rich culture</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-green-500 font-bold">€900 avg/person</span>
+                        <a href="{{ route('start-trip') }}"
+                            class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full transition duration-300 flex items-center">
+                            Start Trip
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     @endif
         <!-- Quick Actions -->
         <div class="mt-8">

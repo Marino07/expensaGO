@@ -81,6 +81,7 @@ class Event extends Component
                 foreach ($fetchedEvents as $event) {
                     $startDate = Carbon::parse($event['start_date'])->format('Y-m-d');
 
+
                     // Store event with proper price handling
                     LocalEvent::updateOrCreate(
                         [

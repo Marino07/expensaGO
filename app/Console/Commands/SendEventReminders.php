@@ -2,17 +2,19 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use App\Models\LocalEvent;
-use App\Models\User;
-use App\Jobs\SendEventReminder;
 use Carbon\Carbon;
+use App\Models\Trip;
+use App\Models\User;
+use App\Models\LocalEvent;
+use App\Jobs\SendEventReminder;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
 class SendEventReminders extends Command
 {
     protected $signature = 'events:send-reminders';
-    protected $description = 'Send event reminders 2 days before the event start date';
+    protected $description = 'Send event reminders for cheap and free events before the event start date';
+    public $users;
 
     public function __construct()
     {
@@ -22,68 +24,49 @@ class SendEventReminders extends Command
     public function handle()
     {
         try {
-            $this->info('Starting command execution...');
-            Log::info('SendEventReminders command started');
+            Log::info('Starting event reminders process');
+            $this->users = User::all();
 
-            $events = LocalEvent::whereBetween('id', [25,30])->get();
-
-            $this->info('Found ' . $events->count() . ' events');
-            Log::info('Events query completed', ['count' => $events->count()]);
-
-            if ($events->isEmpty()) {
-                $this->warn('No events found');
-                return 0;
-            }
-
-            foreach ($events as $event) {
-                try {
-                    $this->processEvent($event);
-                } catch (\Exception $e) {
-                    $this->error("Error processing event {$event->id}: " . $e->getMessage());
-                    Log::error('Event processing failed', [
-                        'event_id' => $event->id,
-                        'error' => $e->getMessage()
-                    ]);
+            foreach ($this->users as $user) {
+                $lastTrip = Trip::where('user_id', $user->id)->orderBy('created_at', 'desc')->first();
+                if (!$lastTrip) {
+                    Log::warning('No trips found for user', ['user_id' => $user->id]);
                     continue;
+                }
+
+                $events = LocalEvent::where('trip_id', $lastTrip->id)
+                    ->where(function($query){
+                        $query->where('free',1)->orWhere('price', '<', 30);
+                    })
+                    ->whereDate('start_date', '=', Carbon::now()->addDays(2))
+                    ->get();
+
+                foreach($events as $event){
+                    $this->processEvent($event, $user);
                 }
             }
 
-            $this->info('Command completed successfully');
-            return 0;
+            Log::info('Event reminders process completed successfully');
 
         } catch (\Exception $e) {
-            $this->error('Command failed: ' . $e->getMessage());
-            Log::error('SendEventReminders command failed', [
+            Log::error('Event processing failed', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
-            return 1;
+            $this->error("Error processing events: " . $e->getMessage());
         }
     }
 
-    protected function processEvent($event)
+    public function processEvent($event, $user)
     {
-        $this->info("Processing event: {$event->name}");
-
-        $users = User::all();
-
-        if ($users->isEmpty()) {
-            $this->warn('No users found');
-            return;
-        }
-
-        foreach ($users as $user) {
-            try {
-                SendEventReminder::dispatch($event, $user);
-                $this->info("Reminder dispatched: Event #{$event->id} -> User #{$user->id}");
-            } catch (\Exception $e) {
-                $this->error("Failed to send reminder to user {$user->id}: " . $e->getMessage());
-                Log::error('Reminder dispatch failed', [
-                    'event_id' => $event->id,
-                    'user_id' => $user->id,
-                    'error' => $e->getMessage()
-                ]);
-            }
+        try {
+            SendEventReminder::dispatch($event, $user);
+        } catch (\Exception $e) {
+            Log::error('Failed to process event', [
+                'event_id' => $event->id,
+                'user_id' => $user->id,
+                'error' => $e->getMessage()
+            ]);
         }
     }
 }

@@ -348,6 +348,9 @@
         </div>
         @endif
     </div>
+    <x-AIchat />
+    <x-footer />
+
 
 </div>
 

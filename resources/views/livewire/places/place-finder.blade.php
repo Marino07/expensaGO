@@ -813,6 +813,8 @@ x-init="
         </div>
     </div>
 
+    <x-AIchat />
+
     <x-footer />
 
     <div x-show="showDirectionsModal" x-cloak
