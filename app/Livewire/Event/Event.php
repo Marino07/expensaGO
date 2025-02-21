@@ -146,6 +146,11 @@ class Event extends Component
             ]);
         }
     }
+    public function logout()
+    {
+        Auth::logout();
+        return redirect('/');
+    }
 
     public function saveEvent($eventId)
     {

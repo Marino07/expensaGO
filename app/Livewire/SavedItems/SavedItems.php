@@ -15,6 +15,11 @@ class SavedItems extends Component
     {
         $this->loadSavedItems();
     }
+    public function logout()
+    {
+        Auth::logout();
+        return redirect('/');
+    }
 
     public function loadSavedItems()
     {

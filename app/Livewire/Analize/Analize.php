@@ -2,10 +2,10 @@
 
 namespace App\Livewire\Analize;
 
-use Livewire\Component;
 use Carbon\Carbon;
 use App\Models\Trip;
-
+use Livewire\Component;
+use Illuminate\Support\Facades\Auth;
 class Analize extends Component
 {
     public $Budget;
@@ -30,6 +30,13 @@ class Analize extends Component
             $this->processDailyCategoryExpenses();
         }
     }
+
+    public function logout()
+    {
+        Auth::logout();
+        return redirect('/');
+    }
+
 
     private function initializeBasicData()
     {

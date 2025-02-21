@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Trip;
 use Livewire\Component;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 
 class SOSComponent extends Component
@@ -14,6 +15,11 @@ class SOSComponent extends Component
     public function mount()
     {
         $this->searchEmergencyServices($this->type);
+    }
+    public function logout()
+    {
+        Auth::logout();
+        return redirect('/');
     }
 
     public function searchEmergencyServices($type = 'hospital')
