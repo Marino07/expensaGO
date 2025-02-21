@@ -595,30 +595,6 @@
                 @endif
             </div>
         </div>
-
-        {{-- webhook --}}
-        <!--
-                        <form action="{{ url('/webhook/plaid') }}" method="POST">
-                            @csrf
-                            <label for="webhook_type">Webhook Type:</label>
-                            <input type="text" id="webhook_type" name="webhook_type" value="TRANSACTIONS"><br><br>
-
-                            <label for="webhook_code">Webhook Code:</label>
-                            <input type="text" id="webhook_code" name="webhook_code" value="SYNC_UPDATES_AVAILABLE"><br><br>
-
-                            <label for="item_id">Item ID:</label>
-                            <input type="text" id="item_id" name="item_id" value="{{ auth()->user()->plaid_item_id }}"><br><br>
-
-                            <label for="new_transactions">New Transactions:</label>
-                            <input type="number" id="new_transactions" name="new_transactions" value="1"><br><br>
-
-                            <button type="submit">Send Webhook</button>
-                        </form> -->
-
-
-
-        <!-- Rest of your transactions view code -->
-
     </main>
     <x-footer />
     <!-- AI Chat Button and Modal -->

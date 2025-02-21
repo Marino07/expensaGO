@@ -133,5 +133,6 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     </div>
     {{-- Ai --}}
-    <x-AIchat /> 
+    <x-AIchat />
+    <x-footer />
 </div>
