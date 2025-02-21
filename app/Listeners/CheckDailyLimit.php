@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Models\DailyExceedLog;
 
 class CheckDailyLimit implements ShouldQueue
 {
@@ -57,8 +58,19 @@ class CheckDailyLimit implements ShouldQueue
         Log::info('Total Spent Today: ' . $totalSpentToday);
 
         if ($totalSpentToday > $dailyLimit * 1.15) {
-            Log::info('Daily limit exceeded by 15%. Sending email.');
-            Mail::to($user->email)->send(new DailyLimitExceeded($user, $totalSpentToday));
+            $alreadyNotified = DailyExceedLog::where('user_id', $user->id)
+                ->where('trip_id', $trip->id)
+                ->whereDate('logged_date', $today)
+                ->exists();
+
+            if (!$alreadyNotified) {
+                Mail::to($user->email)->send(new DailyLimitExceeded($user, $totalSpentToday));
+                DailyExceedLog::create([
+                    'user_id' => $user->id,
+                    'trip_id' => $trip->id,
+                    'logged_date' => $today
+                ]);
+            }
         } else {
             Log::info('Daily limit not exceeded.');
         }
