@@ -112,7 +112,7 @@
                     </div>
                     <div class="bg-indigo-600 px-4 py-4 sm:px-6">
                         <div class="text-sm">
-                            <a href="{{ route('analytics') }}"
+                            <a wire:navigate href="{{ route('analytics') }}"
                                 class="font-medium text-white hover:text-indigo-100 transition ease-in-out duration-150">
                                 Detail analytics of expenses &rarr;
                             </a>
@@ -181,7 +181,7 @@
                     </div>
                     <div class="bg-red-500 px-4 py-4 sm:px-6">
                         <div class="text-sm">
-                            <a href="{{ route('saved-items') }}"
+                            <a wire:navigate href="{{ route('saved-items') }}"
                                 class="font-medium text-white hover:text-red-100 transition ease-in-out duration-150">
                                 View Saved Items &rarr;
                             </a>
@@ -313,7 +313,7 @@
             <div
                 class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105">
                 <div class="relative">
-                    <img src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b" alt="City Break"
+                    <img src="{{asset('images/defaults/paris2.jpg')}}" alt="City Break"
                         class="w-full h-48 object-cover" />
                     <div
                         class="absolute top-0 left-0 bg-blue-500 text-white px-3 py-1 rounded-br-lg text-sm font-semibold">
@@ -325,7 +325,7 @@
                     <p class="text-gray-600 mb-4">Experience the charm of the City of Light</p>
                     <div class="flex justify-between items-center">
                         <span class="text-blue-500 font-bold">€750 avg/person</span>
-                        <a href="{{route('start-trip')}}"
+                        <a wire:navigate href="{{route('start-trip')}}"
                             class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full transition duration-300 flex items-center">
                             Start Trip
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none"
@@ -342,7 +342,7 @@
             <div
                 class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105">
                 <div class="relative">
-                    <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e"
+                    <img src="{{asset('/images/defaults/balib.jpg')}}"
                         alt="Beach Getaway" class="w-full h-48 object-cover" />
                     <div
                         class="absolute top-0 left-0 bg-green-500 text-white px-3 py-1 rounded-br-lg text-sm font-semibold">
@@ -354,7 +354,7 @@
                     <p class="text-gray-600 mb-4">Relax on pristine beaches and explore rich culture</p>
                     <div class="flex justify-between items-center">
                         <span class="text-green-500 font-bold">€900 avg/person</span>
-                        <a href="{{ route('start-trip') }}"
+                        <a wire:navigate href="{{ route('start-trip') }}"
                             class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full transition duration-300 flex items-center">
                             Start Trip
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none"
@@ -387,7 +387,7 @@
                     </div>
                     <div class="mt-8">
                         <h3 class="text-lg font-medium">
-                            <a href="{{ route('new-expense') }}" class="focus:outline-none">
+                            <a wire:navigate href="{{ route('new-expense') }}" class="focus:outline-none">
                                 <span class="absolute inset-0" aria-hidden="true"></span>
                                 Add New Expense
                             </a>
@@ -419,7 +419,7 @@
                     </div>
                     <div class="mt-8">
                         <h3 class="text-lg font-medium">
-                            <a href="{{ route('start-trip') }}" class="focus:outline-none">
+                            <a  href="{{ route('start-trip') }}" class="focus:outline-none">
                                 <span class="absolute inset-0" aria-hidden="true"></span>
                                 Start New Trip
                             </a>
@@ -495,7 +495,7 @@
                         </div>
                         <div class="mt-8">
                             <h3 class="text-lg font-medium">
-                                <a href="{{ route('trip-planner', ['trip' => $trip->id]) }}"
+                                <a wire:navigate href="{{ route('trip-planner', ['trip' => $trip->id]) }}"
                                     class="focus:outline-none">
                                     <span class="absolute inset-0" aria-hidden="true"></span>
                                     @if (!$trip->planner)
@@ -572,7 +572,7 @@
                         </div>
                         <div class="mt-8">
                             <h3 class="text-lg font-medium">
-                                <a href="{{ route('places') }}" class="focus:outline-none">
+                                <a wire:navigate href="{{ route('places') }}" class="focus:outline-none">
                                     <span class="absolute inset-0" aria-hidden="true"></span>
                                     Local Tips
                                 </a>
@@ -879,6 +879,11 @@
                     }
                 }
             }));
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            Livewire.on('preferences-saved', () => {
+                location.reload();
+            });
         });
     </script>
 @endpush

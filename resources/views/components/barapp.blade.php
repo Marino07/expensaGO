@@ -5,7 +5,7 @@
     'bg-blue-100' =>
         !request()->routeIs('analytics') && !request()->routeIs('saved-items'),
 ])>
-    <a href="{{ route('index') }}" class="flex items-center justify-center">
+    <a href="@auth{{ route('app') }}@else{{ route('index') }}@endauth" class="flex items-center justify-center">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-primary">
             <path
@@ -56,7 +56,7 @@
                         Connected
                     </span>
                 @endif
-                <a class="text-sm font-medium hover:underline underline-offset-4" href="/sos"><svg
+                <a class="text-sm font-medium hover:underline underline-offset-4" wire:wire:navigate href="/sos"><svg
                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
                         width="30" height="25" viewBox="0 0 256 256" xml:space="preserve">
 

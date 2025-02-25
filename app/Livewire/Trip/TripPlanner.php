@@ -57,6 +57,10 @@ class TripPlanner extends Component
 
     public function render()
     {
+        if (Carbon::now()->format('H:i') === '00:00') {
+            $this->UnlockCards();
+        }
+
         return view('livewire.trip.trip-planner', [
             'plannerDays' => $this->planner ? $this->planner->plannerDays : collect([])
         ])->layout('layouts.trip');

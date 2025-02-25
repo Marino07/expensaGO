@@ -121,7 +121,7 @@
                                                 class="flex flex-col bg-blue-50 p-4 rounded-lg transform transition-transform duration-300 hover:scale-102">
                                                 <!-- Main attraction image and basic info -->
                                                 <div class="flex items-center mb-4">
-                                                    <img src="{{ $day->main_attraction['photo_url'] ?? 'default-image-url' }}"
+                                                    <img src="{{ $day->main_attraction['photo_url'] ?? '/images/defaults/place.png' }}"
                                                         alt="Main Attraction"
                                                         class="w-20 h-20 rounded-full mr-4 object-cover shadow-md">
                                                     <div class="flex-grow">

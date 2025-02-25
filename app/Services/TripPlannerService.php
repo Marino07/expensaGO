@@ -128,15 +128,17 @@ class TripPlannerService
             $isOther = true;
 
             foreach ($place['types'] as $type) {
-                if (in_array($type, [
-                    'restaurant',
-                    'tourist_attraction',
-                    'park',
-                    'shopping_mall',
-                    'event',
-                    'point_of_interest',
-                    'natural_feature'
-                ])) {
+                if (
+                    in_array($type, [
+                        'restaurant',
+                        'tourist_attraction',
+                        'park',
+                        'shopping_mall',
+                        'event',
+                        'point_of_interest',
+                        'natural_feature'
+                    ])
+                ) {
                     $isOther = false;
                     break;
                 }
@@ -168,7 +170,7 @@ class TripPlannerService
 
         if (in_array('restaurant', $place['types'] ?? [])) {
             if (isset($place['price_level'])) {
-                return match($place['price_level']) {
+                return match ($place['price_level']) {
                     1 => 'Inexpensive',
                     2 => 'Moderate',
                     3 => 'Expensive',
@@ -247,8 +249,8 @@ class TripPlannerService
         $deltaLon = $lon2 - $lon1;
 
         $a = sin($deltaLat / 2) * sin($deltaLat / 2) +
-             cos($lat1) * cos($lat2) *
-             sin($deltaLon / 2) * sin($deltaLon / 2);
+            cos($lat1) * cos($lat2) *
+            sin($deltaLon / 2) * sin($deltaLon / 2);
 
         $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
 
@@ -257,11 +259,11 @@ class TripPlannerService
 
     private function sortPlacesByPopularity($places)
     {
-        usort($places, function($a, $b) {
+        usort($places, function ($a, $b) {
             $scoreA = (isset($a['rating']) ? $a['rating'] : 0) * 0.5 +
-                      (isset($a['user_ratings_total']) ? min($a['user_ratings_total'] / 1000, 5) : 0) * 0.5;
+                (isset($a['user_ratings_total']) ? min($a['user_ratings_total'] / 1000, 5) : 0) * 0.5;
             $scoreB = (isset($b['rating']) ? $b['rating'] : 0) * 0.5 +
-                      (isset($b['user_ratings_total']) ? min($b['user_ratings_total'] / 1000, 5) : 0) * 0.5;
+                (isset($b['user_ratings_total']) ? min($b['user_ratings_total'] / 1000, 5) : 0) * 0.5;
 
             return $scoreB <=> $scoreA;
         });
@@ -317,7 +319,7 @@ class TripPlannerService
             return $places;
         }
 
-        return array_map(function($place) {
+        return array_map(function ($place) {
             if (isset($place['types'])) {
                 $place['preference_name'] = $this->getFriendlyPreferenceName($place['types'][0]);
             }
@@ -366,6 +368,15 @@ class TripPlannerService
     {
         $startDate = Carbon::parse($trip->start_date);
         $today = Carbon::today();
+
+        if ($today->isBefore($startDate)) {
+            return 1;
+        }
+
+        if ($today->isSameDay($startDate)) {
+            return 2;
+        }
+
         $daysPassed = $startDate->diffInDays($today);
 
         return min($daysPassed + 2, $trip->duration);

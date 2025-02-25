@@ -30,8 +30,6 @@ class Application extends Component
     public $suggestPlaces;
     public $suggestEvents;
 
-    protected $listeners = ['echo:openq-channel,OpenQEvent' => 'OpenFirstVisitQuestionnaire'];
-
     public function mount()
     {
         $this->suggestEvents = SuggestionImages::where('user_id', Auth::user()->id)

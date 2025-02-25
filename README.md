@@ -122,7 +122,7 @@ Get personalized travel recommendations and advice.
 
 #### Transaction History
 
-To unlock analytics we need some data use this route for previous card data or make test data in seeder
+To unlock analytics we need some data use this route for previous card transactions or make test data in seeder
 ![transactions](imagess/plaid_transactions.png)
 
 #### Expense Analytics
@@ -141,12 +141,12 @@ Access your bookmarked locations.
 #### Saved Events
 
 View your saved events collection.
-![events](approved/saved_items.png)
+![events](imagess/saved_items.png)
 
 #### Event Booking
 
 Purchase tickets  through service providers.
-![events_ticketmaster](approved/book_ticketmaster.png)
+![events_ticketmaster](imagess/ticket.png)
 
 ### 8. Smart Notifications
 
@@ -162,8 +162,9 @@ Receive notifications for budget threshold alerts.
 
 #### Expense Insights
 
-Get mid-trip spending analysis,predictions and recommendations.
-![predictions](imagess/predictions.png)
+Get mid-trip spending analysis,predictions and recommendations in pdf format.
+
+![predictions](imagess/report.png)
 
 ## License
 
