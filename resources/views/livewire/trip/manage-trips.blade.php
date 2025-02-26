@@ -38,7 +38,7 @@
                     <div class="bg-white shadow overflow-hidden sm:rounded-md">
                         <ul class="divide-y divide-gray-200">
                            @foreach ($trips as $trip)
-                           <li x-data="{ showExpenses: false, expenses: {{ json_encode($trip->expenses)}} }">
+                           <li x-cloak x-data="{ showExpenses: false, expenses: {{ json_encode($trip->expenses)}} }">
                             <div class="px-4 py-4 sm:px-6">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center">
@@ -56,10 +56,10 @@
                                     </div>
 
                                     <div class="flex space-x-2">
-                                        <button wire:click="finishTrip({{$trip->id}})" @click="showExpenses = true"
+                                        <a wire:navigate href="{{route('edit-trip', $trip->id)}}"
                                                 class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                            Finish Trip
-                                        </button>
+                                            Edit Trip
+                                        </a>
 
                                     </div>
 

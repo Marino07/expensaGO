@@ -181,7 +181,7 @@
                     </div>
                     <div class="bg-red-500 px-4 py-4 sm:px-6">
                         <div class="text-sm">
-                            <a wire:navigate href="{{ route('saved-items') }}"
+                            <a  href="{{ route('saved-items') }}"
                                 class="font-medium text-white hover:text-red-100 transition ease-in-out duration-150">
                                 View Saved Items &rarr;
                             </a>
@@ -325,7 +325,7 @@
                     <p class="text-gray-600 mb-4">Experience the charm of the City of Light</p>
                     <div class="flex justify-between items-center">
                         <span class="text-blue-500 font-bold">€750 avg/person</span>
-                        <a wire:navigate href="{{route('start-trip')}}"
+                        <a  href="{{route('start-trip')}}"
                             class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full transition duration-300 flex items-center">
                             Start Trip
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none"
@@ -354,7 +354,7 @@
                     <p class="text-gray-600 mb-4">Relax on pristine beaches and explore rich culture</p>
                     <div class="flex justify-between items-center">
                         <span class="text-green-500 font-bold">€900 avg/person</span>
-                        <a wire:navigate href="{{ route('start-trip') }}"
+                        <a  href="{{ route('start-trip') }}"
                             class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full transition duration-300 flex items-center">
                             Start Trip
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none"

@@ -62,8 +62,8 @@ Begin your travel planning journey and unlock additional features.
 
 #### Personal Preferences
 
-Customize your travel preferences for optimized recommendations.
-![preferences](approved/user_preferences.png)
+Customize your travel preferences for enhanced itinerary.
+![preferences](imagess/preferences.png)
 
 #### Location-Based Recommendations
 

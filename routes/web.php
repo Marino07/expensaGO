@@ -34,7 +34,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('new-expense', NewExpense::class)->name('new-expense');
     Route::get('manage_trips', ManageTrips::class)->name('manage-trips');
     Route::get('all_expenses', AllExpenses::class)->name('all-expenses');
-    Route::get('finish_trip/{trip}', EditTrip::class)->name('finish-trip');
+    Route::get('edit_trip/{trip}', EditTrip::class)->name('edit-trip');
     Route::get('/places', PlaceFinder::class)->name('places');
     Route::get('/sos', SOSComponent::class)->name('sos');
     Route::get('/trip-planner/{trip}', TripPlanner::class)->name('trip-planner');

@@ -56,7 +56,7 @@
                         Connected
                     </span>
                 @endif
-                <a class="text-sm font-medium hover:underline underline-offset-4" wire:wire:navigate href="/sos"><svg
+                <a class="text-sm font-medium hover:underline underline-offset-4"  href="/sos"><svg
                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
                         width="30" height="25" viewBox="0 0 256 256" xml:space="preserve">
 

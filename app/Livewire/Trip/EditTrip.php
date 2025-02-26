@@ -4,57 +4,46 @@ namespace App\Livewire\Trip;
 
 use App\Models\Trip;
 use Livewire\Component;
-use Illuminate\Support\Facades\Auth;
 
 class EditTrip extends Component
 {
     public Trip $trip;
-    public $showEndTripModal = false;
-    public $endTripReason = '';
-    public $destinations = ['Paris', 'Rome', 'Barcelona'];
+    public $location;
+    public $budget;
+    public $start_date;
+    public $end_date;
+    public $description;
 
     protected $rules = [
-        'trip.name' => 'required|string|max:255',
-        'trip.budget' => 'required|numeric|min:0',
-        'trip.start_date' => 'required|date',
-        'trip.end_date' => 'nullable|date|after_or_equal:trip.start_date',
-        'trip.description' => 'nullable|string',
-        'trip.status' => 'required|in:active,completed',
+        'location' => 'required|string|max:255',
+        'budget' => 'required|numeric|min:0',
+        'start_date' => 'required|date',
+        'end_date' => 'required|date|after_or_equal:start_date',
+        'description' => 'required|string'
     ];
-    public function logout()
-    {
-        Auth::logout(); // Odjava korisnika
-        return redirect('/'); // Preusmeravanje na početnu stranicu
-    }
 
     public function mount(Trip $trip)
     {
         $this->trip = $trip;
+        $this->location = $trip->location;
+        $this->budget = $trip->budget;
+        $this->start_date = $trip->start_date;
+        $this->end_date = $trip->end_date;
+        $this->description = $trip->description;
     }
 
     public function updateTrip()
     {
-        $this->validate();
-        $this->trip->save();
-        session()->flash('message', 'Trip updated successfully.');
+        $validatedData = $this->validate();
+
+        $this->trip->update($validatedData);
+
+        session()->flash('message', 'Trip updated successfully!');
+
+        return redirect()->route('edit-trip', $this->trip);
     }
 
-    public function endTrip()
-    {
-        $this->validate([
-            'endTripReason' => 'required|string|min:5'
-        ]);
-
-        $this->trip->end_date = now();
-        $this->trip->status = 'completed';
-        $this->trip->end_reason = $this->endTripReason;
-        $this->trip->save();
-
-        $this->showEndTripModal = false;
-        $this->endTripReason = '';
-
-        session()->flash('message', 'Trip ended successfully.');
-    }    public function render()
+    public function render()
     {
         return view('livewire.trip.edit-trip')->layout('layouts.trip');
     }

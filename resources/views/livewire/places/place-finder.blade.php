@@ -597,7 +597,7 @@ x-init="
          class="fixed inset-0 bg-black/50 z-40">
     </div>
 
-    <!-- Tutorial Overlay -->
+    {{--
     <div x-cloak x-show="showTutorial" class="fixed inset-0 z-50 hidden md:block">
         <!-- Backdrop with blur excluding filters button -->
         <div class="absolute inset-0 bg-black/20 backdrop-blur-sm"></div>
@@ -646,7 +646,7 @@ x-init="
                 />
             </svg>
         </div>
-    </div>
+    </div> --}}
 
     <!-- Main Content -->
     <div class="container mx-auto px-4 py-8">
