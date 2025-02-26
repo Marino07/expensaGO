@@ -80,7 +80,7 @@ class Analize extends Component
             $currentDay = $startDate->copy()->addDays($day);
             $this->dailyLabels[] = $currentDay->format('M d');
             $this->dailyExpenses[] = (float) $this->trip->expenses()
-                ->whereDate('created_at', $currentDay)
+                ->whereDate('date', $currentDay)
                 ->sum('amount');
         }
     }
@@ -96,7 +96,7 @@ class Analize extends Component
 
         // Group expenses by date (key: YYYY-MM-DD)
         $expensesByDate = $expenses->groupBy(function ($expense) {
-            return Carbon::parse($expense->created_at)->format('Y-m-d');
+            return Carbon::parse($expense->date)->format('Y-m-d');
         });
 
         $this->initializeDailyCategoryData();

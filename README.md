@@ -127,9 +127,9 @@ To unlock analytics we need some data use this route for previous card transacti
 
 #### Expense Analytics
 
-Monitor spending patterns and financial insights (for more trip days it look better here is just one day)
+Monitor spending patterns and financial insights
 
-![transactions](imagess/analytics.png)
+![transactions](imagess/grafikon.png)
 
 ### 7. Saved Items Management
 

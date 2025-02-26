@@ -112,7 +112,7 @@
                     </div>
                     <div class="bg-indigo-600 px-4 py-4 sm:px-6">
                         <div class="text-sm">
-                            <a wire:navigate href="{{ route('analytics') }}"
+                            <a href="{{ route('analytics') }}"
                                 class="font-medium text-white hover:text-indigo-100 transition ease-in-out duration-150">
                                 Detail analytics of expenses &rarr;
                             </a>
@@ -369,6 +369,7 @@
         </div>
     </div>
 
+
     @endif
         <!-- Quick Actions -->
         <div class="mt-8">
@@ -495,7 +496,7 @@
                         </div>
                         <div class="mt-8">
                             <h3 class="text-lg font-medium">
-                                <a wire:navigate href="{{ route('trip-planner', ['trip' => $trip->id]) }}"
+                                <a href="{{ route('trip-planner', ['trip' => $trip->id]) }}"
                                     class="focus:outline-none">
                                     <span class="absolute inset-0" aria-hidden="true"></span>
                                     @if (!$trip->planner)
@@ -572,7 +573,7 @@
                         </div>
                         <div class="mt-8">
                             <h3 class="text-lg font-medium">
-                                <a wire:navigate href="{{ route('places') }}" class="focus:outline-none">
+                                <a href="{{ route('places') }}" class="focus:outline-none">
                                     <span class="absolute inset-0" aria-hidden="true"></span>
                                     Local Tips
                                 </a>

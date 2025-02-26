@@ -38,7 +38,7 @@ class NewExpense extends Component
     {
         $this->validate();
 
-        $expense = Expense::create([
+        $expense = new Expense([
             'trip_id' => $this->tripId,
             'title' => $this->expenseTitle,
             'amount' => $this->amount,
@@ -46,6 +46,9 @@ class NewExpense extends Component
             'is_recurring' => $this->isRecurring,
             'category_id' => $this->category_id,
         ]);
+
+        $expense->created_at = $this->expenseDate;
+        $expense->save();
 
         event(new TransactionCreated($expense, $this->user));
 

@@ -39,7 +39,7 @@ class PlaidController extends Controller
                 'language' => 'en',
                 'redirect_uri' => $this->redirectUri,
                 'user' => [
-                    'client_user_id' => (string)auth()->id()
+                    'client_user_id' => (string) auth()->id()
                 ]
             ]);
 
@@ -107,6 +107,7 @@ class PlaidController extends Controller
 
             if ($response->successful()) {
                 $data = $response->json();
+                $currentDate = now(); 
 
                 foreach ($data['transactions'] as $transaction) {
                     // Skip if transaction is a transfer or payment
@@ -117,13 +118,12 @@ class PlaidController extends Controller
                     $expense = Expense::create([
                         'title' => $transaction['name'],
                         'amount' => $transaction['amount'],
-                        'date' => Carbon::parse($transaction['date']),
+                        'date' => $currentDate,
                         'category_id' => Category::firstOrCreate(['name' => $transaction['category'][0] ?? 1])->id,
                         'trip_id' => $trip->id,
                         'is_recurring' => 0
                     ]);
                     event(new TransactionCreated($expense, \App\Models\User::find(auth()->id())));
-
                 }
 
                 \Log::info('Plaid transactions processed:', $response->json());
